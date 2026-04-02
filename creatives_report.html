@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creatives Insights</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 13px; color: #1a1a2e; background: #f4f6f9; line-height: 1.6; }
+  .page { max-width: 1200px; margin: 0 auto; padding: 36px 24px 64px; }
+
+  h1 { font-size: 22px; font-weight: 700; color: #0d1b2a; margin-bottom: 4px; }
+  h2 { font-size: 15px; font-weight: 700; color: #0d1b2a; margin: 36px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #e0e4ed; text-transform: uppercase; letter-spacing: 0.05em; }
+  h3 { font-size: 13px; font-weight: 700; color: #333; margin: 20px 0 8px; }
+  .meta { color: #888; font-size: 12px; margin-bottom: 28px; }
+
+  /* KPI row */
+  .kpi-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 28px; }
+  .kpi { background: #fff; border-radius: 10px; padding: 16px 20px; flex: 1; min-width: 160px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+  .kpi .label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .kpi .value { font-size: 26px; font-weight: 700; color: #0d1b2a; }
+  .kpi .sub { font-size: 12px; color: #666; margin-top: 2px; }
+
+  /* Hook groups grid */
+  .hooks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; margin-bottom: 36px; }
+  .hook-card { background: #fff; border-radius: 10px; padding: 16px 18px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); border-left: 4px solid #ccc; }
+  .hook-card.c1 { border-color: #e74c3c; }
+  .hook-card.c2 { border-color: #e67e22; }
+  .hook-card.c3 { border-color: #f1c40f; }
+  .hook-card.c4 { border-color: #2ecc71; }
+  .hook-card.c5 { border-color: #1abc9c; }
+  .hook-card.c6 { border-color: #3498db; }
+  .hook-card.c7 { border-color: #9b59b6; }
+  .hook-card.c8 { border-color: #e91e63; }
+  .hook-card.c9 { border-color: #607d8b; }
+  .hook-card.c10 { border-color: #795548; }
+
+  .hook-card .hook-title { font-weight: 700; font-size: 13px; margin-bottom: 3px; }
+  .hook-card .hook-desc { font-size: 11px; color: #888; margin-bottom: 10px; font-style: italic; }
+  .hook-card .count-bar-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .hook-card .count-bar { height: 6px; border-radius: 3px; background: #e0e4ed; flex: 1; overflow: hidden; }
+  .hook-card .count-bar-fill { height: 100%; border-radius: 3px; background: currentColor; }
+  .hook-card .count-label { font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .hook-card .examples { list-style: none; padding: 0; }
+  .hook-card .examples li { font-size: 11px; color: #444; padding: 4px 0; border-top: 1px solid #f0f0f0; }
+  .hook-card .examples li::before { content: "›  "; color: #999; }
+
+  /* Full table */
+  .card { background: #fff; border-radius: 10px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: #f0f2f7; text-align: left; padding: 8px 12px; font-weight: 600; color: #444; border-bottom: 2px solid #dde1eb; white-space: nowrap; }
+  td { padding: 7px 12px; border-bottom: 1px solid #edf0f5; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbfd; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+  .badge-video { background: #e8f4fd; color: #1a6fa3; }
+  .badge-image { background: #f0f0f0; color: #666; }
+  .no-text { color: #bbb; font-style: italic; }
+  .tag { display: inline-block; padding: 1px 7px; border-radius: 8px; font-size: 10px; font-weight: 600; margin: 1px 2px 1px 0; background: #f0f2f7; color: #555; }
+
+  /* section toggle */
+  details summary { cursor: pointer; user-select: none; }
+  details summary::-webkit-details-marker { display: none; }
+  .toggle-hint { font-size: 11px; color: #999; margin-left: 8px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Creatives Insights</h1>
+  <div class="meta">36 creatives with text shown &nbsp;·&nbsp; 78 total analysed (55 videos · 23 images) &nbsp;·&nbsp; Text extracted from start / mid / end frames</div>
+
+  <!-- KPIs -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="label">Total Creatives</div>
+      <div class="value">78</div>
+      <div class="sub">55 video · 23 image</div>
+    </div>
+    <div class="kpi">
+      <div class="label">With Visible Text</div>
+      <div class="value">46</div>
+      <div class="sub">59% of all creatives</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Hook Groups</div>
+      <div class="value">10</div>
+      <div class="sub">across 46 hooks identified</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Top Hook Type</div>
+      <div class="value">Pain Point</div>
+      <div class="sub">7 creatives · most used</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Dominant Pattern</div>
+      <div class="value">Pain-First</div>
+      <div class="sub">empathy + bad habit + objection = 14</div>
+    </div>
+  </div>
+
+  <h2>Hook Groups</h2>
+
+  <div class="hooks-grid">
+
+    <div class="hook-card c2">
+      <div class="hook-title">Pain Point / Empathy</div>
+      <div class="hook-desc">Opens with the audience's struggle to trigger immediate identification</div>
+      <div class="count-bar-wrap" style="color:#e67e22">
+        <div class="count-bar"><div class="count-bar-fill" style="width:100%"></div></div>
+        <div class="count-label">7 creatives</div>
+      </div>
+      <ul class="examples">
+        <li>To every woman whose mind always goes to worst-case…</li>
+        <li>Woke up in the middle of the night and can't sleep?</li>
+        <li>LISTEN TO THIS FOR 60 SECONDS AFTER THE KIDS ARE IN BED</li>
+        <li>CARRYING THE MENTAL LOAD?</li>
+        <li>Can I just have a personal chef please!</li>
+        <li>STUCK IN YOUR…</li>
+      </ul>
+    </div>
+
+    <div class="hook-card c4">
+      <div class="hook-title">Aspiration / Identity</div>
+      <div class="hook-desc">Positions the product as the path to becoming a better version of yourself</div>
+      <div class="count-bar-wrap" style="color:#2ecc71">
+        <div class="count-bar"><div class="count-bar-fill" style="width:71%"></div></div>
+        <div class="count-label">5 creatives</div>
+      </div>
+      <ul class="examples">
+        <li>Become the 1%</li>
+        <li>Prioritize self-love with Headspace</li>
+        <li>Headspace fits into your routine for your best year yet</li>
+        <li>We'll help you become a systemized, well-tested person who thrives</li>
+      </ul>
+    </div>
+
+    <div class="hook-card c9">
+      <div class="hook-title">Curiosity / Open Loop</div>
+      <div class="hook-desc">Starts mid-thought or cuts off to force the viewer to keep watching</div>
+      <div class="count-bar-wrap" style="color:#607d8b">
+        <div class="count-bar"><div class="count-bar-fill" style="width:71%"></div></div>
+        <div class="count-label">5 creatives</div>
+      </div>
+      <ul class="examples">
+        <li>mindset shift in…</li>
+        <li>that literally change…</li>
+        <li>so good at… with a real… everything people say</li>
+        <li>Ever since I started painting…</li>
+      </ul>
+    </div>
+
+    <div class="hook-card c5">
+      <div class="hook-title">Soft Sell / Free Trial</div>
+      <div class="hook-desc">Low-friction offer hook — removes purchase barrier immediately</div>
+      <div class="count-bar-wrap" style="color:#1abc9c">
+        <div class="count-bar"><div class="count-bar-fill" style="width:71%"></div></div>
+        <div class="count-label">5 creatives</div>
+      </div>
+      <ul class="examples">
+        <li>Try for $0 today</li>
+        <li>What a good night's sleep sounds like — Try Headspace for $0</li>
+        <li>Click the link below to SIGN UP FOR THE FREE MASTERCLASS</li>
+      </ul>
+    </div>
+
+    <div class="hook-card c1">
+      <div class="hook-title">POV / Relatable Situation</div>
+      <div class="hook-desc">First-person scenario the audience instantly recognises</div>
+      <div class="count-bar-wrap" style="color:#e74c3c">
+        <div class="count-bar"><div class="count-bar-fill" style="width:57%"></div></div>
+        <div class="count-label">4 creatives</div>
+      </div>
+      <ul class="examples">
+        <li>POV: my BBQ was good, my marketing was dead. No reach. No orders.</li>
+        <li>POV: You're in a procrastination depression hole…</li>
+        <li>If you didn't post your workout, did it even happen?</li>
+        <li>TO ALL MY BED ROTTING GIRLIES</li>
+      </ul>
+    </div>
+
+    <div class="hook-card c7">
+      <div class="hook-title">Dopamine / Bad Habit Framing</div>
+      <div class="hook-desc">Names a negative behaviour pattern to hook people who recognise themselves</div>
+      <div class="count-bar-wrap" style="color:#9b59b6">
+        <div class="count-bar"><div class="count-bar-fill" style="width:57%"></div></div>
+        <div class="count-label">4 creatives</div>
+      </div>
+      <ul class="examples">
+        <li>DOPAMINE ADDICTION? It's totally gone with microlearning</li>
+        <li>Gentle reminder that rotting in bed each day… is not normal.</li>
+        <li>People's belief system. So overeating, smoking, drinking too much…</li>
+      </ul>
+    </div>
+
+    <div class="hook-card c6">
+      <div class="hook-title">Direct Body / Sensory Instruction</div>
+      <div class="hook-desc">Commands the viewer to do something physical right now</div>
+      <div class="count-bar-wrap" style="color:#3498db">
+        <div class="count-bar"><div class="count-bar-fill" style="width:57%"></div></div>
+        <div class="count-label">4 creatives</div>
+      </div>
+      <ul class="examples">
+        <li>Unclench your jaw. Drop your tongue from the roof of your mouth.</li>
+        <li>LISTEN TO THIS FOR 60 SECONDS AFTER THE KIDS ARE IN BED</li>
+        <li>TAP THE SCREEN TO START TONIGHT</li>
+      </ul>
+    </div>
+
+    <div class="hook-card c8">
+      <div class="hook-title">Objection Busting</div>
+      <div class="hook-desc">Addresses a common excuse or limiting belief the audience holds</div>
+      <div class="count-bar-wrap" style="color:#e91e63">
+        <div class="count-bar"><div class="count-bar-fill" style="width:43%"></div></div>
+        <div class="count-label">3 creatives</div>
+      </div>
+      <ul class="examples">
+        <li>I'm too old to learn English</li>
+        <li>STOP SAYING "I'm never thankful"</li>
+      </ul>
+    </div>
+
+    <div class="hook-card c3">
+      <div class="hook-title">Before / After — Shocking Numbers</div>
+      <div class="hook-desc">Contrast of failure vs. success using real metrics to build credibility</div>
+      <div class="count-bar-wrap" style="color:#f1c40f">
+        <div class="count-bar"><div class="count-bar-fill" style="width:29%"></div></div>
+        <div class="count-label">2 creatives</div>
+      </div>
+      <ul class="examples">
+        <li>$575 wasted on Facebook ads. Sales: $0. → Month Total: $28,765</li>
+        <li>No reach. No orders. → +11 bookings in 10 days</li>
+      </ul>
+    </div>
+
+    <div class="hook-card c10">
+      <div class="hook-title">Science / Authority Credibility</div>
+      <div class="hook-desc">Uses institutional authority to validate the product claim</div>
+      <div class="count-bar-wrap" style="color:#795548">
+        <div class="count-bar"><div class="count-bar-fill" style="width:29%"></div></div>
+        <div class="count-label">2 creatives</div>
+      </div>
+      <ul class="examples">
+        <li>Neuroscientists at Duke created this app…</li>
+        <li>The Fabulous app, created by Behavioral Scientists at Duke University</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Full creative table -->
+  <h2>All Creatives — Text Inventory</h2>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>File ID</th>
+          <th>Type</th>
+          <th>Hook / Headline</th>
+          <th>Body / Middle</th>
+          <th>CTA / End</th>
+          <th>Hook Group</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>1039072737651768_videos_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>2</td><td>1056124963377069_videos_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>3</td><td>120214639588560600_videos_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>4</td><td>1079499856842991_images_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>5</td><td>1257656965939478_cards_1</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>6</td><td>1283213199900111_videos_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>7</td><td>1400845151197556_cards_2</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>8</td><td>1627904821172413_cards_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>9</td><td>2020350058452963_cards_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>10</td><td>2027736980987217_images_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>11</td><td>2136374890176280_images_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>12</td><td>2153946791733956_cards_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>13</td><td>3715186932116135_cards_1</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>14</td><td>549314434567949_images_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>15</td><td>583093458097874_cards_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>16</td><td>608307298320195_cards_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>17</td><td>671648088922440_cards_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>18</td><td>717292317303117_videos_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>19</td><td>877330971215968_videos_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>20</td><td>960721862403599_cards_1</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>21</td><td>s_1057305833194431_videos_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>22</td><td>s_1149311960468045_videos_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>23</td><td>s_1149311960468045_videos_0 (1)</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>24</td><td>s_1176310387943321_cards_0</td><td><span class="badge badge-video">video</span></td><td>Prioritize self-love with Headspace</td><td>Start your day with a recommended meditation</td><td>Try for $0 today</td><td><span class="tag">Aspiration</span><span class="tag">Soft Sell</span></td></tr>
+        <tr><td>25</td><td>s_1198087972407034_videos_0</td><td><span class="badge badge-video">video</span></td><td>To every woman whose mind always goes to worst-case. Who catastrophizes every small uncertainty.</td><td>We're looking for people to try Calm's EMDR-Inspired Bilateral Audio. Early on: spirals don't go as deep.</td><td>TAP THE SCREEN TO START TONIGHT</td><td><span class="tag">Pain Point</span><span class="tag">Sensory CTA</span></td></tr>
+        <tr><td>26</td><td>s_1246739810814651_cards_1</td><td><span class="badge badge-video">video</span></td><td>600 acres of land in Costa Rica</td><td>And it starts happening really quickly</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>27</td><td>s_1267738688619786_videos_0</td><td><span class="badge badge-video">video</span></td><td>I'm Loora your AI English tutor</td><td>Let's practice together every day</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>28</td><td>s_1268527011867130_videos_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td>so good at… with a real… everything people say</td><td class="no-text">—</td><td><span class="tag">Open Loop</span></td></tr>
+        <tr><td>29</td><td>s_1278141387598045_cards_0</td><td><span class="badge badge-video">video</span></td><td>DOPAMINE ADDICTION? It's totally gone with microlearning</td><td>We're seeking individuals who MUST take a break this month. Simply install this app and spend 15 minutes to become the most fascinating person in the room!</td><td>Day 1–21 journey shown</td><td><span class="tag">Bad Habit</span><span class="tag">Aspiration</span></td></tr>
+        <tr><td>30</td><td>s_1282168630558151_images_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>31</td><td>s_1292423616082651_cards_0</td><td><span class="badge badge-video">video</span></td><td>Prioritize self-love with Headspace</td><td>Start your day with a recommended meditation</td><td>Meditation: Changing Perceptions</td><td><span class="tag">Aspiration</span></td></tr>
+        <tr><td>32</td><td>s_1336748508264410_cards_0</td><td><span class="badge badge-video">video</span></td><td>To every woman whose mind always goes to worst-case. Who catastrophizes every small uncertainty.</td><td>We're looking for people to try Calm's EMDR-Inspired Bilateral Audio. Early on: spirals don't go as deep.</td><td>TAP THE SCREEN TO START TONIGHT</td><td><span class="tag">Pain Point</span><span class="tag">Sensory CTA</span></td></tr>
+        <tr><td>33</td><td>s_1354041633403636_videos_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>34</td><td>s_1376822427432711_cards_0</td><td><span class="badge badge-video">video</span></td><td>DOPAMINE ADDICTION? It's totally gone with microlearning</td><td>We're seeking individuals who MUST take a break this month. Simply install this app and spend 15 minutes to become the most fascinating person in the room!</td><td>Day 1–21 journey shown</td><td><span class="tag">Bad Habit</span><span class="tag">Aspiration</span></td></tr>
+        <tr><td>35</td><td>s_1378355960504612_cards_2</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td>Click the link below to SIGN UP FOR THE FREE MASTERCLASS</td><td><span class="tag">Soft Sell</span></td></tr>
+        <tr><td>36</td><td>s_1383339649974708_videos_0</td><td><span class="badge badge-video">video</span></td><td>unboxing my new desk</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>37</td><td>s_1396660851406676_cards_0</td><td><span class="badge badge-video">video</span></td><td>Headspace fits into your routine for your best year yet</td><td>Start your day with a recommended meditation. Everything starts with your headspace.</td><td>Try for $0</td><td><span class="tag">Aspiration</span><span class="tag">Soft Sell</span></td></tr>
+        <tr><td>38</td><td>s_1397433501891754_cards_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>39</td><td>s_1406518911164040_images_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>40</td><td>s_1441600167694352_images_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>41</td><td>s_1458474545980449_videos_0</td><td><span class="badge badge-video">video</span></td><td>POV: my BBQ was good, my marketing was dead. No reach. No orders. No growth.</td><td>I turned on Zeely AI for $1/day. No filming. No editing. No stress.</td><td>+11 bookings in 10 days</td><td><span class="tag">POV</span><span class="tag">Before/After</span></td></tr>
+        <tr><td>42</td><td>s_1465039411656852_videos_0</td><td><span class="badge badge-video">video</span></td><td>STOP SAYING "I'm never thankful"</td><td class="no-text">—</td><td class="no-text">—</td><td><span class="tag">Objection Busting</span></td></tr>
+        <tr><td>43</td><td>s_1468433348147820_videos_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td>so good at… with a real… everything people say</td><td class="no-text">—</td><td><span class="tag">Open Loop</span></td></tr>
+        <tr><td>44</td><td>s_1542871446858165_cards_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>45</td><td>s_1559716085462066_cards_2</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>46</td><td>s_1595338725182418_videos_0</td><td><span class="badge badge-video">video</span></td><td>STUCK IN YOUR…</td><td class="no-text">—</td><td class="no-text">—</td><td><span class="tag">Pain Point</span></td></tr>
+        <tr><td>47</td><td>s_1616932582766656_videos_0</td><td><span class="badge badge-video">video</span></td><td>$575 wasted on Facebook ads. Customers: 0. Orders: 0. Sales: $0.</td><td>Week 1: $658 / Week 2: $2,475 / Week 3: $2,977 / Month: $28,765</td><td>Let AI create high-selling ads and videos for you! Get started</td><td><span class="tag">Before/After</span></td></tr>
+        <tr><td>48</td><td>s_1644486123636768_cards_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>49</td><td>s_1686021036104165_videos_0</td><td><span class="badge badge-video">video</span></td><td>Woke up in the middle of the night and can't sleep?</td><td>Quiet the mental noise. Melt into deep relaxation. Listen to EMDR-inspired sounds.</td><td>Discover more science-backed sounds on the Calm app</td><td><span class="tag">Pain Point</span></td></tr>
+        <tr><td>50</td><td>s_1756396848346535_videos_0</td><td><span class="badge badge-video">video</span></td><td>Gentle reminder that rotting in bed each day… is not normal.</td><td>Neuroscientists at Duke created this app. In just 2 weeks, science-backed routines will give you a complete mental transformation.</td><td class="no-text">—</td><td><span class="tag">Bad Habit</span><span class="tag">Authority</span></td></tr>
+        <tr><td>51</td><td>s_1818465665523000_videos_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>52</td><td>s_1980444296020865_videos_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td>creative business owner</td><td>more time</td><td></td></tr>
+        <tr><td>53</td><td>s_2105551543612229_images_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>54</td><td>s_2149943965805273_videos_0</td><td><span class="badge badge-video">video</span></td><td>I'm too old to learn English</td><td>50 and think… improved much faster</td><td class="no-text">—</td><td><span class="tag">Objection Busting</span></td></tr>
+        <tr><td>55</td><td>s_2276719052840948_cards_0</td><td><span class="badge badge-video">video</span></td><td>CARRYING THE MENTAL LOAD?</td><td>chore tracker</td><td>SHARE THE LOAD</td><td><span class="tag">Pain Point</span></td></tr>
+        <tr><td>56</td><td>s_2861912007481735_cards_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>57</td><td>s_33795060063442664_videos_0</td><td><span class="badge badge-video">video</span></td><td>If you didn't post your workout, did it even happen?</td><td>new session recap incoming… 42 min trained, 679.6 kg</td><td>FREE LETICS</td><td><span class="tag">POV</span></td></tr>
+        <tr><td>58</td><td>s_4262878660643956_cards_1</td><td><span class="badge badge-video">video</span></td><td>What a good night's sleep sounds like</td><td class="no-text">—</td><td>Try Headspace for $0</td><td><span class="tag">Soft Sell</span></td></tr>
+        <tr><td>59</td><td>s_4330885833845953_cards_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>60</td><td>s_742054841746362_videos_0</td><td><span class="badge badge-video">video</span></td><td>Can I just have a personal chef please!</td><td>under 45 minute meals is a total game changer</td><td>cozio</td><td><span class="tag">Pain Point</span></td></tr>
+        <tr><td>61</td><td>s_776126628658007_cards_0</td><td><span class="badge badge-video">video</span></td><td>Unclench your jaw. Drop your tongue from the roof of your mouth.</td><td class="no-text">—</td><td>Find more like this with Headspace</td><td><span class="tag">Sensory CTA</span></td></tr>
+        <tr><td>62</td><td>s_780629624730187_cards_2</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>63</td><td>s_793259787112165_videos_0</td><td><span class="badge badge-video">video</span></td><td>Become the 1%</td><td>Life Planner OS: Plans, Finances, Habits, Spending</td><td class="no-text">—</td><td><span class="tag">Aspiration</span></td></tr>
+        <tr><td>64</td><td>s_802500352220179_cards_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>65</td><td>s_813165484601060_videos_0</td><td><span class="badge badge-video">video</span></td><td>I'm too old to learn English</td><td>50 and think… improved much faster</td><td class="no-text">—</td><td><span class="tag">Objection Busting</span></td></tr>
+        <tr><td>66</td><td>s_839407745767564_videos_0</td><td><span class="badge badge-video">video</span></td><td>Ever since I started painting…</td><td>People's belief system. So overeating, smoking, drinking too much…</td><td class="no-text">—</td><td><span class="tag">Open Loop</span><span class="tag">Bad Habit</span></td></tr>
+        <tr><td>67</td><td>s_850366920823557_cards_1</td><td><span class="badge badge-video">video</span></td><td>that literally change…</td><td class="no-text">—</td><td class="no-text">—</td><td><span class="tag">Open Loop</span></td></tr>
+        <tr><td>68</td><td>s_858283570592486_videos_0</td><td><span class="badge badge-video">video</span></td><td>LISTEN TO THIS FOR 60 SECONDS AFTER THE KIDS ARE IN BED</td><td>See what happens when you give your nervous system permission to stop bracing. Calm's 432 Hz music.</td><td>Tap to try</td><td><span class="tag">Pain Point</span><span class="tag">Sensory CTA</span></td></tr>
+        <tr><td>69</td><td>s_893225740257167_cards_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>70</td><td>s_896268816689207_videos_0</td><td><span class="badge badge-video">video</span></td><td>POV: You're in a procrastination depression hole</td><td>about to find out about The Fabulous app, created by Behavioral Scientists at Duke University</td><td class="no-text">—</td><td><span class="tag">POV</span><span class="tag">Authority</span></td></tr>
+        <tr><td>71</td><td>s_907843728398753_videos_0</td><td><span class="badge badge-video">video</span></td><td>if you train hard</td><td>RECOVERY</td><td>try Freeletics' new mobility sessions</td><td></td></tr>
+        <tr><td>72</td><td>s_919461237407405_cards_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>73</td><td>s_935074842400580_videos_0</td><td><span class="badge badge-video">video</span></td><td>mindset shift in…</td><td class="no-text">—</td><td class="no-text">—</td><td><span class="tag">Open Loop</span></td></tr>
+        <tr><td>74</td><td>s_939958458503203_images_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>75</td><td>s_943662028155749_images_0</td><td><span class="badge badge-image">image</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>76</td><td>s_946126148162393_videos_0</td><td><span class="badge badge-video">video</span></td><td class="no-text">—</td><td class="no-text">—</td><td class="no-text">—</td><td></td></tr>
+        <tr><td>77</td><td>s_947304847710525_videos_0</td><td><span class="badge badge-video">video</span></td><td>TO ALL MY BED ROTTING GIRLIES</td><td>Do spring cleaning starting the day before. Day 2: cleaning the house and learning.</td><td>love the house</td><td><span class="tag">POV</span></td></tr>
+        <tr><td>78</td><td>s_958825899910901_videos_0</td><td><span class="badge badge-video">video</span></td><td>Creating a family shared to-do list helps</td><td>SPRING CLEANING LIVING ROOM. What a good night's sleep sounds like.</td><td>Try Headspace for $0</td><td><span class="tag">Soft Sell</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</body>
+</html>
