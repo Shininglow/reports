@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Male Dating Struggles — Cluster Insights Report</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #222535;
+    --border: #2e3248;
+    --text: #e8eaf6;
+    --muted: #8b90b8;
+    --quote-bg: #1e2236;
+
+    --c1: #6c63ff;  /* ForeverAlone — purple */
+    --c2: #ff6b9d;  /* dating_advice — pink */
+    --c3: #43e8c2;  /* datingoverthirty — teal */
+    --c4: #f59e0b;  /* datingoverforty — amber */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  a { color: var(--c3); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #1a1d27 0%, #0f1117 60%, #13111f 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 40px 50px;
+    text-align: center;
+  }
+  header .label {
+    display: inline-block;
+    background: var(--c1);
+    color: #fff;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  header h1 {
+    font-size: 2.6rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #6c63ff, #ff6b9d, #43e8c2, #f59e0b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+  header p {
+    color: var(--muted);
+    max-width: 640px;
+    margin: 0 auto;
+    font-size: 1rem;
+  }
+
+  /* ── NAV ── */
+  .cluster-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(15, 17, 23, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    gap: 0;
+    justify-content: center;
+    overflow-x: auto;
+  }
+  .cluster-nav a {
+    display: inline-block;
+    padding: 16px 22px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .cluster-nav a:hover { color: var(--text); }
+  .cluster-nav a.c1 { border-bottom-color: transparent; }
+  .cluster-nav a.c1:hover { color: var(--c1); border-bottom-color: var(--c1); }
+  .cluster-nav a.c2:hover { color: var(--c2); border-bottom-color: var(--c2); }
+  .cluster-nav a.c3:hover { color: var(--c3); border-bottom-color: var(--c3); }
+  .cluster-nav a.c4:hover { color: var(--c4); border-bottom-color: var(--c4); }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+  section { padding: 60px 0; border-bottom: 1px solid var(--border); }
+  section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  h2 { font-size: 1.75rem; font-weight: 700; margin-bottom: 8px; }
+  .section-sub { color: var(--muted); margin-bottom: 36px; max-width: 640px; }
+
+  /* ── OVERVIEW COMPARISON ── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 900px) { .overview-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .overview-grid { grid-template-columns: 1fr; } }
+
+  .cluster-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cluster-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .cluster-card.c1::before { background: var(--c1); }
+  .cluster-card.c2::before { background: var(--c2); }
+  .cluster-card.c3::before { background: var(--c3); }
+  .cluster-card.c4::before { background: var(--c4); }
+
+  .cluster-card .cluster-name {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .cluster-card.c1 .cluster-name { color: var(--c1); }
+  .cluster-card.c2 .cluster-name { color: var(--c2); }
+  .cluster-card.c3 .cluster-name { color: var(--c3); }
+  .cluster-card.c4 .cluster-name { color: var(--c4); }
+
+  .cluster-card .mini-stat { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .cluster-card .mini-stat:last-child { border-bottom: none; }
+  .cluster-card .mini-stat span:first-child { color: var(--muted); }
+  .cluster-card .mini-stat span:last-child { font-weight: 600; color: var(--text); }
+
+  /* ── CLUSTER SECTION HEADER ── */
+  .cluster-header {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 32px 36px;
+    margin-bottom: 40px;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .cluster-header::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+    border-radius: 16px 0 0 16px;
+  }
+  .cluster-header.c1::after { background: var(--c1); }
+  .cluster-header.c2::after { background: var(--c2); }
+  .cluster-header.c3::after { background: var(--c3); }
+  .cluster-header.c4::after { background: var(--c4); }
+
+  .cluster-header .pill {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+  .cluster-header.c1 .pill { background: rgba(108,99,255,0.15); color: var(--c1); border: 1px solid rgba(108,99,255,0.3); }
+  .cluster-header.c2 .pill { background: rgba(255,107,157,0.15); color: var(--c2); border: 1px solid rgba(255,107,157,0.3); }
+  .cluster-header.c3 .pill { background: rgba(67,232,194,0.12); color: var(--c3); border: 1px solid rgba(67,232,194,0.3); }
+  .cluster-header.c4 .pill { background: rgba(245,158,11,0.12); color: var(--c4); border: 1px solid rgba(245,158,11,0.3); }
+
+  .cluster-header h2 { font-size: 2rem; margin-bottom: 10px; }
+  .cluster-header .description { color: var(--muted); font-size: 14.5px; max-width: 620px; }
+
+  .cluster-stats-row {
+    display: flex;
+    gap: 28px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+  .c-stat { text-align: center; }
+  .c-stat .num {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .cluster-header.c1 .c-stat .num { color: var(--c1); }
+  .cluster-header.c2 .c-stat .num { color: var(--c2); }
+  .cluster-header.c3 .c-stat .num { color: var(--c3); }
+  .cluster-header.c4 .c-stat .num { color: var(--c4); }
+  .c-stat .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+
+  /* ── SUBSECTION ── */
+  .subsection { margin-bottom: 52px; }
+  .subsection-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .c1 .subsection-title, .cl1 .subsection-title { color: var(--c1); border-bottom-color: rgba(108,99,255,0.3); }
+  .c2 .subsection-title, .cl2 .subsection-title { color: var(--c2); border-bottom-color: rgba(255,107,157,0.3); }
+  .c3 .subsection-title, .cl3 .subsection-title { color: var(--c3); border-bottom-color: rgba(67,232,194,0.3); }
+  .c4 .subsection-title, .cl4 .subsection-title { color: var(--c4); border-bottom-color: rgba(245,158,11,0.3); }
+
+  /* ── PATTERN CARDS ── */
+  .patterns-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 720px) { .patterns-grid { grid-template-columns: 1fr; } }
+
+  .pattern-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .pattern-card:hover { border-color: var(--border); }
+  .cl1 .pattern-card:hover { border-color: var(--c1); }
+  .cl2 .pattern-card:hover { border-color: var(--c2); }
+  .cl3 .pattern-card:hover { border-color: var(--c3); }
+  .cl4 .pattern-card:hover { border-color: var(--c4); }
+
+  .pattern-num {
+    position: absolute;
+    top: 18px; right: 18px;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--border);
+  }
+  .pattern-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; padding-right: 36px; }
+  .pattern-card p { font-size: 13px; color: var(--muted); margin-bottom: 12px; line-height: 1.6; }
+  .pattern-card .evidence {
+    background: var(--quote-bg);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    color: var(--text);
+    font-style: italic;
+    line-height: 1.5;
+  }
+  .cl1 .pattern-card .evidence { border-left: 3px solid var(--c1); }
+  .cl2 .pattern-card .evidence { border-left: 3px solid var(--c2); }
+  .cl3 .pattern-card .evidence { border-left: 3px solid var(--c3); }
+  .cl4 .pattern-card .evidence { border-left: 3px solid var(--c4); }
+
+  .pattern-card .evidence cite {
+    display: block;
+    margin-top: 5px;
+    font-style: normal;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ── THREADS ── */
+  .threads-list { display: flex; flex-direction: column; gap: 16px; }
+  .thread-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 26px;
+  }
+  .thread-card .meta {
+    display: flex; gap: 14px; align-items: center;
+    margin-bottom: 10px; flex-wrap: wrap;
+  }
+  .thread-card .sub-tag {
+    font-size: 11px;
+    background: var(--surface2);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-weight: 600;
+  }
+  .cl1 .thread-card .sub-tag { color: var(--c1); }
+  .cl2 .thread-card .sub-tag { color: var(--c2); }
+  .cl3 .thread-card .sub-tag { color: var(--c3); }
+  .cl4 .thread-card .sub-tag { color: var(--c4); }
+
+  .thread-card .score-tag { font-size: 12px; font-weight: 700; }
+  .cl1 .thread-card .score-tag { color: var(--c1); }
+  .cl2 .thread-card .score-tag { color: var(--c2); }
+  .cl3 .thread-card .score-tag { color: var(--c3); }
+  .cl4 .thread-card .score-tag { color: var(--c4); }
+
+  .thread-card .comment-tag { font-size: 12px; color: var(--muted); }
+  .thread-card h3 { font-size: 1rem; margin-bottom: 10px; font-weight: 600; line-height: 1.4; }
+  .thread-card h3 a { color: var(--text); }
+  .thread-card h3 a:hover { text-decoration: underline; }
+  .thread-card .snippet { font-size: 13px; color: var(--muted); margin-bottom: 12px; font-style: italic; line-height: 1.5; }
+
+  /* ── JTBD ── */
+  .jtbd-list { display: flex; flex-direction: column; gap: 14px; }
+  .jtbd-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 18px;
+    align-items: start;
+    transition: border-color 0.2s;
+  }
+  .cl1 .jtbd-item:hover { border-color: var(--c1); }
+  .cl2 .jtbd-item:hover { border-color: var(--c2); }
+  .cl3 .jtbd-item:hover { border-color: var(--c3); }
+  .cl4 .jtbd-item:hover { border-color: var(--c4); }
+
+  .jtbd-num {
+    width: 44px; height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .cl1 .jtbd-num { background: rgba(108,99,255,0.12); color: var(--c1); }
+  .cl2 .jtbd-num { background: rgba(255,107,157,0.12); color: var(--c2); }
+  .cl3 .jtbd-num { background: rgba(67,232,194,0.12); color: var(--c3); }
+  .cl4 .jtbd-num { background: rgba(245,158,11,0.12); color: var(--c4); }
+
+  .jtbd-content h3 { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 7px; }
+  .jtbd-statement { font-size: 14px; line-height: 1.65; color: var(--text); }
+  .jtbd-statement .when { color: #a78bfa; font-weight: 600; }
+  .jtbd-statement .want { color: #f472b6; font-weight: 600; }
+  .jtbd-statement .soc  { color: var(--c3); font-weight: 600; }
+  .cl4 .jtbd-statement .soc { color: var(--c4); }
+
+  /* ── COMMENT INSIGHTS ── */
+  .comment-insights { display: flex; flex-direction: column; gap: 14px; }
+
+  .comment-theme-row {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px;
+  }
+  .comment-theme-pill {
+    display: flex; align-items: center; gap: 7px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 5px 12px; font-size: 12px;
+  }
+  .comment-theme-pill .ct-count {
+    font-weight: 800; font-size: 13px;
+  }
+  .cl1 .comment-theme-pill .ct-count { color: var(--c1); }
+  .cl2 .comment-theme-pill .ct-count { color: var(--c2); }
+  .cl3 .comment-theme-pill .ct-count { color: var(--c3); }
+  .cl4 .comment-theme-pill .ct-count { color: var(--c4); }
+  .comment-theme-pill .ct-label { color: var(--muted); }
+
+  .voice-card {
+    background: var(--quote-bg);
+    border-radius: 12px;
+    padding: 18px 22px;
+    border-left: 3px solid transparent;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--text);
+    font-style: italic;
+    position: relative;
+  }
+  .cl1 .voice-card { border-left-color: var(--c1); }
+  .cl2 .voice-card { border-left-color: var(--c2); }
+  .cl3 .voice-card { border-left-color: var(--c3); }
+  .cl4 .voice-card { border-left-color: var(--c4); }
+
+  .voice-card .voice-meta {
+    display: flex; gap: 10px; align-items: center;
+    margin-top: 10px; font-style: normal;
+  }
+  .voice-card .voice-score {
+    font-size: 11px; font-weight: 700;
+  }
+  .cl1 .voice-card .voice-score { color: var(--c1); }
+  .cl2 .voice-card .voice-score { color: var(--c2); }
+  .cl3 .voice-card .voice-score { color: var(--c3); }
+  .cl4 .voice-card .voice-score { color: var(--c4); }
+  .voice-card .voice-thread { font-size: 11px; color: var(--muted); }
+
+  .insight-callout {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-top: 6px;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .insight-callout .ic-icon {
+    font-size: 1.3rem; flex-shrink: 0; margin-top: 2px;
+  }
+  .insight-callout .ic-text {
+    font-size: 13.5px; color: var(--muted); line-height: 1.6;
+  }
+  .insight-callout .ic-text strong { color: var(--text); }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════ HEADER ════════════ -->
+<header>
+  <div class="label">Reddit Research · 454 Posts · 3,121 Comments · 4 Clusters</div>
+  <h1>Male Dating Struggles<br>by Community Cluster</h1>
+  <p>Deep-dive analysis of 454 male-authored posts across four Reddit communities, surfacing distinct patterns, jobs to be done, and emotional drivers per cluster.</p>
+</header>
+
+<!-- ════════════ STICKY NAV ════════════ -->
+<nav class="cluster-nav">
+  <a href="#overview">Overview</a>
+  <a href="#forever-alone" class="c1">r/ForeverAlone</a>
+  <a href="#dating-advice" class="c2">r/dating_advice</a>
+  <a href="#dating-30s" class="c3">r/datingoverthirty</a>
+  <a href="#dating-40s" class="c4">r/datingoverforty</a>
+</nav>
+
+<!-- ════════════ OVERVIEW ════════════ -->
+<section id="overview">
+  <div class="container">
+    <div class="section-label" style="color:var(--c1)">Cross-Cluster Overview</div>
+    <h2>Four Communities. One Wound.</h2>
+    <p class="section-sub">Same underlying pain — unmet desire for romantic connection — expressed through radically different lenses depending on age, life stage, and the culture of each community.</p>
+
+    <div class="overview-grid">
+      <div class="cluster-card c1">
+        <div class="cluster-name">r/ForeverAlone</div>
+        <div class="mini-stat"><span>Posts analysed</span><span>120</span></div>
+        <div class="mini-stat"><span>Avg score</span><span>223</span></div>
+        <div class="mini-stat"><span>Total upvotes</span><span>26,703</span></div>
+        <div class="mini-stat"><span>Total comments</span><span>5,486</span></div>
+        <div class="mini-stat"><span>Score range</span><span>100 – 785</span></div>
+        <div class="mini-stat"><span>Core age group</span><span>18 – 35</span></div>
+      </div>
+      <div class="cluster-card c2">
+        <div class="cluster-name">r/dating_advice</div>
+        <div class="mini-stat"><span>Posts analysed</span><span>102</span></div>
+        <div class="mini-stat"><span>Avg score</span><span>1,256</span></div>
+        <div class="mini-stat"><span>Total upvotes</span><span>128,090</span></div>
+        <div class="mini-stat"><span>Total comments</span><span>27,922</span></div>
+        <div class="mini-stat"><span>Score range</span><span>100 – 16,356</span></div>
+        <div class="mini-stat"><span>Core age group</span><span>18 – 30</span></div>
+      </div>
+      <div class="cluster-card c3">
+        <div class="cluster-name">r/datingoverthirty</div>
+        <div class="mini-stat"><span>Posts analysed</span><span>125</span></div>
+        <div class="mini-stat"><span>Avg score</span><span>452</span></div>
+        <div class="mini-stat"><span>Total upvotes</span><span>56,521</span></div>
+        <div class="mini-stat"><span>Total comments</span><span>29,995</span></div>
+        <div class="mini-stat"><span>Score range</span><span>102 – 3,503</span></div>
+        <div class="mini-stat"><span>Core age group</span><span>30 – 45</span></div>
+      </div>
+      <div class="cluster-card c4">
+        <div class="cluster-name">r/datingoverforty</div>
+        <div class="mini-stat"><span>Posts analysed</span><span>107</span></div>
+        <div class="mini-stat"><span>Avg score</span><span>187</span></div>
+        <div class="mini-stat"><span>Total upvotes</span><span>20,010</span></div>
+        <div class="mini-stat"><span>Total comments</span><span>22,729</span></div>
+        <div class="mini-stat"><span>Score range</span><span>100 – 472</span></div>
+        <div class="mini-stat"><span>Core age group</span><span>40 – 60</span></div>
+      </div>
+    </div>
+
+    <!-- engagement note -->
+    <div style="margin-top:28px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 24px; display:flex; gap:24px; flex-wrap:wrap; align-items:center;">
+      <div style="font-size:13px; color:var(--muted); flex:1; min-width:280px;">
+        <strong style="color:var(--text)">Engagement signal:</strong> r/dating_advice generates 5× the upvotes per post of any other cluster, suggesting tactical, actionable content has the widest reach. r/datingoverthirty leads in comments-per-post (240), reflecting high deliberative engagement. r/ForeverAlone and r/datingoverforty trade fewer but emotionally denser interactions.
+      </div>
+      <div style="display:flex; gap:18px; flex-wrap:wrap;">
+        <div style="text-align:center;">
+          <span style="display:block; font-size:1.6rem; font-weight:800; color:var(--c2);">128K</span>
+          <span style="font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px;">dating_advice upvotes</span>
+        </div>
+        <div style="text-align:center;">
+          <span style="display:block; font-size:1.6rem; font-weight:800; color:var(--c3);">240</span>
+          <span style="font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px;">comments / post (30s)</span>
+        </div>
+        <div style="text-align:center;">
+          <span style="display:block; font-size:1.6rem; font-weight:800; color:var(--c1);">3,121</span>
+          <span style="font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px;">male comments</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     CLUSTER 1 — r/ForeverAlone
+══════════════════════════════════════════ -->
+<section id="forever-alone">
+  <div class="container">
+
+    <div class="cluster-header c1">
+      <div class="pill">Cluster 01</div>
+      <h2>r/ForeverAlone</h2>
+      <p class="description">A community for men who feel fundamentally excluded from romantic life — not situationally single, but existentially alone. The pain here is identity-level: not "I can't find a girlfriend" but "I am someone who doesn't get to have one."</p>
+      <div class="cluster-stats-row">
+        <div class="c-stat"><span class="num">120</span><span class="lbl">Posts</span></div>
+        <div class="c-stat"><span class="num">223</span><span class="lbl">Avg Score</span></div>
+        <div class="c-stat"><span class="num">26,703</span><span class="lbl">Upvotes</span></div>
+        <div class="c-stat"><span class="num">5,486</span><span class="lbl">Comments</span></div>
+      </div>
+    </div>
+
+    <!-- PATTERNS -->
+    <div class="subsection cl1">
+      <div class="subsection-title">Key Patterns</div>
+      <div class="patterns-grid">
+
+        <div class="pattern-card">
+          <div class="pattern-num">01</div>
+          <h3>Identity-Level Rejection — "I Am Unlovable"</h3>
+          <p>Being single is not a temporary state but a permanent character trait. These men don't say "I haven't met the right person" — they say "I am the type of person who doesn't get relationships." The shame is structural, not situational.</p>
+          <div class="evidence">"I will be turning 42 in a month. Never had a girlfriend. And I have resigned myself to the fact that it's never going to happen."<cite>785 upvotes · r/ForeverAlone</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">02</div>
+          <h3>Success Stories Get Disproportionate Attention</h3>
+          <p>The highest-scoring posts are departure announcements — men saying goodbye to the community because they finally found someone. This reveals the scale of hope and hunger underneath the resignation. The community simultaneously celebrates and mourns these exits.</p>
+          <div class="evidence">"At the age of 25, I now have my first official girlfriend… I have been here for longer than I can remember, lurking since about 8 years ago."<cite>785 upvotes · "Goodbye" post</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">03</div>
+          <h3>Self-Improvement Skepticism as Coping</h3>
+          <p>There is deep cynicism about the mainstream advice to "work on yourself" — not because self-improvement is bad, but because these men have tried it and it didn't produce the promised relational outcome. The self-improvement loop becomes its own source of exhaustion.</p>
+          <div class="evidence">"Self Improvement Will NOT Get You A Girlfriend — I've been to the gym for 2 years, lost 40 lbs, got promoted. Nothing changed."<cite>472 upvotes · r/ForeverAlone</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">04</div>
+          <h3>Family Social Pressure as a Secondary Wound</h3>
+          <p>The pain doesn't stay private — it leaks into family interactions. Parents asking about girlfriends, mom crying, grandparents asking questions. These moments convert private shame into public humiliation, compounding the isolation.</p>
+          <div class="evidence">"I entered her room and asked what happened. She answered she is tired of having a pathetic loser like me without decent prospects."<cite>780 upvotes · "I saw my mom crying"</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">05</div>
+          <h3>Longing for Basic Physical Intimacy, Not Love</h3>
+          <p>The desire articulated is often strikingly basic: holding hands, a hug, a first kiss. These men aren't describing romantic fantasy — they're describing the most elementary forms of human touch that most people take for granted. The rawness is striking.</p>
+          <div class="evidence">"I'm going to be alone forever because I'll never have the courage to kiss someone. Not for lack of trying — I've just never been close enough."<cite>r/ForeverAlone</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">06</div>
+          <h3>Awkward Exposure Moments as Peak Shame</h3>
+          <p>Accidentally revealing never-dated status in a normal conversation — a coworker asking about a girlfriend, a doctor's form, an icebreaker question — triggers acute shame. The gap between what is normal and their reality becomes suddenly visible to others.</p>
+          <div class="evidence">"Accidentally told my co-worker today that I never had a girlfriend at the age of 30. She looked at me with such pity I wanted to disappear."<cite>699 upvotes · r/ForeverAlone</cite></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- THREADS -->
+    <div class="subsection cl1">
+      <div class="subsection-title">Top Threads</div>
+      <div class="threads-list">
+        <div class="thread-card">
+          <div class="meta">
+            <span class="sub-tag">r/ForeverAlone</span>
+            <span class="score-tag">▲ 785</span>
+            <span class="comment-tag">comments: 187</span>
+          </div>
+          <h3><a href="https://reddit.com/r/ForeverAlone/comments/ss7rli/goodbye/" target="_blank">Goodbye</a></h3>
+          <div class="snippet">"At the age of 25, I now have my first official girlfriend. Met a girl just over a month ago off Hinge. I have been here for longer than I can remember, lurking since about 8 years ago…" — The classic exit post. 8 years of belonging to a community defined by failure, then a single moment of success.</div>
+        </div>
+        <div class="thread-card">
+          <div class="meta">
+            <span class="sub-tag">r/ForeverAlone</span>
+            <span class="score-tag">▲ 780</span>
+            <span class="comment-tag">comments: 122</span>
+          </div>
+          <h3><a href="https://reddit.com/r/ForeverAlone/comments/odcofd/i_saw_yesterday_night_my_mom_crying/" target="_blank">I saw yesterday night my mom crying</a></h3>
+          <div class="snippet">"She cried because she is tired of having a pathetic loser like me without decent prospects." — One of the starkest examples of how family disappointment becomes internalized self-hatred, compounding loneliness with shame.</div>
+        </div>
+        <div class="thread-card">
+          <div class="meta">
+            <span class="sub-tag">r/ForeverAlone</span>
+            <span class="score-tag">▲ 699</span>
+            <span class="comment-tag">comments: 221</span>
+          </div>
+          <h3><a href="https://reddit.com/r/ForeverAlone/comments/dr44kj/accidentally_told_my_coworker_today_that_i_never/" target="_blank">Accidentally told my co-worker today that I never had a girlfriend at the age of 30</a></h3>
+          <div class="snippet">An ordinary workplace conversation became an accidental reveal. The response from the community was overwhelming empathy — hundreds relating to the specific dread of having the gap exposed without warning.</div>
+        </div>
+        <div class="thread-card">
+          <div class="meta">
+            <span class="sub-tag">r/ForeverAlone</span>
+            <span class="score-tag">▲ 505</span>
+            <span class="comment-tag">comments: 264</span>
+          </div>
+          <h3><a href="https://reddit.com/r/ForeverAlone/comments/17lgllw/i_will_be_turning_42_in_a_month_never_had_a/" target="_blank">I will be turning 42 in a month. Never had a girlfriend. And I have resigned myself to the fact that it's never going to happen.</a></h3>
+          <div class="snippet">A rare older voice in this community. The word "resigned" carries the entire emotional weight — not angry, not hopeful, just exhausted into acceptance. Highly validated by the community as an honest end-state.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMMENT INSIGHTS -->
+    <div class="subsection cl1">
+      <div class="subsection-title">What the Community Is Actually Saying — 510 Male Comments</div>
+      <div class="comment-insights">
+
+        <!-- Theme breakdown -->
+        <div class="comment-theme-row">
+          <div class="comment-theme-pill"><span class="ct-count">12</span><span class="ct-label">Physical loneliness</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">11</span><span class="ct-label">Inexperience loop</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">10</span><span class="ct-label">Neurodivergence</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">10</span><span class="ct-label">Approach anxiety</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">9</span><span class="ct-label">Shame of being late</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">8</span><span class="ct-label">Understanding rejection</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">8</span><span class="ct-label">Where to meet women</span></div>
+        </div>
+
+        <div class="voice-card">
+          "&gt; I've never had a girlfriend — There's still time. &gt; I'm autistic — Never mind."
+          <div class="voice-meta">
+            <span class="voice-score">▲ 171</span>
+            <span class="voice-thread">on "Dating as a 27 year old guy is nearly impossible"</span>
+          </div>
+        </div>
+
+        <div class="voice-card">
+          "There is nothing worse than women around your age finding out that you're a loser. Nothing. It's the most humiliating, degrading, emasculating feeling known to man."
+          <div class="voice-meta">
+            <span class="voice-score">▲ 125</span>
+            <span class="voice-thread">on "Accidentally told my co-worker I never had a girlfriend at 30"</span>
+          </div>
+        </div>
+
+        <div class="voice-card">
+          "Rule one of FA club: never tell people about your lack of experience — even close friends. Rule 2: see above."
+          <div class="voice-meta">
+            <span class="voice-score">▲ 121</span>
+            <span class="voice-thread">on "Accidentally told my co-worker I never had a girlfriend at 30"</span>
+          </div>
+        </div>
+
+        <div class="voice-card">
+          "It's hard to love yourself when nothing about you deserves it. I don't understand how people just say 'love yourself'. Seriously, what does that even mean?"
+          <div class="voice-meta">
+            <span class="voice-score">▲ 33</span>
+            <span class="voice-thread">on "Self Improvement Will NOT Get You A Girlfriend"</span>
+          </div>
+        </div>
+
+        <div class="voice-card">
+          "I don't even leave my apartment anymore. There's just no point. The sight of couples holding hands, kissing, laughing makes me want to puke. I never used to be this bitter, but when you're 35M and life has passed you by..."
+          <div class="voice-meta">
+            <span class="voice-score">▲ 17</span>
+            <span class="voice-thread">on comparison pain thread</span>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">◈</div>
+          <div class="ic-text">
+            <strong>Comment signal:</strong> The top comment in the entire ForeverAlone dataset is a two-line joke about autism — and it has 171 upvotes. This reveals two things simultaneously: <strong>(1) neurodivergence is so common here it lands as shared dark humour</strong>, and <strong>(2) the community uses irony to process pain they can't express directly.</strong> The second and third most upvoted comments both address the same moment — the co-worker revelation — confirming that accidental exposure of inexperience is a specific, shared dread. Self-protective secrecy ("never tell anyone") emerges as the primary coping strategy, not self-improvement.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- JTBD -->
+    <div class="subsection cl1">
+      <div class="subsection-title">Jobs To Be Done</div>
+      <div class="jtbd-list">
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">1</div>
+          <div class="jtbd-content">
+            <h3>Breaking the Unlovability Loop</h3>
+            <div class="jtbd-statement">
+              <span class="when">When I have never been in a relationship and I feel like I am fundamentally broken or unlovable,</span>
+              <span class="want"> I want to find credible evidence and frameworks that distinguish circumstantial bad luck from genuine unfixable traits,</span>
+              <span class="soc"> so I can stop treating "never dated" as permanent character evidence and start taking concrete action again.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">2</div>
+          <div class="jtbd-content">
+            <h3>Surviving Family Social Exposure</h3>
+            <div class="jtbd-statement">
+              <span class="when">When family members ask about my love life or visibly worry about my romantic situation,</span>
+              <span class="want"> I want a way to respond without revealing the full depth of my shame or derailing family dynamics,</span>
+              <span class="soc"> so I can protect my dignity in those moments while continuing to work on myself privately.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">3</div>
+          <div class="jtbd-content">
+            <h3>Validating the Self-Improvement Effort</h3>
+            <div class="jtbd-statement">
+              <span class="when">When I have spent years working on myself — gym, career, social skills — and still see no romantic results,</span>
+              <span class="want"> I want to understand what the actual missing piece is rather than being told to "keep improving,"</span>
+              <span class="soc"> so I can invest my effort in something that actually bridges the gap between self-worth and attracting a partner.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">4</div>
+          <div class="jtbd-content">
+            <h3>Finding a Community for Late-Bloomer Wins</h3>
+            <div class="jtbd-statement">
+              <span class="when">When I finally achieve a romantic milestone — first date, first kiss, first girlfriend — that most people hit as teenagers,</span>
+              <span class="want"> I want a community that genuinely celebrates the size of that win without making me feel weird for being late,</span>
+              <span class="soc"> so I can process the experience with people who understand what it actually cost to get there.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">5</div>
+          <div class="jtbd-content">
+            <h3>Managing the "Too Late" Creep</h3>
+            <div class="jtbd-statement">
+              <span class="when">When I reach my 30s or 40s still having never dated and the resignation starts to feel like the only rational response,</span>
+              <span class="want"> I want honest accounts of men who changed their situation after 30 or 35 — not just feel-good platitudes,</span>
+              <span class="soc"> so I can make a clear-eyed decision about whether to keep trying or find peace with a different kind of life.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     CLUSTER 2 — r/dating_advice
+══════════════════════════════════════════ -->
+<section id="dating-advice">
+  <div class="container">
+
+    <div class="cluster-header c2">
+      <div class="pill">Cluster 02</div>
+      <h2>r/dating_advice</h2>
+      <p class="description">The largest, most active cluster. Men here are not resigned — they are actively trying and hitting specific walls. The pain is tactical: "I want to make this work, I just don't know how." Very high engagement (avg 1,256 upvotes), suggesting that concrete practical content resonates broadly.</p>
+      <div class="cluster-stats-row">
+        <div class="c-stat"><span class="num">102</span><span class="lbl">Posts</span></div>
+        <div class="c-stat"><span class="num">1,256</span><span class="lbl">Avg Score</span></div>
+        <div class="c-stat"><span class="num">128,090</span><span class="lbl">Upvotes</span></div>
+        <div class="c-stat"><span class="num">27,922</span><span class="lbl">Comments</span></div>
+      </div>
+    </div>
+
+    <!-- PATTERNS -->
+    <div class="subsection cl2">
+      <div class="subsection-title">Key Patterns</div>
+      <div class="patterns-grid">
+
+        <div class="pattern-card">
+          <div class="pattern-num">01</div>
+          <h3>First Milestones as Major Emotional Events</h3>
+          <p>A first date at 22 that most people consider routine becomes a 16,000-upvote event. The community recognises the disproportionate weight of these milestones for late bloomers — and rallies around them in ways that reveal how many others feel the same isolation about "firsts."</p>
+          <div class="evidence">"I (22m) am going on my first date EVER in the next 6 to 7 hours and I am nervous as hell." — 16,356 upvotes. The single most viral post in the dataset.<cite>16,356 upvotes · r/dating_advice</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">02</div>
+          <h3>Dating Apps Perceived as Structurally Rigged Against Men</h3>
+          <p>Men here don't think apps are neutral marketplaces — they believe the algorithms and gender imbalances systematically disadvantage male users. Seeing a woman's flooded inbox vs. their own silence is a recurring demoralization narrative.</p>
+          <div class="evidence">"A girl I met with from Tinder showed me her Tinder account and WHAT — she had over 2,000 unread matches." — 5,768 upvotes. Viral because it confirmed what many suspected.<cite>5,768 upvotes · r/dating_advice</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">03</div>
+          <h3>"Out of My League" Paralysis</h3>
+          <p>Men consistently frame attractive women as belonging to a higher category they have no right to pursue. The approach anxiety isn't about the conversation — it's about the perceived social transgression of reaching above one's station.</p>
+          <div class="evidence">"I'm going to ask a girl out that I think is way out of my league. I feel like she will reject me in the most humiliating way possible."<cite>4,997 upvotes · r/dating_advice</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">04</div>
+          <h3>Real-World Courage Gets Celebrated More Than App Success</h3>
+          <p>Asking out a waitress in person (8,483 upvotes) outperforms most app content. There is a latent cultural desire for in-person courage that apps can't satisfy — the community rewards the vulnerability of a face-to-face ask disproportionately.</p>
+          <div class="evidence">"Asked out waitress and she said yes 🙌. 26M, got out of a relationship about a year ago and finally feeling ready to date somebody else."<cite>8,483 upvotes · r/dating_advice</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">05</div>
+          <h3>Attractiveness Anxiety Disguised as Tactical Questions</h3>
+          <p>Questions about "what to say" or "how to approach" are often downstream of a deeper fear: "am I attractive enough to be worth listening to?" Men seek scripts because a script removes the variable of their own face and body from the equation.</p>
+          <div class="evidence">"Even if you don't think you are attractive, that doesn't mean you aren't attractive to someone. Someone needs to hear this." — 5,805 upvotes for what reads as basic reassurance.<cite>5,805 upvotes · r/dating_advice</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">06</div>
+          <h3>Conflicting Values around Single Parenthood</h3>
+          <p>Dating single mothers is a high-tension topic. Men who struggle to connect with childless women face an additional layer of complexity when the most available dating pool includes single parents — triggering guilt, resentment, and confusion simultaneously.</p>
+          <div class="evidence">"Broke up with my girlfriend this morning. I'm 29, she's 25 with a 7 year old son. Just couldn't do it anymore." — The #2 most upvoted post in the cluster.<cite>12,048 upvotes · r/dating_advice</cite></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- THREADS -->
+    <div class="subsection cl2">
+      <div class="subsection-title">Top Threads</div>
+      <div class="threads-list">
+        <div class="thread-card">
+          <div class="meta">
+            <span class="sub-tag">r/dating_advice</span>
+            <span class="score-tag">▲ 16,356</span>
+            <span class="comment-tag">comments: 1,241</span>
+          </div>
+          <h3><a href="https://reddit.com/r/dating_advice/comments/cc6xsr/i_22m_am_going_on_my_first_date_ever_in_the_next/" target="_blank">I (22m) am going on my first date EVER in the next 6 to 7 hours and I am nervous as hell</a></h3>
+          <div class="snippet">Real-time vulnerability at its purest. A 22-year-old posted the morning of his first-ever date. The community flooded in to support him as it happened. The post became a communal experience — thousands of men recognising the scale of that anxiety from their own lives.</div>
+        </div>
+        <div class="thread-card">
+          <div class="meta">
+            <span class="sub-tag">r/dating_advice</span>
+            <span class="score-tag">▲ 8,483</span>
+            <span class="comment-tag">comments: 644</span>
+          </div>
+          <h3><a href="https://reddit.com/r/dating_advice/comments/m6qp7n/asked_out_waitress_and_she_said_yes/" target="_blank">Asked out waitress and she said yes 🙌</a></h3>
+          <div class="snippet">The community's celebration of in-person courage. Not a swipe, not an app — a direct, vulnerable ask. The outpouring of support reveals how hungry men are for proof that real-world approaches still work and that they won't be met with humiliation.</div>
+        </div>
+        <div class="thread-card">
+          <div class="meta">
+            <span class="sub-tag">r/dating_advice</span>
+            <span class="score-tag">▲ 5,768</span>
+            <span class="comment-tag">comments: 1,180</span>
+          </div>
+          <h3><a href="https://reddit.com/r/dating_advice/comments/izs2mb/a_girl_i_met_with_from_tinder_showed_me_her/" target="_blank">A girl I met with from Tinder showed me her Tinder account and WHAT</a></h3>
+          <div class="snippet">She showed him 2,000+ unread matches. The post went viral because it gave men a concrete number for the asymmetry they already felt — validating why dating apps feel demoralizing even when you're objectively doing nothing wrong.</div>
+        </div>
+        <div class="thread-card">
+          <div class="meta">
+            <span class="sub-tag">r/dating_advice</span>
+            <span class="score-tag">▲ 4,997</span>
+            <span class="comment-tag">comments: 576</span>
+          </div>
+          <h3><a href="https://reddit.com/r/dating_advice/comments/jvtjih/im28m_going_to_ask_a_girl_out_that_i_think_is_way/" target="_blank">I'm [28M] going to ask a girl out that I think is way out of my league</a></h3>
+          <div class="snippet">Live courage documentation. The community co-authored this man's confidence in real time. The concept of "leagues" — and the fear of humiliating transgression by crossing them — resonated deeply across thousands of upvotes and hundreds of comments.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMMENT INSIGHTS -->
+    <div class="subsection cl2">
+      <div class="subsection-title">What the Community Is Actually Saying — 708 Male Comments</div>
+      <div class="comment-insights">
+
+        <div class="comment-theme-row">
+          <div class="comment-theme-pill"><span class="ct-count">32</span><span class="ct-label">Approach anxiety</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">27</span><span class="ct-label">Where to meet women</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">23</span><span class="ct-label">Physical loneliness</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">21</span><span class="ct-label">Building self-worth</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">20</span><span class="ct-label">Understanding rejection</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">16</span><span class="ct-label">Dating mechanics</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">14</span><span class="ct-label">Inexperience loop</span></div>
+        </div>
+
+        <div class="voice-card">
+          "It literally feels like a job interview 90% of the time. Whenever I'm on a date, I feel like I gotta be this perfect person who has all his shit together with zero flaws — like I'm auditioning for the role of boyfriend rather than just meeting someone."
+          <div class="voice-meta">
+            <span class="voice-score">▲ 526</span>
+            <span class="voice-thread">on "What's the hardest thing about dating as a male"</span>
+          </div>
+        </div>
+
+        <div class="voice-card">
+          "I (70m) was in college and I liked a woman I met in class. For two months I called her every night, showed up uninvited — classic mistakes. She was repelled. I avoided women for years after. The lesson took me decades to learn: just ask and let the answer be what it is."
+          <div class="voice-meta">
+            <span class="voice-score">▲ 312</span>
+            <span class="voice-thread">on "To young men: applying pressure is a myth, just move on"</span>
+          </div>
+        </div>
+
+        <div class="voice-card">
+          "I was once a 23M virgin. I took the 'focus on yourself and it will happen' route. Now I'm a 27M virgin. Take my advice whatever way you want. I may not know what works, but I sure as hell know what doesn't."
+          <div class="voice-meta">
+            <span class="voice-score">▲ 135</span>
+            <span class="voice-thread">on "I'm not sure if this is appropriate to post — I'm hopeless"</span>
+          </div>
+        </div>
+
+        <div class="voice-card">
+          "I am a man in my early 30s who's only been blaming myself for being without a single date for 13 years. I just can't find out what exactly is wrong with me, but it must be severe."
+          <div class="voice-meta">
+            <span class="voice-score">▲ 7</span>
+            <span class="voice-thread">on "Understanding what is blocking them" thread</span>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">◈</div>
+          <div class="ic-text">
+            <strong>Comment signal:</strong> The "job interview" metaphor — spontaneously generated, 526 upvotes — is the single most resonant framing in the entire dating_advice cluster. It captures something standard advice misses: men aren't anxious about conversation, they're anxious about <strong>performance evaluation</strong>. The 70-year-old's comment confirms the pattern is generational and durable. Meanwhile the 135-upvote pushback on "focus on yourself" reveals a growing community cynicism about passive advice — <strong>men want active frameworks, not platitudes about waiting.</strong>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- JTBD -->
+    <div class="subsection cl2">
+      <div class="subsection-title">Jobs To Be Done</div>
+      <div class="jtbd-list">
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">1</div>
+          <div class="jtbd-content">
+            <h3>Surviving the First Approach</h3>
+            <div class="jtbd-statement">
+              <span class="when">When I want to ask someone out in person and my approach anxiety is making it feel impossible,</span>
+              <span class="want"> I want a clear framework for what to say and how to read the situation,</span>
+              <span class="soc"> so I can actually make the move without freezing, over-thinking, or talking myself out of it.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">2</div>
+          <div class="jtbd-content">
+            <h3>Getting Off the Zero-Match Plateau</h3>
+            <div class="jtbd-statement">
+              <span class="when">When I've been on dating apps for months with little to no traction and I can't tell if my profile is the problem or the platform,</span>
+              <span class="want"> I want an honest audit of what's blocking my results and what's actually within my control to fix,</span>
+              <span class="soc"> so I can make targeted improvements instead of cycling through the same demoralising experience.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">3</div>
+          <div class="jtbd-content">
+            <h3>Crossing the "League" Barrier</h3>
+            <div class="jtbd-statement">
+              <span class="when">When I'm interested in someone who seems significantly more attractive or socially calibrated than me,</span>
+              <span class="want"> I want to override the paralysing fear that approaching them is a social transgression I'll be punished for,</span>
+              <span class="soc"> so I can take the shot before the moment passes and I spend weeks replaying what I should have done.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">4</div>
+          <div class="jtbd-content">
+            <h3>Managing First-Date Performance Anxiety</h3>
+            <div class="jtbd-statement">
+              <span class="when">When I'm going on a first date — especially one of my first ever — and my anxiety is threatening to sabotage my presence,</span>
+              <span class="want"> I want practical strategies to calm my nervous system and stay in the moment,</span>
+              <span class="soc"> so I can come across as relaxed and interesting rather than visibly terrified of disappointing someone.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">5</div>
+          <div class="jtbd-content">
+            <h3>Reading Mixed Signals Without Spiralling</h3>
+            <div class="jtbd-statement">
+              <span class="when">When I'm getting inconsistent signals from someone I'm pursuing and I can't tell if there's genuine interest or polite deflection,</span>
+              <span class="want"> I want a reliable framework for interpreting those signals and calibrating my investment accordingly,</span>
+              <span class="soc"> so I can avoid wasting emotional energy on misread situations or prematurely giving up on real interest.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     CLUSTER 3 — r/datingoverthirty
+══════════════════════════════════════════ -->
+<section id="dating-30s">
+  <div class="container">
+
+    <div class="cluster-header c3">
+      <div class="pill">Cluster 03</div>
+      <h2>r/datingoverthirty</h2>
+      <p class="description">Men in their 30s navigating a dating landscape that feels different from their 20s — more deliberate, more emotionally scarred, and more aware of time. The key themes are starting over after loss, the failure of generic advice, and building something sustainable rather than just finding someone.</p>
+      <div class="cluster-stats-row">
+        <div class="c-stat"><span class="num">125</span><span class="lbl">Posts</span></div>
+        <div class="c-stat"><span class="num">452</span><span class="lbl">Avg Score</span></div>
+        <div class="c-stat"><span class="num">56,521</span><span class="lbl">Upvotes</span></div>
+        <div class="c-stat"><span class="num">29,995</span><span class="lbl">Comments</span></div>
+      </div>
+    </div>
+
+    <!-- PATTERNS -->
+    <div class="subsection cl3">
+      <div class="subsection-title">Key Patterns</div>
+      <div class="patterns-grid">
+
+        <div class="pattern-card">
+          <div class="pattern-num">01</div>
+          <h3>The "Starting Over" Arc is the Most Resonant Narrative</h3>
+          <p>Men who rebuilt after catastrophic loss — a fiancée who disappeared, a sudden divorce — generate the highest engagement. The community rallies around these stories because they validate that total rebuilding is possible, not just patching a wound.</p>
+          <div class="evidence">"Just before I turned 28, my soon-to-be fiancée left one day while I was at work. Before I got home she had changed her number, blocked me on social media and had moved out. No explanation." — 3,503 upvotes for what followed.<cite>3,503 upvotes · "My secret to success"</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">02</div>
+          <h3>Generic Advice Fails Specifically in Your 30s</h3>
+          <p>Book clubs, sports clubs, volunteering — advice given by therapists and Reddit constantly — was systematically tested and found wanting. The problem isn't motivation, it's that these environments aren't optimised for romantic connection, and men in their 30s feel the gap acutely.</p>
+          <div class="evidence">"I joined a public book club. Found no one to engage with based on my agenda of meeting someone. Sports leagues: everyone already knew each other. Volunteering: mostly older married couples."<cite>1,415 upvotes · "Took the stock advice"</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">03</div>
+          <h3>Dating Apps Erode Self-Esteem at the 30s Stage</h3>
+          <p>Unlike younger men who see apps as rigged, men in their 30s describe a cumulative erosion — repeated exposure to the swipe economy gradually corrupts their self-image even when they intellectually know it's a broken system.</p>
+          <div class="evidence">"Is this new age of dating slowly eroding your self-esteem? I have become more self-conscious and anxious since joining. I wasn't like this before."<cite>1,046 upvotes · r/datingoverthirty</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">04</div>
+          <h3>Ghosting as a Culture-Specific Wound</h3>
+          <p>Being ghosted in one's 30s — after what felt like a genuine connection — lands differently than at 22. The wound is less "what did I do wrong" and more "this is what the entire market now feels like." Ghosting confirms a larger narrative about the disposability of men in modern dating.</p>
+          <div class="evidence">"Ghosted in the middle of a date: UPDATE — She texted me saying she had to leave suddenly. We'd been talking for 3 hours. I never heard from her again."<cite>1,197 upvotes · r/datingoverthirty</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">05</div>
+          <h3>The "Not Sure About This Person" Paralysis</h3>
+          <p>A unique 30s phenomenon: men are no longer desperate enough to date anyone who shows interest, but not experienced enough to trust their own ambivalence. Uncertainty about compatibility becomes its own source of anxiety — am I too picky, or are my instincts right?</p>
+          <div class="evidence">"I'm 35 and I've been dating someone for 3 months. She's great on paper. I just feel… nothing intense. Is this what mature love looks like, or am I settling?"<cite>r/datingoverthirty</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">06</div>
+          <h3>Unpopular Honest Opinions Get Massive Engagement</h3>
+          <p>The thread "What's your unpopular dating opinion" went viral not because of extremity but because men in this community are sophisticated enough to have nuanced views and starved of a context where honest complexity is welcomed over platitudes.</p>
+          <div class="evidence">"What's your unpopular dating opinion that would get you crucified by this sub?" — 1,357 upvotes. The meta-insight: men want honesty more than comfort.<cite>1,357 upvotes · r/datingoverthirty</cite></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- THREADS -->
+    <div class="subsection cl3">
+      <div class="subsection-title">Top Threads</div>
+      <div class="threads-list">
+        <div class="thread-card">
+          <div class="meta">
+            <span class="sub-tag">r/datingoverthirty</span>
+            <span class="score-tag">▲ 3,503</span>
+            <span class="comment-tag">comments: 542</span>
+          </div>
+          <h3><a href="https://reddit.com/r/datingoverthirty/comments/jshz7p/my_secret_to_success/" target="_blank">My secret to success</a></h3>
+          <div class="snippet">A man describes rebuilding his life after his fiancée silently disappeared while he was at work. Seven years of deliberate work — therapy, standards, identity — led to genuine success. The most upvoted post in the cluster because it proves the possibility of total reconstruction, not just recovery.</div>
+        </div>
+        <div class="thread-card">
+          <div class="meta">
+            <span class="sub-tag">r/datingoverthirty</span>
+            <span class="score-tag">▲ 1,415</span>
+            <span class="comment-tag">comments: 485</span>
+          </div>
+          <h3><a href="https://reddit.com/r/datingoverthirty/comments/1rb34ce/took_the_stock_advice_and_joined_social/" target="_blank">Took the stock advice and joined social activities to meet people. Here are my results.</a></h3>
+          <div class="snippet">A 37-year-old man systematically tested every standard piece of dating advice — book clubs, sports leagues, volunteering — and reported zero romantic leads. A methodical demolition of the conventional wisdom, told without bitterness. Deeply resonant because of its honesty.</div>
+        </div>
+        <div class="thread-card">
+          <div class="meta">
+            <span class="sub-tag">r/datingoverthirty</span>
+            <span class="score-tag">▲ 1,357</span>
+            <span class="comment-tag">comments: 891</span>
+          </div>
+          <h3><a href="https://reddit.com/r/datingoverthirty/comments/tjm9kz/whats_your_unpopular_dating_opinion_that_would/" target="_blank">What's your unpopular dating opinion that would get you crucified by this sub?</a></h3>
+          <div class="snippet">An invitation to honesty in a space often full of prescribed responses. High engagement confirmed a deep hunger for real nuance over soothing narratives — men in their 30s have been in the system long enough to have genuinely contrarian observations.</div>
+        </div>
+        <div class="thread-card">
+          <div class="meta">
+            <span class="sub-tag">r/datingoverthirty</span>
+            <span class="score-tag">▲ 1,197</span>
+            <span class="comment-tag">comments: 317</span>
+          </div>
+          <h3><a href="https://reddit.com/r/datingoverthirty/comments/br3uns/ghosted_in_the_middle_of_a_date_update/" target="_blank">Ghosted in the middle of a date: UPDATE</a></h3>
+          <div class="snippet">She left mid-date, texted a vague excuse, then went permanently silent. The UPDATE format worked because it extended the wound — readers had invested in the original, and the follow-up confirmed the worst. A parable for the emotional risks of genuine openness in modern dating.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMMENT INSIGHTS -->
+    <div class="subsection cl3">
+      <div class="subsection-title">What the Community Is Actually Saying — 998 Male Comments</div>
+      <div class="comment-insights">
+
+        <div class="comment-theme-row">
+          <div class="comment-theme-pill"><span class="ct-count">42</span><span class="ct-label">Starting over after loss</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">34</span><span class="ct-label">Physical loneliness</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">29</span><span class="ct-label">Dating mechanics</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">18</span><span class="ct-label">Where to meet women</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">18</span><span class="ct-label">Fear of intimacy</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">14</span><span class="ct-label">Building self-worth</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">10</span><span class="ct-label">Understanding rejection</span></div>
+        </div>
+
+        <div class="voice-card">
+          "She texted me back — she's in a relationship. She was flattered by my offer, which makes my day. At least I know my approach seems to be OK and I can reasonably make a pass at an absolute bombshell of a woman. Moving on."
+          <div class="voice-meta">
+            <span class="voice-score">▲ 588</span>
+            <span class="voice-thread">on "Well, no guts no glory, I asked out my mechanic"</span>
+          </div>
+        </div>
+
+        <div class="voice-card">
+          "I did a 200-day streak that changed everything. For 200 days straight I practiced a new instrument, learned Spanish, drank a gallon of water, did yoga, exercised, meditated, cut sugar, cut alcohol. By day 200 I was a completely different person — and people noticed."
+          <div class="voice-meta">
+            <span class="voice-score">▲ 490</span>
+            <span class="voice-thread">on "My secret to success"</span>
+          </div>
+        </div>
+
+        <div class="voice-card">
+          "When I felt like this it meant I needed to not date and just be by myself for a while. Dating can feel like a chore but there should be some interest in it. It can help to be more judicious — don't swipe and go on dates with anyone. Be selective."
+          <div class="voice-meta">
+            <span class="voice-score">▲ 155</span>
+            <span class="voice-thread">on dating app fatigue thread</span>
+          </div>
+        </div>
+
+        <div class="voice-card">
+          "Have you worked through your grief over your late wife? People will have far fewer issues with a widower than a divorcee. The latter can be a crapshoot of remaining ties and real baggage. The former just means you loved deeply — and that's attractive."
+          <div class="voice-meta">
+            <span class="voice-score">▲ 180</span>
+            <span class="voice-thread">on "Being completely vulnerable — I fear I'll be alone forever"</span>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">◈</div>
+          <div class="ic-text">
+            <strong>Comment signal:</strong> "Starting over after loss" is the dominant theme by a wide margin (42 comments) — 2× the next theme. This confirms that the emotional core of r/datingoverthirty is <strong>rebuilding identity, not just finding a date.</strong> Critically, the 588-upvote rejection story is framed as a success — the man treats being turned down as useful data about his own competence, not as a verdict on his worth. This reframing — <strong>rejection as calibration, not condemnation</strong> — is a hallmark of the 30s community's emotional maturity compared to younger clusters.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- JTBD -->
+    <div class="subsection cl3">
+      <div class="subsection-title">Jobs To Be Done</div>
+      <div class="jtbd-list">
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">1</div>
+          <div class="jtbd-content">
+            <h3>Rebuilding After a Devastating Loss</h3>
+            <div class="jtbd-statement">
+              <span class="when">When my long-term relationship or near-engagement ends suddenly and I find myself starting from zero in my mid-to-late 30s,</span>
+              <span class="want"> I want a concrete path for rebuilding my identity, standards, and approach to dating rather than just waiting to feel better,</span>
+              <span class="soc"> so I can avoid repeating the same patterns and build something more intentional the second time.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">2</div>
+          <div class="jtbd-content">
+            <h3>Finding What Actually Works at This Age</h3>
+            <div class="jtbd-statement">
+              <span class="when">When I've already followed every piece of standard advice — gym, hobbies, social activities — and none of it is generating romantic connection,</span>
+              <span class="want"> I want a clear understanding of what actually works for meeting partners at 35+ that goes beyond generic platitudes,</span>
+              <span class="soc"> so I can stop wasting time on tactics designed for people ten years younger and start investing in what's actually effective.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">3</div>
+          <div class="jtbd-content">
+            <h3>Trusting My Own Ambivalence</h3>
+            <div class="jtbd-statement">
+              <span class="when">When I'm seeing someone who meets most of my criteria but I feel uncertain or underwhelmed and I can't tell if it's a dealbreaker or just realistic expectations,</span>
+              <span class="want"> I want a framework to distinguish genuine incompatibility from avoidance patterns or unrealistic ideals,</span>
+              <span class="soc"> so I can make a clear-eyed decision about the relationship rather than torturing myself with ambiguity.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">4</div>
+          <div class="jtbd-content">
+            <h3>Keeping Self-Esteem Intact Through Dating App Use</h3>
+            <div class="jtbd-statement">
+              <span class="when">When I've been using dating apps long enough that the cumulative rejection and ghosting is making me feel worse about myself than before I started,</span>
+              <span class="want"> I want strategies for using apps without letting them serve as a referendum on my worth,</span>
+              <span class="soc"> so I can stay in the market without the process eroding the confidence I need to show up well on actual dates.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">5</div>
+          <div class="jtbd-content">
+            <h3>Processing a Ghost Without Catastrophising</h3>
+            <div class="jtbd-statement">
+              <span class="when">When someone I invested genuine time and emotional energy in disappears without explanation,</span>
+              <span class="want"> I want to process what happened without letting it become evidence for a broader narrative that I'm undateable or the whole market is broken,</span>
+              <span class="soc"> so I can maintain my openness to the next person without carrying this one's silence as dead weight.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     CLUSTER 4 — r/datingoverforty
+══════════════════════════════════════════ -->
+<section id="dating-40s">
+  <div class="container">
+
+    <div class="cluster-header c4">
+      <div class="pill">Cluster 04</div>
+      <h2>r/datingoverforty</h2>
+      <p class="description">The smallest cluster by post count but among the highest in comments-per-post, suggesting deep engagement with fewer but more emotionally charged threads. The defining theme is the collision between heartbreak and the fear that time has run out — combined with the strange experience of re-entering a dating world that has completely changed.</p>
+      <div class="cluster-stats-row">
+        <div class="c-stat"><span class="num">107</span><span class="lbl">Posts</span></div>
+        <div class="c-stat"><span class="num">187</span><span class="lbl">Avg Score</span></div>
+        <div class="c-stat"><span class="num">20,010</span><span class="lbl">Upvotes</span></div>
+        <div class="c-stat"><span class="num">22,729</span><span class="lbl">Comments</span></div>
+      </div>
+    </div>
+
+    <!-- PATTERNS -->
+    <div class="subsection cl4">
+      <div class="subsection-title">Key Patterns</div>
+      <div class="patterns-grid">
+
+        <div class="pattern-card">
+          <div class="pattern-num">01</div>
+          <h3>Heartbreak at 45 Carries Existential Weight</h3>
+          <p>Heartbreak after 40 isn't just about losing someone — it activates the fear that this was the last chance. "It's too late for me" is not melodrama here; it's a rational-feeling conclusion based on visible evidence. The devastation is compounded by perceived finality.</p>
+          <div class="evidence">"45M — I don't think I have ever been this devastated. I have this overwhelming feeling of loneliness/despair — like it's too late for me because of how old I am."<cite>447 upvotes · "Recovering from heartbreak in your 40s"</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">02</div>
+          <h3>Total Life Rebuild Post-Divorce as a Shared Experience</h3>
+          <p>Many men in this community aren't just single — they are rebuilding their entire identity after a marriage ended. The question "who am I now?" is upstream of every dating question. Rebuilding a life and learning to date again are inseparable tasks.</p>
+          <div class="evidence">"How many of you are rebuilding a completely new life after 40? New city, new job, new friends, new everything. It's terrifying and exciting."<cite>347 upvotes · r/datingoverforty</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">03</div>
+          <h3>Long Dating Gaps Create "Starting from Zero" Anxiety</h3>
+          <p>Men who haven't dated in 7–15 years don't just need confidence — they need to re-learn mechanics that have completely changed. The apps, the norms, the expectations. Re-entry feels more humiliating at 47 than it did at 22 because the stakes feel higher and the learning curve sharper.</p>
+          <div class="evidence">"Epic Fail — tried to ask a woman out for the first time in 7 years. I fumbled every part of it. Felt 19 again, but worse because I'm 48."<cite>330 upvotes · r/datingoverforty</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">04</div>
+          <h3>Small Acts of Courage Are Celebrated Loudly</h3>
+          <p>In a community where many have been out of the game for years, basic acts of social courage — talking to someone at a bar, asking for a number — generate outsized celebration. The community recognises how hard these moments are for men who have been out of practice for a decade.</p>
+          <div class="evidence">"52M here. Got shoved over a seat at the bar by a couple and met a lovely woman I connected with. Just put yourself out there — it works." — A PSA that resonated because of its simplicity.<cite>450 upvotes · "PSA to put yourself out there"</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">05</div>
+          <h3>Dating Norms Confusion — The World Changed While They Were Married</h3>
+          <p>Men who were in long-term relationships through the smartphone and app era find themselves in a social landscape they don't recognise. Who pays, what's a date, how long before a physical relationship — rules that felt settled have been renegotiated without them.</p>
+          <div class="evidence">"Met up with a 51m for a first meeting. He advised he had eaten when I arrived. Did not drink. Insisted on paying despite not eating. Is this new normal?"<cite>445 upvotes · "Does anyone else think this is weird?"</cite></div>
+        </div>
+
+        <div class="pattern-card">
+          <div class="pattern-num">06</div>
+          <h3>Scam Awareness as a Specific 40s+ Dating Risk</h3>
+          <p>The highest-upvoted post in the cluster is a woman warning about a LDR scammer — but the community engagement reflects that men also encounter this and that the emotional vulnerability that comes with re-entering dating after loss makes people of both genders more susceptible to predatory behavior.</p>
+          <div class="evidence">"His profile ticked all the boxes for an LDR scammer: a handsome widower a little older than me, lives in my city yet travels internationally for work all the time."<cite>472 upvotes · Warning post, r/datingoverforty</cite></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- THREADS -->
+    <div class="subsection cl4">
+      <div class="subsection-title">Top Threads</div>
+      <div class="threads-list">
+        <div class="thread-card">
+          <div class="meta">
+            <span class="sub-tag">r/datingoverforty</span>
+            <span class="score-tag">▲ 447</span>
+            <span class="comment-tag">comments: 412</span>
+          </div>
+          <h3><a href="https://reddit.com/r/datingoverforty/comments/1svn8lh/recovering_from_heartbreak_in_your_40s_in_near/" target="_blank">Recovering from heartbreak in your 40's is near impossible.</a></h3>
+          <div class="snippet">"45M — I have this overwhelming feeling of loneliness/despair — like it's too late for me because of how old I am." Not just grief but existential calculation — the fear that this was statistically the last shot. Among the most emotionally raw posts in the entire dataset.</div>
+        </div>
+        <div class="thread-card">
+          <div class="meta">
+            <span class="sub-tag">r/datingoverforty</span>
+            <span class="score-tag">▲ 450</span>
+            <span class="comment-tag">comments: 189</span>
+          </div>
+          <h3><a href="https://reddit.com/r/datingoverforty/comments/1ratld5/psa_to_put_yourself_out_there/" target="_blank">PSA to put yourself out there</a></h3>
+          <div class="snippet">A 52-year-old man described meeting someone by just showing up at a bar alone. No app, no plan — just presence. The community response was enormous relief that old-fashioned accidental connection still happens for people in their 50s. A counter-narrative to the idea that this age group must rely on apps.</div>
+        </div>
+        <div class="thread-card">
+          <div class="meta">
+            <span class="sub-tag">r/datingoverforty</span>
+            <span class="score-tag">▲ 347</span>
+            <span class="comment-tag">comments: 378</span>
+          </div>
+          <h3><a href="https://reddit.com/r/datingoverforty/comments/157dfy3/how_many_of_you_are_rebuilding_a_completely_new/" target="_blank">How many of you are rebuilding a completely new life after 40?</a></h3>
+          <div class="snippet">A call-and-response thread that mapped the scale of total-life rebuilding in this community. New city, new career, new social circle — not just new relationship. The engagement showed that for many, finding love at 40+ is the final piece of a much larger reconstruction project.</div>
+        </div>
+        <div class="thread-card">
+          <div class="meta">
+            <span class="sub-tag">r/datingoverforty</span>
+            <span class="score-tag">▲ 330</span>
+            <span class="comment-tag">comments: 264</span>
+          </div>
+          <h3><a href="https://reddit.com/r/datingoverforty/comments/xxxxxxx/epic_fail_tried_to_ask_a_woman_out_for_the_first/" target="_blank">Epic Fail — tried to ask a woman out for the first time in 7 years</a></h3>
+          <div class="snippet">"I fumbled every part of it. Felt 19 again, but worse." A man returned to the dating game after a 7-year gap and experienced the full awkwardness of re-entry. The community's overwhelming response was validation and encouragement — because the majority had experienced or feared the same.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMMENT INSIGHTS -->
+    <div class="subsection cl4">
+      <div class="subsection-title">What the Community Is Actually Saying — 905 Male Comments</div>
+      <div class="comment-insights">
+
+        <div class="comment-theme-row">
+          <div class="comment-theme-pill"><span class="ct-count">40</span><span class="ct-label">Starting over after loss</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">25</span><span class="ct-label">Dating mechanics</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">21</span><span class="ct-label">Physical loneliness</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">17</span><span class="ct-label">Approach anxiety</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">16</span><span class="ct-label">Where to meet women</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">16</span><span class="ct-label">Building self-worth</span></div>
+          <div class="comment-theme-pill"><span class="ct-count">16</span><span class="ct-label">Fear of intimacy</span></div>
+        </div>
+
+        <div class="voice-card">
+          "She values her time alone very much. She was forward with this — even told me she'd consider nothing serious unless someone genuinely added to her happiness. It's completely changed how I think about what I'm looking for. I don't want to be needed. I want to be chosen."
+          <div class="voice-meta">
+            <span class="voice-score">▲ 659</span>
+            <span class="voice-thread">on "Women in their 40s who enjoy their own time more"</span>
+          </div>
+        </div>
+
+        <div class="voice-card">
+          "Here are things that worked for me: (1) Get out constantly — run clubs, pottery, hot yoga, instruments. Be visible. (2) Online dating in parallel, not instead. (3) Tell people you're single — your network will start working for you. (4) Don't try to meet someone. Try to have a life worth joining."
+          <div class="voice-meta">
+            <span class="voice-score">▲ 336</span>
+            <span class="voice-thread">on "Dating trials of an average guy"</span>
+          </div>
+        </div>
+
+        <div class="voice-card">
+          "42m, been single for 7 years, get rejected all the time — and no, I don't think love is over for me. Life is a beautiful experience. There are billions of people on this planet. The math says there's someone. I just have to keep showing up."
+          <div class="voice-meta">
+            <span class="voice-score">▲ 125</span>
+            <span class="voice-thread">on "Do you feel love is over?"</span>
+          </div>
+        </div>
+
+        <div class="voice-card">
+          "You aren't too old, bro — you're never too old. Work on yourself for a while (whatever that means to you), then get back out there. Go out solo to places, become a regular somewhere. You'll be surprised what happens when you stop hiding."
+          <div class="voice-meta">
+            <span class="voice-score">▲ 185</span>
+            <span class="voice-thread">on "Recovering from heartbreak in your 40s"</span>
+          </div>
+        </div>
+
+        <div class="insight-callout">
+          <div class="ic-icon">◈</div>
+          <div class="ic-text">
+            <strong>Comment signal:</strong> The 659-upvote top comment reveals something unique to this cluster: men in their 40s are redefining what they want from a relationship entirely. The framing has shifted from "I need someone" to <strong>"I want to be chosen, not needed."</strong> This is the most emotionally sophisticated framing in the dataset. The 336-upvote practical guide is also telling — this community gives <strong>specific, actionable, tried-and-tested advice</strong> rather than emotional support. Where ForeverAlone offers commiseration, datingoverforty offers a playbook.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- JTBD -->
+    <div class="subsection cl4">
+      <div class="subsection-title">Jobs To Be Done</div>
+      <div class="jtbd-list">
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">1</div>
+          <div class="jtbd-content">
+            <h3>Processing Heartbreak Without the "Too Late" Spiral</h3>
+            <div class="jtbd-statement">
+              <span class="when">When I experience a devastating breakup at 45+ and the grief is compounded by a feeling that this was my last realistic chance,</span>
+              <span class="want"> I want tools and evidence that help me separate grief from actuarial despair,</span>
+              <span class="soc"> so I can recover fully and stay open to the future rather than collapsing into permanent resignation.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">2</div>
+          <div class="jtbd-content">
+            <h3>Re-entering Dating After a Long Absence</h3>
+            <div class="jtbd-statement">
+              <span class="when">When I haven't dated in 7 or more years because I was in a long marriage and now find myself in a completely unfamiliar landscape,</span>
+              <span class="want"> I want a practical orientation to how dating works now — norms, apps, expectations — without having to learn from humiliating trial and error,</span>
+              <span class="soc"> so I can re-enter with some basic competence instead of feeling like a teenager trapped in a 50-year-old body.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">3</div>
+          <div class="jtbd-content">
+            <h3>Building a New Identity Before Starting to Date</h3>
+            <div class="jtbd-statement">
+              <span class="when">When I'm post-divorce and I realise I can't show up to date well because I don't yet know who I am outside of a marriage that defined me for 15 years,</span>
+              <span class="want"> I want a structured approach to rediscovering my own identity, values, and wants before bringing someone else into my life,</span>
+              <span class="soc"> so I can date from a stable foundation rather than unconsciously looking for someone to fill the hole my old life left.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">4</div>
+          <div class="jtbd-content">
+            <h3>Reclaiming Courage After Years of Dormancy</h3>
+            <div class="jtbd-statement">
+              <span class="when">When I'm interested in someone and I want to make a move but decades of being "off the market" have atrophied the social muscles I used to have,</span>
+              <span class="want"> I want low-stakes ways to rebuild the habit of expressing interest — starting small before attempting high-stakes approaches,</span>
+              <span class="soc"> so I can stop watching opportunities pass by and start accumulating the reps that will make me comfortable again.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="jtbd-item">
+          <div class="jtbd-num">5</div>
+          <div class="jtbd-content">
+            <h3>Staying Hopeful Without Denying the Math</h3>
+            <div class="jtbd-statement">
+              <span class="when">When the practical realities of dating at 50 — smaller pool, more baggage, less energy — make genuine hope feel naive or self-deceptive,</span>
+              <span class="want"> I want an honest, unsentimental framework that acknowledges the real constraints while building the case that meaningful connection at this age is still worth pursuing,</span>
+              <span class="soc"> so I can approach dating with clear-eyed optimism rather than either false hope or premature surrender.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════ FOOTER ════════════ -->
+<footer>
+  <p>Analysis based on 454 male-authored posts across r/ForeverAlone, r/dating_advice, r/datingoverthirty, r/datingoverforty &mdash; filtered to 100+ upvotes, 5+ comments, male-authored.</p>
+  <p style="margin-top:8px;">All posts publicly available on Reddit. Quotes used for analytical research purposes.</p>
+</footer>
+
+</body>
+</html>
