@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attachment Style Audience Insights — Reddit</title>
+<style>
+  :root {
+    --bg: #0d0d14;
+    --surface: #14141f;
+    --card: #1a1a2a;
+    --border: #2a2a40;
+    --text: #e2e2f0;
+    --muted: #8888aa;
+    --anxious: #f472b6;
+    --avoidant: #34d399;
+    --disorganized: #a78bfa;
+    --dynamic: #fb923c;
+    --anxious-dim: rgba(244,114,182,0.12);
+    --avoidant-dim: rgba(52,211,153,0.12);
+    --disorganized-dim: rgba(167,139,250,0.12);
+    --dynamic-dim: rgba(251,146,60,0.12);
+    --trigger-anxious: rgba(244,114,182,0.08);
+    --trigger-avoidant: rgba(52,211,153,0.08);
+    --trigger-disorganized: rgba(167,139,250,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.65;
+    font-size: 15px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #0d0d14 0%, #1a0a2e 50%, #0a1a2e 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 56px 40px 48px;
+    text-align: center;
+  }
+  header .eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--anxious), var(--disorganized), var(--avoidant));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  header p {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 560px;
+    margin: 0 auto 32px;
+  }
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .stat-pill {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 10px 24px;
+    font-size: 14px;
+  }
+  .stat-pill strong { color: #fff; }
+
+  /* ── STICKY NAV ── */
+  .style-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,13,20,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .style-nav::-webkit-scrollbar { display: none; }
+
+  .nav-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 16px 16px 16px 0;
+    white-space: nowrap;
+    border-right: 1px solid var(--border);
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  .nav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 16px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+    position: relative;
+    transition: color 0.2s;
+    flex-shrink: 0;
+    font-family: inherit;
+  }
+  .nav-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 12px; right: 12px;
+    height: 2px;
+    border-radius: 2px;
+    background: transparent;
+    transition: background 0.2s;
+  }
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.all.active { color: #fff; }
+  .nav-btn.all.active::after { background: #fff; }
+  .nav-btn.anxious-btn.active { color: var(--anxious); }
+  .nav-btn.anxious-btn.active::after { background: var(--anxious); }
+  .nav-btn.avoidant-btn.active { color: var(--avoidant); }
+  .nav-btn.avoidant-btn.active::after { background: var(--avoidant); }
+  .nav-btn.disorganized-btn.active { color: var(--disorganized); }
+  .nav-btn.disorganized-btn.active::after { background: var(--disorganized); }
+  .nav-btn.dynamic-btn.active { color: var(--dynamic); }
+  .nav-btn.dynamic-btn.active::after { background: var(--dynamic); }
+
+  .nav-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+    flex-shrink: 0;
+    margin: 0 4px;
+  }
+
+  /* section jump links */
+  .nav-section-links {
+    display: flex;
+    gap: 0;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .nav-section-links a {
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 16px 10px;
+    white-space: nowrap;
+    transition: color 0.2s;
+  }
+  .nav-section-links a:hover { color: var(--text); }
+
+  /* ── FILTER STATES ── */
+  /* when a style is active, dim non-matching columns */
+  body.filter-anxious .style-col.avoidant,
+  body.filter-anxious .style-col.disorganized,
+  body.filter-anxious .jtbd-card.avoidant-jtbd,
+  body.filter-anxious .jtbd-card.disorganized-jtbd {
+    opacity: 0.18;
+    pointer-events: none;
+  }
+  body.filter-avoidant .style-col.anxious,
+  body.filter-avoidant .style-col.disorganized,
+  body.filter-avoidant .jtbd-card.anxious-jtbd,
+  body.filter-avoidant .jtbd-card.disorganized-jtbd {
+    opacity: 0.18;
+    pointer-events: none;
+  }
+  body.filter-disorganized .style-col.anxious,
+  body.filter-disorganized .style-col.avoidant,
+  body.filter-disorganized .jtbd-card.anxious-jtbd,
+  body.filter-disorganized .jtbd-card.avoidant-jtbd {
+    opacity: 0.18;
+    pointer-events: none;
+  }
+  .style-col, .jtbd-card { transition: opacity 0.25s; }
+
+  /* ── MAIN ── */
+  main { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  h2.section-title {
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 28px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  section { margin-bottom: 72px; }
+
+  /* ── 3-column style grids ── */
+  .style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 780px) { .style-grid { grid-template-columns: 1fr; } }
+
+  /* ── Cluster identity cards ── */
+  .cluster-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cluster-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .cluster-card.anxious::before { background: var(--anxious); }
+  .cluster-card.avoidant::before { background: var(--avoidant); }
+  .cluster-card.disorganized::before { background: var(--disorganized); }
+
+  .cluster-tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .anxious .cluster-tag, .cluster-card.anxious .cluster-tag { background: var(--anxious-dim); color: var(--anxious); }
+  .avoidant .cluster-tag, .cluster-card.avoidant .cluster-tag { background: var(--avoidant-dim); color: var(--avoidant); }
+  .disorganized .cluster-tag, .cluster-card.disorganized .cluster-tag { background: var(--disorganized-dim); color: var(--disorganized); }
+
+  .cluster-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+  .cluster-card .sub-label { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+  .cluster-card p { font-size: 14px; color: #b0b0cc; line-height: 1.7; }
+  .cluster-stats { display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+  .c-stat { font-size: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 6px 12px; color: var(--muted); }
+  .c-stat strong { color: var(--text); }
+
+  /* ── Partner archetypes ── */
+  .archetype-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 26px;
+  }
+  .archetype-card .from-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .archetype-card .archetype-name { font-size: 18px; font-weight: 700; margin-bottom: 14px; }
+  .archetype-card.anxious .archetype-name { color: var(--anxious); }
+  .archetype-card.avoidant .archetype-name { color: var(--avoidant); }
+  .archetype-card.disorganized .archetype-name { color: var(--disorganized); }
+  .archetype-card ul { list-style: none; }
+  .archetype-card ul li { font-size: 13.5px; color: #b0b0cc; padding: 6px 0 6px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); position: relative; }
+  .archetype-card ul li::before { content: '—'; position: absolute; left: 0; color: var(--muted); }
+  .archetype-card ul li:last-child { border-bottom: none; }
+
+  /* ── Pain points ── */
+  .pain-col { display: flex; flex-direction: column; gap: 12px; }
+  .pain-col .col-header { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; padding-bottom: 10px; border-bottom: 2px solid; margin-bottom: 4px; }
+  .pain-col.anxious .col-header { color: var(--anxious); border-color: var(--anxious); }
+  .pain-col.avoidant .col-header { color: var(--avoidant); border-color: var(--avoidant); }
+  .pain-col.disorganized .col-header { color: var(--disorganized); border-color: var(--disorganized); }
+  .pain-item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; font-size: 13.5px; color: #b8b8d0; line-height: 1.6; }
+  .pain-item .pain-label { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
+  .pain-col.anxious .pain-item .pain-label { color: var(--anxious); }
+  .pain-col.avoidant .pain-item .pain-label { color: var(--avoidant); }
+  .pain-col.disorganized .pain-item .pain-label { color: var(--disorganized); }
+
+  /* ── Desired outcomes ── */
+  .outcome-col .col-header { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid; }
+  .outcome-col.anxious .col-header { color: var(--anxious); border-color: var(--anxious); }
+  .outcome-col.avoidant .col-header { color: var(--avoidant); border-color: var(--avoidant); }
+  .outcome-col.disorganized .col-header { color: var(--disorganized); border-color: var(--disorganized); }
+  .outcome-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; color: #b8b8d0; line-height: 1.6; }
+  .outcome-item:last-child { border-bottom: none; }
+  .outcome-num { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-top: 2px; }
+  .outcome-col.anxious .outcome-num { background: var(--anxious-dim); color: var(--anxious); }
+  .outcome-col.avoidant .outcome-num { background: var(--avoidant-dim); color: var(--avoidant); }
+  .outcome-col.disorganized .outcome-num { background: var(--disorganized-dim); color: var(--disorganized); }
+
+  /* ── JTBDs ── */
+  .jtbd-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+  .jtbd-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px 32px; display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: start; }
+  @media (max-width: 700px) { .jtbd-card { grid-template-columns: 1fr; } }
+  .jtbd-left .jtbd-num { font-size: 42px; font-weight: 800; line-height: 1; margin-bottom: 8px; opacity: 0.2; color: #fff; }
+  .jtbd-left .jtbd-cluster-tag { display: inline-block; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; font-weight: 600; margin-bottom: 10px; }
+  .anxious-jtbd .jtbd-cluster-tag { background: var(--anxious-dim); color: var(--anxious); }
+  .avoidant-jtbd .jtbd-cluster-tag { background: var(--avoidant-dim); color: var(--avoidant); }
+  .disorganized-jtbd .jtbd-cluster-tag { background: var(--disorganized-dim); color: var(--disorganized); }
+  .jtbd-left .jtbd-archetype { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .jtbd-right .jtbd-statement { font-size: 16px; font-weight: 500; color: #fff; line-height: 1.7; margin-bottom: 16px; }
+  .jtbd-right .jtbd-statement em { font-style: normal; font-weight: 700; }
+  .anxious-jtbd .jtbd-right .jtbd-statement em { color: var(--anxious); }
+  .avoidant-jtbd .jtbd-right .jtbd-statement em { color: var(--avoidant); }
+  .disorganized-jtbd .jtbd-right .jtbd-statement em { color: var(--disorganized); }
+  .jtbd-right .jtbd-insight { font-size: 13.5px; color: var(--muted); line-height: 1.65; padding-top: 14px; border-top: 1px solid var(--border); }
+
+  /* ── Verbatim voices ── */
+  .quote-col .col-header { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid; }
+  .quote-col.anxious .col-header { color: var(--anxious); border-color: var(--anxious); }
+  .quote-col.avoidant .col-header { color: var(--avoidant); border-color: var(--avoidant); }
+  .quote-col.disorganized .col-header { color: var(--disorganized); border-color: var(--disorganized); }
+  .quote-item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 14px; position: relative; }
+  .quote-item::before { content: '"'; position: absolute; top: -8px; left: 16px; font-size: 48px; line-height: 1; font-family: Georgia, serif; opacity: 0.15; }
+  .quote-text { font-size: 13.5px; color: #c8c8e0; line-height: 1.7; font-style: italic; margin-bottom: 10px; }
+  .quote-meta { font-size: 11px; color: var(--muted); }
+  .quote-score { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 10px; margin-right: 6px; }
+  .quote-col.anxious .quote-score { background: var(--anxious-dim); color: var(--anxious); }
+  .quote-col.avoidant .quote-score { background: var(--avoidant-dim); color: var(--avoidant); }
+  .quote-col.disorganized .quote-score { background: var(--disorganized-dim); color: var(--disorganized); }
+
+  /* ── Shared patterns ── */
+  .shared-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  @media (max-width: 680px) { .shared-grid { grid-template-columns: 1fr; } }
+  .shared-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+  .shared-card h4 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+  .shared-card p { font-size: 13.5px; color: #9090b0; line-height: 1.65; }
+
+  /* ── AP–DA DYNAMIC SECTION ── */
+  .dynamic-section {
+    background: linear-gradient(135deg, rgba(244,114,182,0.06) 0%, rgba(251,146,60,0.06) 50%, rgba(52,211,153,0.06) 100%);
+    border: 1px solid rgba(251,146,60,0.25);
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 72px;
+  }
+  .dynamic-section .section-title {
+    color: var(--dynamic);
+    border-color: rgba(251,146,60,0.3);
+  }
+
+  .dynamic-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .dynamic-label .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .cycle-block {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 28px;
+  }
+  .cycle-block h4 {
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--dynamic);
+    margin-bottom: 20px;
+  }
+  .cycle-steps {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+  .cycle-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    min-width: 120px;
+    padding: 12px 8px;
+    position: relative;
+  }
+  .cycle-step .step-actor {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+  .cycle-step.ap .step-actor { color: var(--anxious); }
+  .cycle-step.da .step-actor { color: var(--avoidant); }
+  .cycle-step .step-text {
+    font-size: 12.5px;
+    color: #c0c0d8;
+    line-height: 1.5;
+  }
+  .cycle-arrow {
+    color: var(--muted);
+    font-size: 18px;
+    padding: 0 4px;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  .dynamic-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 680px) { .dynamic-split { grid-template-columns: 1fr; } }
+
+  .dynamic-side {
+    background: rgba(0,0,0,0.25);
+    border-radius: 14px;
+    padding: 24px;
+  }
+  .dynamic-side.ap-side { border: 1px solid rgba(244,114,182,0.25); }
+  .dynamic-side.da-side { border: 1px solid rgba(52,211,153,0.25); }
+
+  .dynamic-side .side-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .ap-side .side-label { color: var(--anxious); }
+  .da-side .side-label { color: var(--avoidant); }
+
+  .dynamic-side ul { list-style: none; }
+  .dynamic-side ul li {
+    font-size: 13.5px;
+    color: #b8b8d0;
+    padding: 7px 0 7px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    position: relative;
+    line-height: 1.55;
+  }
+  .dynamic-side ul li::before { content: '—'; position: absolute; left: 0; color: var(--muted); }
+  .dynamic-side ul li:last-child { border-bottom: none; }
+
+  .dynamic-insight {
+    background: rgba(251,146,60,0.07);
+    border: 1px solid rgba(251,146,60,0.2);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+  .dynamic-insight h4 { font-size: 14px; font-weight: 700; color: var(--dynamic); margin-bottom: 10px; }
+  .dynamic-insight p { font-size: 14px; color: #b8b8d0; line-height: 1.7; }
+
+  .dynamic-quotes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 680px) { .dynamic-quotes { grid-template-columns: 1fr; } }
+
+  .dq-item {
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 16px 18px;
+    position: relative;
+  }
+  .dq-item.ap-q { border: 1px solid rgba(244,114,182,0.2); }
+  .dq-item.da-q { border: 1px solid rgba(52,211,153,0.2); }
+  .dq-item::before { content: '"'; position: absolute; top: -6px; left: 14px; font-size: 40px; line-height: 1; font-family: Georgia, serif; opacity: 0.12; }
+  .dq-text { font-size: 13px; font-style: italic; color: #c0c0d8; line-height: 1.65; margin-bottom: 10px; }
+  .dq-meta { font-size: 11px; color: var(--muted); }
+  .dq-score { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 10px; margin-right: 6px; }
+  .ap-q .dq-score { background: var(--anxious-dim); color: var(--anxious); }
+  .da-q .dq-score { background: var(--avoidant-dim); color: var(--avoidant); }
+
+  /* ── TRIGGERS SECTION ── */
+  .trigger-col .col-header { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid; }
+  .trigger-col.anxious .col-header { color: var(--anxious); border-color: var(--anxious); }
+  .trigger-col.avoidant .col-header { color: var(--avoidant); border-color: var(--avoidant); }
+  .trigger-col.disorganized .col-header { color: var(--disorganized); border-color: var(--disorganized); }
+  .trigger-item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; font-size: 13.5px; color: #b8b8d0; line-height: 1.6; margin-bottom: 10px; }
+  .trigger-label { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
+  .trigger-col.anxious .trigger-item { border-left: 3px solid rgba(244,114,182,0.35); background: var(--trigger-anxious); }
+  .trigger-col.avoidant .trigger-item { border-left: 3px solid rgba(52,211,153,0.35); background: var(--trigger-avoidant); }
+  .trigger-col.disorganized .trigger-item { border-left: 3px solid rgba(167,139,250,0.35); background: var(--trigger-disorganized); }
+  .trigger-col.anxious .trigger-label { color: var(--anxious); }
+  .trigger-col.avoidant .trigger-label { color: var(--avoidant); }
+  .trigger-col.disorganized .trigger-label { color: var(--disorganized); }
+
+  /* ── DA RULEBOOK ── */
+  .rulebook-block {
+    background: rgba(52,211,153,0.05);
+    border: 1px solid rgba(52,211,153,0.2);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 28px;
+  }
+  .rulebook-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--avoidant);
+    margin-bottom: 6px;
+  }
+  .rulebook-sub {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+  .rulebook-rules {
+    list-style: none;
+    counter-reset: rule-counter;
+  }
+  .rulebook-rules li {
+    counter-increment: rule-counter;
+    font-size: 13.5px;
+    color: #b8b8d0;
+    padding: 10px 0 10px 36px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    position: relative;
+    line-height: 1.6;
+  }
+  .rulebook-rules li::before {
+    content: counter(rule-counter);
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 24px;
+    height: 24px;
+    background: rgba(52,211,153,0.12);
+    color: var(--avoidant);
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .rulebook-rules li:last-child { border-bottom: none; }
+  .rulebook-rules li strong { color: var(--avoidant); }
+
+  /* ── VIDEO QUOTE BADGE ── */
+  .quote-source-video {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    margin-right: 6px;
+    background: rgba(255,255,255,0.07);
+    color: var(--muted);
+  }
+
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Reddit Research · Attachment Theory Communities</div>
+  <h1>Attachment Style Audience Insights</h1>
+  <p>Qualitative analysis of posts and comments from r/anxiousattachment, r/avoidantattachment, and r/fearfulavoidant</p>
+  <div class="stats-row">
+    <div class="stat-pill"><strong>731</strong> Posts</div>
+    <div class="stat-pill"><strong>15,630</strong> Comments</div>
+    <div class="stat-pill"><strong>3</strong> Attachment Clusters</div>
+  </div>
+</header>
+
+<!-- STICKY NAV -->
+<nav class="style-nav" id="styleNav">
+  <span class="nav-label">Filter by style</span>
+  <button class="nav-btn all active" onclick="setFilter('all', this)">All Styles</button>
+  <div class="nav-divider"></div>
+  <button class="nav-btn anxious-btn" onclick="setFilter('anxious', this)">😰 Anxious</button>
+  <button class="nav-btn avoidant-btn" onclick="setFilter('avoidant', this)">🧊 Avoidant</button>
+  <button class="nav-btn disorganized-btn" onclick="setFilter('disorganized', this)">🌀 Fearful-Avoidant</button>
+  <div class="nav-divider"></div>
+  <button class="nav-btn dynamic-btn" onclick="setFilter('dynamic', this)">⚡ AP–DA Dynamic</button>
+  <div class="nav-section-links">
+    <a href="#who">Who</a>
+    <a href="#partner">Partner</a>
+    <a href="#pain">Pain</a>
+    <a href="#outcomes">Outcomes</a>
+    <a href="#jtbd">JTBDs</a>
+    <a href="#triggers">Triggers</a>
+    <a href="#dynamic">AP–DA</a>
+    <a href="#patterns">Patterns</a>
+    <a href="#voices">Voices</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- SECTION 1: WHO IS IN EACH CLUSTER -->
+  <section id="who">
+    <h2 class="section-title">01 — Who They Are</h2>
+    <div class="style-grid">
+
+      <div class="style-col anxious">
+        <div class="cluster-card anxious">
+          <div class="cluster-tag">Anxious Attachment</div>
+          <h3>The Hyper-Vigilant Lover</h3>
+          <div class="sub-label">r/anxiousattachment · 275 posts · 6,643 comments</div>
+          <p>Deeply aware of their own patterns — the protest behaviors, the reassurance-seeking, the way they track a partner's every response for signs of abandonment. They intellectually understand what they're doing but can't stop the spiral. Often self-aware to a fault: they know the rope analogy, they've read the books, yet still catch themselves texting again.</p>
+          <div class="cluster-stats">
+            <div class="c-stat"><strong>Top theme:</strong> Healing & therapy</div>
+            <div class="c-stat"><strong>Core wound:</strong> Abandonment fear</div>
+            <div class="c-stat"><strong>Pattern:</strong> DA-attracted</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="style-col avoidant">
+        <div class="cluster-card avoidant">
+          <div class="cluster-tag">Avoidant Attachment</div>
+          <h3>The Misunderstood Loner</h3>
+          <div class="sub-label">r/avoidantattachment · 282 posts · 4,456 comments</div>
+          <p>Often on the defensive — the sub exists partly to be a safe space away from anxious people projecting onto them. They know they deactivate, they know it hurts people, and they hate being cast as the villain. A significant portion are trying to understand why they feel nothing when they should feel something, and whether they're capable of change.</p>
+          <div class="cluster-stats">
+            <div class="c-stat"><strong>Top theme:</strong> Avoidant deactivation</div>
+            <div class="c-stat"><strong>Core wound:</strong> Engulfment fear</div>
+            <div class="c-stat"><strong>Pattern:</strong> AP-attracted</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="style-col disorganized">
+        <div class="cluster-card disorganized">
+          <div class="cluster-tag">Fearful-Avoidant (FA)</div>
+          <h3>The Push-Pull Paradox</h3>
+          <div class="sub-label">r/fearfulavoidant · 174 posts · 4,531 comments</div>
+          <p>The most self-reflective cluster. FAs often describe a disorienting internal split: craving closeness intensely, then fleeing the moment it arrives. Many arrived here after a sudden realization — "I just realized why I've been single for two years" — and are actively piecing together childhood trauma, self-sabotage, and the pattern of chasing unavailable people.</p>
+          <div class="cluster-stats">
+            <div class="c-stat"><strong>Top theme:</strong> Childhood & trauma roots</div>
+            <div class="c-stat"><strong>Core wound:</strong> Fear of both intimacy & abandonment</div>
+            <div class="c-stat"><strong>Pattern:</strong> Avoidant-attracted</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 2: PARTNER ARCHETYPES -->
+  <section id="partner">
+    <h2 class="section-title">02 — How They Describe Their Partner</h2>
+    <div class="style-grid">
+
+      <div class="style-col anxious">
+        <div class="archetype-card anxious">
+          <div class="from-label">Anxious perspective · partner is</div>
+          <div class="archetype-name">"The Deactivator"</div>
+          <ul>
+            <li>Disappears for days, then returns acting like nothing happened</li>
+            <li>Says they need space but never defines what that means</li>
+            <li>Hot and cold — present and warm, then suddenly cold and distant</li>
+            <li>Makes them feel like their needs are "too much"</li>
+            <li>Reads emotional requests as pressure and pulls away harder</li>
+            <li>Can't or won't communicate during conflict — just goes silent</li>
+            <li>"Ego so fragile he can't even try to heal"</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="style-col avoidant">
+        <div class="archetype-card avoidant">
+          <div class="from-label">Avoidant perspective · partner is</div>
+          <div class="archetype-name">"The Escalator"</div>
+          <ul>
+            <li>Sends "ignoring me?" texts after less than a day of silence</li>
+            <li>Becomes possessive as closeness increases</li>
+            <li>Takes space personally — reads withdrawal as rejection</li>
+            <li>Love-bombs early, then becomes emotionally demanding</li>
+            <li>Uses protest behaviors (jealousy, ultimatums, repeated texting)</li>
+            <li>Can't tolerate ambiguity or go at a slower pace</li>
+            <li>"Their energy becomes possessive or emotionally vulnerable"</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="style-col disorganized">
+        <div class="archetype-card disorganized">
+          <div class="from-label">FA perspective · partner is either</div>
+          <div class="archetype-name">"The Safe Avoidant" or "The Secure Threat"</div>
+          <ul>
+            <li><strong>Chosen:</strong> Avoidant — keeps distance, feels "safe" because real intimacy stays at arm's length</li>
+            <li><strong>Chosen:</strong> Emotionally unavailable — no risk of being truly seen</li>
+            <li><strong>Fled from:</strong> Secure — their consistency and availability triggers the FA's fear response</li>
+            <li><strong>Fled from:</strong> Anyone who wants to meet their family/friends</li>
+            <li>Pattern: date avoidants, run from secures</li>
+            <li>"I date avoidant men out of safety from my own anxiety and fears"</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 3: CORE PAIN POINTS -->
+  <section id="pain">
+    <h2 class="section-title">03 — Core Pain Points</h2>
+    <div class="style-grid">
+
+      <div class="style-col anxious">
+        <div class="pain-col anxious">
+          <div class="col-header">Anxious</div>
+          <div class="pain-item">
+            <div class="pain-label">Self-abandonment loop</div>
+            Every time they suppress a need to avoid scaring their partner away, they lose a piece of themselves. They know it — they just can't stop.
+          </div>
+          <div class="pain-item">
+            <div class="pain-label">Protest behavior spiral</div>
+            They use "rope tactics" — repeated texts, emotional escalation, jealousy — that push the partner further away, which confirms their abandonment fear.
+          </div>
+          <div class="pain-item">
+            <div class="pain-label">Deactivation blackouts</div>
+            When a DA goes silent for days, they have no framework for sitting with uncertainty. The dysregulation is physical, not just emotional.
+          </div>
+          <div class="pain-item">
+            <div class="pain-label">Attracting the wrong type</div>
+            Consistently end up with avoidants. Know it's a pattern. Don't know how to break it because avoidants feel exciting and secure people feel boring.
+          </div>
+          <div class="pain-item">
+            <div class="pain-label">Feeling "too much"</div>
+            Internalize their partner's avoidance as proof they are too needy, too emotional, fundamentally unlovable — rather than incompatible.
+          </div>
+        </div>
+      </div>
+
+      <div class="style-col avoidant">
+        <div class="pain-col avoidant">
+          <div class="col-header">Avoidant</div>
+          <div class="pain-item">
+            <div class="pain-label">Being cast as the villain</div>
+            Online spaces treat avoidants as the abusers of the attachment world. They come to their own sub as a refuge. Being avoidant ≠ being toxic.
+          </div>
+          <div class="pain-item">
+            <div class="pain-label">Knowing but not feeling</div>
+            Can observe themselves hurting a partner they genuinely care about, but be emotionally blocked from offering what's needed. "Too empty and blocked inside."
+          </div>
+          <div class="pain-item">
+            <div class="pain-label">Numbness during deactivation</div>
+            When deactivated, partners feel like they've never mattered. "They cease to exist." It's not indifference — it's a wall they can't see over or around.
+          </div>
+          <div class="pain-item">
+            <div class="pain-label">Interest death by closeness</div>
+            Attraction collapses the moment energy becomes "possessive or emotionally vulnerable." They lose desire for people who need them too much.
+          </div>
+          <div class="pain-item">
+            <div class="pain-label">Post-breakup activation</div>
+            Feelings return strongly after a breakup or NC — when the partner is no longer a "threat." This is distressing and confusing, not manipulative.
+          </div>
+        </div>
+      </div>
+
+      <div class="style-col disorganized">
+        <div class="pain-col disorganized">
+          <div class="col-header">Fearful-Avoidant</div>
+          <div class="pain-item">
+            <div class="pain-label">Self-sabotage at intimacy threshold</div>
+            Everything is good — then suddenly they find reasons to pull away, doubt the relationship, or manufacture distance. Especially triggered by meeting friends/family.
+          </div>
+          <div class="pain-item">
+            <div class="pain-label">Choosing unavailable partners</div>
+            Consciously or not, they pick emotionally unavailable people because it keeps real intimacy out of reach — and therefore safe. "I date avoidant men out of safety."
+          </div>
+          <div class="pain-item">
+            <div class="pain-label">Running from secure people</div>
+            A secure, consistent partner triggers anxiety, not comfort. The FA interprets their availability as clingy or "weird" and loses interest.
+          </div>
+          <div class="pain-item">
+            <div class="pain-label">The hot-cold cycle</div>
+            Push the partner away → feel safe → pull them back → feel close → panic → push away again. They know it. They hate it. They can't stop without intervention.
+          </div>
+          <div class="pain-item">
+            <div class="pain-label">Shame about the pattern</div>
+            Deep shame, not just frustration. They see themselves as broken, unlovable, or fundamentally incapable of healthy relationships. Core belief: "I am a bad person."
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 4: DESIRED OUTCOMES -->
+  <section id="outcomes">
+    <h2 class="section-title">04 — What They Actually Want</h2>
+    <div class="style-grid">
+
+      <div class="style-col anxious">
+        <div class="outcome-col anxious">
+          <div class="col-header">Anxious</div>
+          <div class="outcome-item"><div class="outcome-num">1</div><div>To stop outsourcing their emotional regulation to a partner — to feel okay without constant reassurance</div></div>
+          <div class="outcome-item"><div class="outcome-num">2</div><div>To be a "magnet" — attractive through self-containment — rather than a rope that pushes people away</div></div>
+          <div class="outcome-item"><div class="outcome-num">3</div><div>To choose a secure partner and actually feel attraction for them, not just settle</div></div>
+          <div class="outcome-item"><div class="outcome-num">4</div><div>To voice needs confidently without fearing the partner will leave</div></div>
+          <div class="outcome-item"><div class="outcome-num">5</div><div>To end the pattern of attracting and staying with dismissive avoidants</div></div>
+          <div class="outcome-item"><div class="outcome-num">6</div><div>To be with someone who wants to know their needs and never makes them feel like "too much"</div></div>
+        </div>
+      </div>
+
+      <div class="style-col avoidant">
+        <div class="outcome-col avoidant">
+          <div class="col-header">Avoidant</div>
+          <div class="outcome-item"><div class="outcome-num">1</div><div>To be understood — not pathologized, not made into the villain of someone else's attachment story</div></div>
+          <div class="outcome-item"><div class="outcome-num">2</div><div>To feel feelings during a relationship, not only after it ends</div></div>
+          <div class="outcome-item"><div class="outcome-num">3</div><div>To find a partner who matches their need for space without reading it as rejection</div></div>
+          <div class="outcome-item"><div class="outcome-num">4</div><div>To stop hurting people they genuinely care about by disappearing without explanation</div></div>
+          <div class="outcome-item"><div class="outcome-num">5</div><div>To develop emotional availability in a relationship where they feel emotionally safe</div></div>
+          <div class="outcome-item"><div class="outcome-num">6</div><div>To understand if they are capable of love — or if their numbness is permanent</div></div>
+        </div>
+      </div>
+
+      <div class="style-col disorganized">
+        <div class="outcome-col disorganized">
+          <div class="col-header">Fearful-Avoidant</div>
+          <div class="outcome-item"><div class="outcome-num">1</div><div>To stop choosing people who are emotionally unavailable — to understand why "safe" feels dangerous</div></div>
+          <div class="outcome-item"><div class="outcome-num">2</div><div>To be able to stay present when a good relationship actually arrives, instead of fleeing</div></div>
+          <div class="outcome-item"><div class="outcome-num">3</div><div>To break the on-again off-again cycle that defines most of their relationships</div></div>
+          <div class="outcome-item"><div class="outcome-num">4</div><div>To receive love without immediately trying to dismantle it</div></div>
+          <div class="outcome-item"><div class="outcome-num">5</div><div>To heal the shame — to believe they are not fundamentally broken or bad</div></div>
+          <div class="outcome-item"><div class="outcome-num">6</div><div>To earn security — to become the kind of person who can be close to someone without disappearing</div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 5: JOBS TO BE DONE -->
+  <section id="jtbd">
+    <h2 class="section-title">05 — Jobs To Be Done</h2>
+    <div class="jtbd-grid">
+
+      <div class="jtbd-card anxious-jtbd">
+        <div class="jtbd-left">
+          <div class="jtbd-num">01</div>
+          <div class="jtbd-cluster-tag">Anxious</div>
+          <div class="jtbd-archetype">The Spiral Stopper</div>
+        </div>
+        <div class="jtbd-right">
+          <div class="jtbd-statement">When <em>I feel my partner pulling away and my body goes into panic mode</em>, I want to <em>understand what's happening in me and regulate without reaching out</em>, so I can <em>stop pushing them further away and reclaim my own sense of stability</em>.</div>
+          <div class="jtbd-insight">APs know intellectually that protest behaviors don't work — they've read the theory. The job isn't more information. It's real-time tools to interrupt the spiral: a framework for sitting with uncertainty, for recognizing the difference between a genuine threat and a triggered nervous system, and for taking an action that serves them rather than re-traumatizes the relationship.</div>
+        </div>
+      </div>
+
+      <div class="jtbd-card anxious-jtbd">
+        <div class="jtbd-left">
+          <div class="jtbd-num">02</div>
+          <div class="jtbd-cluster-tag">Anxious</div>
+          <div class="jtbd-archetype">The Self-Reclaimer</div>
+        </div>
+        <div class="jtbd-right">
+          <div class="jtbd-statement">When <em>I realize I've been shrinking my needs and abandoning myself to keep someone interested</em>, I want to <em>rebuild my own sense of self and standards outside of a relationship</em>, so I can <em>enter the next one as someone who chooses a partner rather than clings to them</em>.</div>
+          <div class="jtbd-insight">This AP isn't mid-spiral — they've had the moment of clarity. The relationship is over, or they've stepped back from the pattern. Now they want to become a different person before they date again. They're seeking identity reconstruction: values, boundaries, what they actually want — not what anxious attachment tells them they need.</div>
+        </div>
+      </div>
+
+      <div class="jtbd-card avoidant-jtbd">
+        <div class="jtbd-left">
+          <div class="jtbd-num">03</div>
+          <div class="jtbd-cluster-tag">Avoidant</div>
+          <div class="jtbd-archetype">The Feeling-Finder</div>
+        </div>
+        <div class="jtbd-right">
+          <div class="jtbd-statement">When <em>I notice I'm deactivating and shutting down on a partner I actually care about</em>, I want to <em>understand what's happening beneath my numbness and access what I actually feel</em>, so I can <em>stop losing people to a wall I didn't consciously build</em>.</div>
+          <div class="jtbd-insight">This DA is not in denial — they know they deactivate and they know it causes harm. The insight gap is emotional: they can observe themselves but can't access what's underneath. "Too empty and blocked inside to offer them what they need." The job is emotional literacy, not behavioral coaching — helping them name and locate feelings they've suppressed since childhood.</div>
+        </div>
+      </div>
+
+      <div class="jtbd-card avoidant-jtbd">
+        <div class="jtbd-left">
+          <div class="jtbd-num">04</div>
+          <div class="jtbd-cluster-tag">Avoidant</div>
+          <div class="jtbd-archetype">The Vindicated Avoider</div>
+        </div>
+        <div class="jtbd-right">
+          <div class="jtbd-statement">When <em>I'm being blamed for all of my relationship's problems just because I'm avoidant</em>, I want to <em>understand the difference between my healthy need for space and actually harmful avoidant behavior</em>, so I can <em>stop internalizing other people's trauma and take responsibility only for what's mine</em>.</div>
+          <div class="jtbd-insight">A significant portion of the avoidant sub is defensive — reacting to being cast as villains by anxious partners. This isn't avoidance of growth; it's a real need: they want nuanced self-understanding that distinguishes "I prefer to communicate carefully" from "I ghost people." The job is clarity about where they end and the other person's projection begins.</div>
+        </div>
+      </div>
+
+      <div class="jtbd-card disorganized-jtbd">
+        <div class="jtbd-left">
+          <div class="jtbd-num">05</div>
+          <div class="jtbd-cluster-tag">Fearful-Avoidant</div>
+          <div class="jtbd-archetype">The Pattern Decoder</div>
+        </div>
+        <div class="jtbd-right">
+          <div class="jtbd-statement">When <em>I realize I've been single for years because I keep choosing unavailable people and running from anyone who's actually good</em>, I want to <em>understand the specific fear driving my choices — what intimacy triggers in me and why</em>, so I can <em>finally stay when staying is the right thing to do</em>.</div>
+          <div class="jtbd-insight">The FA's moment of discovery — "I just realized why I've been single for two years" — is the entry point to this job. They're motivated and curious, not resistant. They want the map: why do available people feel threatening? Why do unavailable people feel safe? What childhood experience created this inversion? Understanding the mechanism is the prerequisite for changing it.</div>
+        </div>
+      </div>
+
+      <div class="jtbd-card disorganized-jtbd">
+        <div class="jtbd-left">
+          <div class="jtbd-num">06</div>
+          <div class="jtbd-cluster-tag">Fearful-Avoidant</div>
+          <div class="jtbd-archetype">The Self-Sabotage Stopper</div>
+        </div>
+        <div class="jtbd-right">
+          <div class="jtbd-statement">When <em>I'm in a good relationship and feel the urge to blow it up for no rational reason</em>, I want to <em>interrupt my deactivation before I do real damage and stay present with someone worth staying for</em>, so I can <em>experience what it's like to let love in without running from it</em>.</div>
+          <div class="jtbd-insight">This is the FA who already has the insight — they've read the theory, they know they're FA, and they can see themselves sabotaging a genuinely good relationship in real time. "I found myself pushing her away in little ways, second-guessing myself." The job is presence tools: micro-interventions for the moment the urge to flee arrives, before the behavior executes.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 6: TRIGGERS -->
+  <section id="triggers">
+    <h2 class="section-title">06 — What Triggers Each Style</h2>
+    <div class="style-grid">
+
+      <div class="style-col anxious">
+        <div class="trigger-col anxious">
+          <div class="col-header">Anxious — Activation Triggers</div>
+          <div class="trigger-item">
+            <div class="trigger-label">The read receipt</div>
+            Seen but not replied to. The body reads this as an abandonment signal — panic spiral begins regardless of what the rational mind says.
+          </div>
+          <div class="trigger-item">
+            <div class="trigger-label">Emotional withdrawal</div>
+            A partner who was warm yesterday but quiet today. The shift — not the silence itself — triggers intense monitoring and protest behavior.
+          </div>
+          <div class="trigger-item">
+            <div class="trigger-label">Canceled plans</div>
+            Reads as proto-abandonment. The AP spirals into "what changed?" even when a perfectly ordinary reason is given.
+          </div>
+          <div class="trigger-item">
+            <div class="trigger-label">Being told they're "too much"</div>
+            Any signal that their needs are inconvenient confirms the core wound: love is conditional on staying small enough.
+          </div>
+          <div class="trigger-item">
+            <div class="trigger-label">Childhood performance loop</div>
+            Praised only for achievement — not for being. AP learned love must be earned, so they over-give and over-perform not out of generosity but to buy safety. The giving is real. The motive is self-protection.
+          </div>
+        </div>
+      </div>
+
+      <div class="style-col avoidant">
+        <div class="trigger-col avoidant">
+          <div class="col-header">Avoidant — Deactivation Triggers</div>
+          <div class="trigger-item">
+            <div class="trigger-label">Requests for more</div>
+            Any ask for more contact, more emotional presence, or more commitment. To the DA, this registers as incoming engulfment — the reflex is withdrawal, not choice.
+          </div>
+          <div class="trigger-item">
+            <div class="trigger-label">Vulnerability pressure</div>
+            A partner crying, needing reassurance, or showing visible distress. Triggers the DA's shutdown system — not cruelty, but a dysregulated nervous system managing a threat.
+          </div>
+          <div class="trigger-item">
+            <div class="trigger-label">"What are we?" conversations</div>
+            Defining the relationship, talking about the future, labeling the connection. The DA's self-protection instinct reads commitment as a trap closing around them.
+          </div>
+          <div class="trigger-item">
+            <div class="trigger-label">Post-breakup feelings arrive</div>
+            Paradoxically, the DA often feels the most for someone once the relationship ends — when closeness is no longer a threat, feelings surface. They call their ex. The AP mistakes this for change.
+          </div>
+          <div class="trigger-item">
+            <div class="trigger-label">Self-growth as avoidance</div>
+            "I'm addicted to self-help and personal growth, but stay stuck because I don't know how to feel." Intellectual insight becomes a substitute for emotional access — safe, controlled, and entirely un-threatening.
+          </div>
+        </div>
+      </div>
+
+      <div class="style-col disorganized">
+        <div class="trigger-col disorganized">
+          <div class="col-header">Fearful-Avoidant — Dual Triggers</div>
+          <div class="trigger-item">
+            <div class="trigger-label">Genuine intimacy arriving</div>
+            Not imagined closeness — actual intimacy. The moment real connection becomes available, the FA's nervous system fires both approach and flee simultaneously. The craving and the terror are one.
+          </div>
+          <div class="trigger-item">
+            <div class="trigger-label">Words ≠ actions</div>
+            The betrayal wound: "You said you'd be there and then you weren't." FA catalogues every inconsistency between what a partner says and does — and uses the record as evidence that love is fundamentally unsafe.
+          </div>
+          <div class="trigger-item">
+            <div class="trigger-label">Moving the goalposts</div>
+            When a partner meets a specific demand, the FA raises the bar. Not manipulation — each fulfilled request gives temporary soothing, but the core wound resurfaces and demands a new test. The real ask is never "be consistent" — it's "prove you won't leave."
+          </div>
+          <div class="trigger-item">
+            <div class="trigger-label">Being too deeply seen</div>
+            Deep understanding from a partner triggers exposure panic. The FA craves being known more than anything — and fears it most. Trust means being seen and understood for who they really are.
+          </div>
+          <div class="trigger-item">
+            <div class="trigger-label">Any abandonment signal</div>
+            Even minimal partner withdrawal activates the anxious side. The FA may have just pushed the partner away themselves — and still panics at their distance. Both wounds are always active; whichever fires first determines the behavior.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 7: AP–DA DYNAMIC -->
+  <section id="dynamic">
+  <div class="dynamic-section">
+    <h2 class="section-title" style="border-color: rgba(251,146,60,0.3); color: var(--dynamic);">07 — The Anxious–Avoidant Dynamic</h2>
+
+    <div class="dynamic-insight" style="margin-bottom: 28px;">
+      <h4>Why this pairing is the dominant frame for all three communities</h4>
+      <p>Even avoidant and FA subs constantly reference the AP–DA trap. It's the relationship most people in this space have been in, are in, or are trying to understand. The dynamic is not accidental: the AP's pursuit gives the DA the admiration and space-giving they crave early on; the DA's emotional distance gives the AP the intensity and challenge that registers as attraction. Together they form a perfect neurological loop — until it destroys them both.</p>
+    </div>
+
+    <!-- THE CYCLE -->
+    <div class="cycle-block">
+      <h4>The Loop — How It Plays Out</h4>
+      <div class="cycle-steps">
+        <div class="cycle-step da">
+          <div class="step-actor">Avoidant</div>
+          <div class="step-text">Comes on strong, warm, present</div>
+        </div>
+        <div class="cycle-arrow">→</div>
+        <div class="cycle-step ap">
+          <div class="step-actor">Anxious</div>
+          <div class="step-text">Attaches deeply, feels "finally"</div>
+        </div>
+        <div class="cycle-arrow">→</div>
+        <div class="cycle-step da">
+          <div class="step-actor">Avoidant</div>
+          <div class="step-text">Closeness triggers deactivation; pulls away</div>
+        </div>
+        <div class="cycle-arrow">→</div>
+        <div class="cycle-step ap">
+          <div class="step-actor">Anxious</div>
+          <div class="step-text">Spirals; protests; texts, pleads, escalates</div>
+        </div>
+        <div class="cycle-arrow">→</div>
+        <div class="cycle-step da">
+          <div class="step-actor">Avoidant</div>
+          <div class="step-text">Withdraws further; confirms the AP's fear</div>
+        </div>
+        <div class="cycle-arrow">→</div>
+        <div class="cycle-step ap">
+          <div class="step-actor">Anxious</div>
+          <div class="step-text">Abandons self to re-attract; suppresses needs</div>
+        </div>
+        <div class="cycle-arrow">→</div>
+        <div class="cycle-step da">
+          <div class="step-actor">Avoidant</div>
+          <div class="step-text">Breaks up or is broken up with</div>
+        </div>
+        <div class="cycle-arrow">→</div>
+        <div class="cycle-step da">
+          <div class="step-actor">Avoidant</div>
+          <div class="step-text">Post-breakup: feelings return ("no longer a threat")</div>
+        </div>
+        <div class="cycle-arrow">→</div>
+        <div class="cycle-step ap">
+          <div class="step-actor">Anxious</div>
+          <div class="step-text">Interprets return as proof love was real. Repeat.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPLIT VIEW -->
+    <div class="dynamic-split">
+      <div class="dynamic-side ap-side">
+        <div class="side-label">😰 Anxious — how they experience the DA</div>
+        <ul>
+          <li>Thrilling at first: finally someone who feels like "home" (even if home was chaotic)</li>
+          <li>The DA's early warmth creates an attachment the AP can't walk away from</li>
+          <li>Every deactivation is experienced as personal rejection, not a defensive system</li>
+          <li>Protest behaviors are not manipulation — they are a dysregulated nervous system reaching for safety</li>
+          <li>Intermittent reinforcement keeps them locked in: good moments are so good they justify the bad</li>
+          <li>After the breakup: grief is complicated by the DA's return, which restarts the hope cycle</li>
+          <li>Deepest frustration: "I was so focused on keeping them that I completely lost myself"</li>
+        </ul>
+      </div>
+      <div class="dynamic-side da-side">
+        <div class="side-label">🧊 Avoidant — how they experience the AP</div>
+        <ul>
+          <li>Initially attracted: the AP pursues and appreciates them — this feels good</li>
+          <li>As feelings deepen, the AP's emotional energy shifts from admiration to demand</li>
+          <li>Closeness triggers the DA's deactivation system — not choice, but reflex</li>
+          <li>The AP's protest behavior confirms the DA's felt belief: intimacy = loss of self</li>
+          <li>Post-breakup activation confuses them: feelings arrive only when the AP is no longer "a threat"</li>
+          <li>Shame about the cycle is real: "I see I'm hurting them and I still can't stop"</li>
+          <li>Deepest frustration: "I'm not a villain. I just need space and everyone treats that as abuse."</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- DA UNSPOKEN RULEBOOK -->
+    <div class="rulebook-block">
+      <div class="rulebook-label">🧊 The DA's Unspoken Rulebook — 5 Rules No One Tells You</div>
+      <p class="rulebook-sub">What the anxious partner unconsciously learns to do in order to keep a dismissive-avoidant close — each rule is a self-abandonment in disguise</p>
+      <ol class="rulebook-rules">
+        <li><strong>Shrink your needs.</strong> The moment you have a need, you become a burden. So you preemptively erase it before it ever becomes a problem.</li>
+        <li><strong>Read my mind.</strong> Asking for something is needy. If you truly loved me, you'd just know — without being told.</li>
+        <li><strong>Master the art of forgetting.</strong> After conflict, pretend it never happened. Never bring it up again. Accountability registers as attack.</li>
+        <li><strong>Earn connection through good behavior.</strong> Love is not freely given — it is granted as reward. Be pleasant, low-maintenance, and never a problem to solve.</li>
+        <li><strong>Be the "cool person."</strong> No expectations, no clinginess, no needs on the surface. Be so unbothered that wanting more would make you the villain of the story.</li>
+      </ol>
+    </div>
+
+    <!-- WHAT EACH DOES TO THE OTHER -->
+    <div class="dynamic-insight">
+      <h4>How each style amplifies the other's core wound</h4>
+      <p>The AP's protest behavior — repeated messages, emotional escalation, demands for reassurance — lands directly on the DA's core fear: that closeness means engulfment. So the DA withdraws. The DA's withdrawal — silence, distance, deactivation — lands directly on the AP's core fear: that love means eventual abandonment. So the AP escalates. Each person's protective response is the exact trigger for the other's wound. Neither is acting irrationally given their history. Both are acting in ways that guarantee the outcome they fear most.</p>
+    </div>
+
+    <!-- WHY HARD TO LEAVE -->
+    <div class="dynamic-insight" style="background: rgba(167,139,250,0.07); border-color: rgba(167,139,250,0.2);">
+      <h4 style="color: var(--disorganized);">Why it's so hard to leave — the FA lens</h4>
+      <p>Fearful-avoidants are uniquely positioned to describe this trap from the inside: they carry both sides simultaneously. The AP–DA dynamic is not just something they observe — it's their internal state in a single body. "Constant should I stay or should I go. Do I work on this or am I being too clingy? Or should I just end it now to avoid being hurt?" The FA understands both parties because they are both parties, oscillating between anxious activation and avoidant deactivation within the same relationship — sometimes within the same hour.</p>
+    </div>
+
+    <!-- VERBATIM FROM BOTH SIDES -->
+    <h4 style="font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:16px;">Verbatim — Both Sides of the Dynamic</h4>
+    <div class="dynamic-quotes">
+
+      <div class="dq-item ap-q">
+        <div class="dq-text">It's always a push and pull with them. "You're giving me anxiety" — not "I HAVE anxiety and this relationship triggers that." You deserve better. Glad it's over.</div>
+        <div class="dq-meta"><span class="dq-score">↑ 166</span> r/anxiousattachment</div>
+      </div>
+
+      <div class="dq-item da-q">
+        <div class="dq-text">You getting feelings post-breakup, when he is no longer a threat — that is still just your avoidance system activated. It couldn't have happened any other way.</div>
+        <div class="dq-meta"><span class="dq-score">↑ 128</span> r/avoidantattachment</div>
+      </div>
+
+      <div class="dq-item ap-q">
+        <div class="dq-text">My rule of thumb: if you're scared to lose them, they probably trigger your anxiety. If it comes with a sense of security, those are the ones to be around. If they trigger the anxiety… it might mean they aren't the right person for you.</div>
+        <div class="dq-meta"><span class="dq-score">↑ 76</span> r/anxiousattachment</div>
+      </div>
+
+      <div class="dq-item da-q">
+        <div class="dq-text">It's hard for APs because more often than not, the avoidant doesn't show up avoidant. They are loving, present, and seemingly all in — before going into their avoidant tendencies. There is no warning. They just start to fade, with very little explanation.</div>
+        <div class="dq-meta"><span class="dq-score">↑ 145</span> r/avoidantattachment</div>
+      </div>
+
+      <div class="dq-item ap-q">
+        <div class="dq-text">Every time you choose to not voice a need in fear they'll run, YOU are abandoning YOURSELF. Sticking around after your needs aren't being met? That is the problem. You deserve better than crumbs.</div>
+        <div class="dq-meta"><span class="dq-score">↑ 147</span> r/anxiousattachment</div>
+      </div>
+
+      <div class="dq-item da-q">
+        <div class="dq-text">Can we talk about how painful it is as a DA to see you're hurting the person you care about, but still be too empty and blocked inside to offer them what they need? I didn't ask to be this way.</div>
+        <div class="dq-meta"><span class="dq-score">↑ 385</span> r/avoidantattachment</div>
+      </div>
+
+    </div>
+  </div>
+  </section>
+
+  <!-- SECTION 7: SHARED PATTERNS -->
+  <section id="patterns">
+    <h2 class="section-title">08 — Patterns Across All Three Clusters</h2>
+    <div class="shared-grid">
+      <div class="shared-card">
+        <h4>Therapy is the shared language</h4>
+        <p>All three communities treat therapy — or "doing the work" — as the primary legitimate path to change. References to IFS, somatic work, inner child, nervous system regulation appear across all clusters. Not coaching. Not books. Not journaling. Actual professional support is held in high regard.</p>
+      </div>
+      <div class="shared-card">
+        <h4>Self-awareness without behavior change</h4>
+        <p>The most common pattern across all three: people who can accurately describe their dysfunctional pattern in clinical detail but cannot stop it in the moment. The gap between insight and action is the defining frustration — and the primary unmet job.</p>
+      </div>
+      <div class="shared-card">
+        <h4>"Earned security" is the universal aspiration</h4>
+        <p>Every cluster talks about becoming secure — not just finding a secure partner, but becoming a secure person. "Going secure" is the destination. It's not presented as returning to baseline but as earned through work — which carries moral weight and makes the journey meaningful.</p>
+      </div>
+      <div class="shared-card">
+        <h4>The anxious-avoidant trap is everyone's reference point</h4>
+        <p>Even the avoidant and FA subs constantly reference the anxious-avoidant dynamic. The AP-DA relationship is the dominant cultural frame for all three communities. Everyone is either in one, escaped one, or trying to understand why they keep recreating it.</p>
+      </div>
+      <div class="shared-card">
+        <h4>Childhood is assumed, not discovered</h4>
+        <p>Posts rarely treat childhood trauma as a revelation. It's the starting premise. The content isn't "could this come from childhood?" — it's "I know it came from childhood, now what?" Users want practical tools that work downstream from the origin they already accept.</p>
+      </div>
+      <div class="shared-card">
+        <h4>Online research is a coping behavior, not just research</h4>
+        <p>Reading about attachment theory is itself a protest behavior for APs and an avoidance behavior for DAs. People compulsively research their partner's style instead of focusing on themselves. The avoidant sub explicitly calls this out: "You're abandoning yourself by hyperfocusing on them."</p>
+      </div>
+      <div class="shared-card">
+        <h4>Covert selfishness in anxious attachment</h4>
+        <p>AP over-giving is rarely pure generosity. "I'm going to give to you — which means it's about me, not you." The AP learned that love comes through performance: praise arrived only for achievement, so over-functioning became the strategy to earn connection. The giving is real. The motive is self-protection. Partners feel smothered because the gift was never for them.</p>
+      </div>
+      <div class="shared-card">
+        <h4>Moving goalposts in fearful-avoidant attachment</h4>
+        <p>The FA asks for something specific ("just be consistent"). The partner delivers. The FA moves the bar. Not manipulation — each fulfilled request provides temporary soothing, but the core betrayal wound resurfaces and demands a new test. The underlying ask is never "be consistent" — it is "prove you won't leave." No single action can answer that. The bar keeps moving until either the FA heals or the partner exhausts.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 8: VERBATIM VOICES -->
+  <section id="voices">
+    <h2 class="section-title">09 — Verbatim Voices</h2>
+    <div class="style-grid">
+
+      <div class="style-col anxious">
+        <div class="quote-col anxious">
+          <div class="col-header">Anxious</div>
+          <div class="quote-item">
+            <div class="quote-text">I think as anxiously attached individuals, we have a tendency to try to keep our partners close with rope-like tactics... nobody wants to be roped in or tied down. Sounds painful. And also, you don't want to hold the rope forever either.</div>
+            <div class="quote-meta"><span class="quote-score">↑ 982</span> r/anxiousattachment</div>
+          </div>
+          <div class="quote-item">
+            <div class="quote-text">She wants to know what my needs are and never makes me feel like they are too much. For example, she knows my abandonment wound and every morning she sends a good morning text — not because I asked, but because she saw me light up once and remembered.</div>
+            <div class="quote-meta"><span class="quote-score">↑ 657</span> r/anxiousattachment</div>
+          </div>
+          <div class="quote-item">
+            <div class="quote-text">I think us anxious folks have to get better at creating boundaries, recognizing our needs, and prioritizing ourselves in general. I've let other anxious people become enmeshed with me and it sucked the life out of me because they would get upset whenever I needed space.</div>
+            <div class="quote-meta"><span class="quote-score">↑ 152</span> r/anxiousattachment</div>
+          </div>
+          <div class="quote-item">
+            <div class="quote-text">Every time you choose to not voice a need in fear they'll run, YOU are abandoning YOURSELF. Sticking around repeatedly after your voiced needs aren't being met? Choose yourself. You deserve better than crumbs.</div>
+            <div class="quote-meta"><span class="quote-score">↑ 147</span> r/anxiousattachment</div>
+          </div>
+          <div class="quote-item">
+            <div class="quote-text">I'm going to give to you — which means it's not about you. It's about me. It's about the fact that I was only praised for what I did, not for who I was. So I give and give, and I call it love. But it's really a strategy I learned to stay safe.</div>
+            <div class="quote-meta"><span class="quote-source-video">▶ Video</span> Attachment Styles — creator insight</div>
+          </div>
+          <div class="quote-item">
+            <div class="quote-text">A healthy relationship won't make you feel like you're drowning in distance or suffocating in closeness. It will feel like breathing. That's the standard. Not perfect — just breathable.</div>
+            <div class="quote-meta"><span class="quote-source-video">▶ Video</span> AP–DA Dynamic deep dive</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="style-col avoidant">
+        <div class="quote-col avoidant">
+          <div class="col-header">Avoidant</div>
+          <div class="quote-item">
+            <div class="quote-text">Can we talk about how painful it is as a DA to see you're hurting the person you care about, but still be too empty and blocked inside to offer them what they need? I didn't ask to be this way. I'm trying the best I can to change it.</div>
+            <div class="quote-meta"><span class="quote-score">↑ 385</span> r/avoidantattachment</div>
+          </div>
+          <div class="quote-item">
+            <div class="quote-text">I notice that I become more attracted to them as we get closer, but only as long as the vibe stays playful and exploratory. But I immediately start losing interest when the other person's energy becomes more possessive or emotionally vulnerable.</div>
+            <div class="quote-meta"><span class="quote-score">↑ 231</span> r/avoidantattachment</div>
+          </div>
+          <div class="quote-item">
+            <div class="quote-text">Avoidance is protective. It keeps fear hidden and managed behind other feelings — disgust, repulsion, indifference. To feel fear is to feel vulnerable. The wall isn't indifference. It's terror wearing a mask.</div>
+            <div class="quote-meta"><span class="quote-score">↑ 231</span> r/avoidantattachment</div>
+          </div>
+          <div class="quote-item">
+            <div class="quote-text">I can't say that I have shifted completely, but I've picked up a lot of secure behaviours. The reason? I'm in a relationship where I feel emotionally safe and where my experiences are validated. I still trend avoidant, but I'm capable of more than I thought.</div>
+            <div class="quote-meta"><span class="quote-score">↑ 139</span> r/avoidantattachment</div>
+          </div>
+          <div class="quote-item">
+            <div class="quote-text">I'm addicted to self-help and personal growth. I have read every book, taken every course, done every journaling prompt. And I stay stuck — because none of it taught me how to actually feel. I know everything about myself. I feel almost nothing.</div>
+            <div class="quote-meta"><span class="quote-source-video">▶ Video</span> DA internal experience</div>
+          </div>
+          <div class="quote-item">
+            <div class="quote-text">The anxious partner always has to accommodate. They learn to shrink their needs, read minds, forgive and forget, and earn closeness with good behavior. That's not love. You deserve more than the bare minimum disguised as a relationship.</div>
+            <div class="quote-meta"><span class="quote-source-video">▶ Video</span> AP–DA Dynamic — accountability lens</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="style-col disorganized">
+        <div class="quote-col disorganized">
+          <div class="col-header">Fearful-Avoidant</div>
+          <div class="quote-item">
+            <div class="quote-text">Just realized the reason I've been single for almost two years is because I have Fearful Avoidant Attachment. I date Avoidant men out of safety from my own anxiety and fears. If I never date someone who provides me security, I never have to truly be intimate — I'll never be truly exposed.</div>
+            <div class="quote-meta"><span class="quote-score">↑ 1,707</span> r/fearfulavoidant</div>
+          </div>
+          <div class="quote-item">
+            <div class="quote-text">Just message them back, it's not hard — at least not in theory. It would be the easiest thing in the world to shoot back a quick reply. I'm good at being likeable from a distance, pretty in a blurry photo, funny in 280 characters. It's the real thing I can't do.</div>
+            <div class="quote-meta"><span class="quote-score">↑ 693</span> r/fearfulavoidant</div>
+          </div>
+          <div class="quote-item">
+            <div class="quote-text">Yeah. When I eventually push them away enough for them to start pulling away, I reel them back in and get back in line for the roller coaster. It's sickening. I know exactly what I'm doing and I do it anyway.</div>
+            <div class="quote-meta"><span class="quote-score">↑ 205</span> r/fearfulavoidant</div>
+          </div>
+          <div class="quote-item">
+            <div class="quote-text">Being FA is a mix of AP & DA and flip-flopping between the two states — but crucially: Trust Issues and Shame. The core belief "I am a bad person" drives perfectionism, overgiving to prove you're good, and avoiding relationships because you're never good enough.</div>
+            <div class="quote-meta"><span class="quote-score">↑ 86</span> r/fearfulavoidant</div>
+          </div>
+          <div class="quote-item">
+            <div class="quote-text">She remembers every single time there was a gap between your words and your actions. Every "I'll be there" that became an absence. She's not being dramatic. She's pattern-matching for survival. That's what betrayal wounds do.</div>
+            <div class="quote-meta"><span class="quote-source-video">▶ Video</span> Dr. Sarah Hensley — FA deep dive</div>
+          </div>
+          <div class="quote-item">
+            <div class="quote-text">Your deepest need is to deeply trust your partner. Not just to feel safe — to be truly seen and understood for who you actually are, not who you perform yourself to be. That kind of trust isn't given. It's slowly, carefully built.</div>
+            <div class="quote-meta"><span class="quote-source-video">▶ Video</span> FA healing — trust as the core need</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Data source: Reddit — r/anxiousattachment, r/avoidantattachment, r/fearfulavoidant · 731 posts · 15,630 comments · Research for Attachment Quiz funnel
+</footer>
+
+<script>
+  function setFilter(style, btn) {
+    // update button states
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // remove all filter classes
+    document.body.classList.remove('filter-anxious', 'filter-avoidant', 'filter-disorganized');
+
+    if (style === 'anxious') {
+      document.body.classList.add('filter-anxious');
+    } else if (style === 'avoidant') {
+      document.body.classList.add('filter-avoidant');
+    } else if (style === 'disorganized') {
+      document.body.classList.add('filter-disorganized');
+    } else if (style === 'dynamic') {
+      // scroll to dynamic section
+      document.getElementById('dynamic').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+</script>
+
+</body>
+</html>
