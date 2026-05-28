@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Audience Insights: Successful but Romantically Lonely Men</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #21253a;
+      --border: #2e3350;
+      --accent: #5b8dee;
+      --accent2: #a78bfa;
+      --text: #e2e8f0;
+      --text-muted: #8892aa;
+      --quote-bg: #161926;
+      --quote-border: #3b4a7a;
+      --tag-bg: #1e2a4a;
+      --tag-text: #7aa3f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    .hero {
+      background: linear-gradient(135deg, #0d1124 0%, #1a1f3a 60%, #0f1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 56px 40px 48px;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+    .hero h1 {
+      font-size: clamp(24px, 4vw, 38px);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .hero-sub {
+      color: var(--text-muted);
+      font-size: 14px;
+      max-width: 580px;
+      margin: 0 auto 28px;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .stat-num {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ── TOC ── */
+    .toc-wrap {
+      max-width: 900px;
+      margin: 36px auto;
+      padding: 0 24px;
+    }
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 28px;
+    }
+    .toc-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 8px;
+    }
+    .toc-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--surface2);
+      text-decoration: none;
+      color: var(--text);
+      font-size: 13px;
+      transition: background 0.15s;
+    }
+    .toc-item:hover { background: var(--tag-bg); color: var(--accent); }
+    .toc-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent2);
+      min-width: 20px;
+    }
+
+    /* ── Main content ── */
+    .content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── Section ── */
+    .section {
+      margin-bottom: 60px;
+      scroll-margin-top: 24px;
+    }
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 28px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-num {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 2px;
+    }
+    .section-title-wrap { flex: 1; }
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .section-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* ── Sub-finding ── */
+    .finding {
+      margin-bottom: 32px;
+    }
+    .finding-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent2);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .finding-label::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent2);
+      flex-shrink: 0;
+    }
+    .finding-text {
+      color: var(--text);
+      margin-bottom: 12px;
+      font-size: 14.5px;
+    }
+
+    /* ── Quote ── */
+    blockquote {
+      background: var(--quote-bg);
+      border-left: 3px solid var(--quote-border);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 10px 0;
+      font-size: 13.5px;
+      font-style: italic;
+      color: #c9d4e8;
+      line-height: 1.65;
+    }
+    .quote-source {
+      display: block;
+      margin-top: 8px;
+      font-style: normal;
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+    .tag-reddit {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #1a2a1a;
+      color: #6cc47a;
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .tag-goodreads {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #2a1a1a;
+      color: #e07c7c;
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .tag-pts {
+      display: inline-flex;
+      align-items: center;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* ── Synthesis box ── */
+    .synthesis {
+      background: linear-gradient(135deg, #141b30, #1a1f3a);
+      border: 1px solid #3b4a7a;
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-top: 50px;
+    }
+    .synthesis-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+    .synthesis-text {
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.8;
+    }
+    .synthesis-text em {
+      color: #a8c4ff;
+      font-style: italic;
+    }
+
+    /* ── Divider ── */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+      margin: 40px 0;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .hero { padding: 36px 20px 32px; }
+      .hero-stats { gap: 20px; }
+      .toc-wrap, .content { padding: 0 16px; }
+      .toc-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<div class="hero">
+  <div class="hero-eyebrow">Audience Research · 2025</div>
+  <h1>Successful but Romantically Lonely Men</h1>
+  <p class="hero-sub">9-category insight analysis drawn from Reddit threads and Goodreads book reviews, filtered for men with stable, successful lives who struggle specifically in romance.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">183</span><span class="stat-label">Reddit threads</span></div>
+    <div class="stat"><span class="stat-num">54</span><span class="stat-label">Goodreads reviews</span></div>
+    <div class="stat"><span class="stat-num">4</span><span class="stat-label">Books analyzed</span></div>
+    <div class="stat"><span class="stat-num">9</span><span class="stat-label">Insight categories</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TOC ═══════════════════ -->
+<div class="toc-wrap">
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <div class="toc-grid">
+      <a href="#s1" class="toc-item"><span class="toc-num">01</span> Core Problems</a>
+      <a href="#s2" class="toc-item"><span class="toc-num">02</span> Pain Points</a>
+      <a href="#s3" class="toc-item"><span class="toc-num">03</span> Triggers</a>
+      <a href="#s4" class="toc-item"><span class="toc-num">04</span> Solutions They Use</a>
+      <a href="#s5" class="toc-item"><span class="toc-num">05</span> Cause of Loneliness</a>
+      <a href="#s6" class="toc-item"><span class="toc-num">06</span> Romantic Experience</a>
+      <a href="#s7" class="toc-item"><span class="toc-num">07</span> Blockers</a>
+      <a href="#s8" class="toc-item"><span class="toc-num">08</span> Jobs to Be Done</a>
+      <a href="#s9" class="toc-item"><span class="toc-num">09</span> Ideal Outcome</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ CONTENT ═══════════════════ -->
+<div class="content">
+
+  <!-- ══ 1. CORE PROBLEMS ══ -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-title-wrap">
+        <div class="section-title">Core Problems</div>
+        <div class="section-desc">The fundamental, underlying issues driving the pattern</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">A &nbsp;·&nbsp; The "I did everything right" paradox</div>
+      <p class="finding-text">These men followed the prescribed success formula — career, fitness, finances, social competence — and found it doesn't translate into romantic outcomes. This creates a specific identity crisis: in every other domain, effort equals results. Here it doesn't.</p>
+      <blockquote>
+        "I've done most of self-love stuff that is typically recommended. Got a good job, am in great shape, got hobbies. I think I'm a pretty sociable person too with a good friend group. Just this year I've went on two vacations with a different platonic female friend so I don't think I give off creeper vibes and I'm interesting enough to be a travel buddy. Yet still single after like 2 decades of trying. It almost feels like a case of genetic pre-determinism these days."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">1107 pts</span> r/self · 34M</span>
+      </blockquote>
+      <blockquote>
+        "I am a lawyer and managing director of a public institution in my country. I am in charge of managing the staff at our workplace, I have to take important political and administrative decisions and interact with government and parliament members on a daily basis... How did a man like me end up being 38 years old and never having had a proper girlfriend or even a date?"
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">631 pts</span> r/ForeverAlone</span>
+      </blockquote>
+      <blockquote>
+        "I feel like I've done everything society says I should do to get a relationship but have never had one. I have a good job (I work in IT), my own apartment, I own a car... I work out, I surf, I skate and snowboard. I play a little guitar, I collect vinyl records, I play ice hockey."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">456 pts</span> r/ForeverAlone · 30M</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">B &nbsp;·&nbsp; Missing the romantic operating system</div>
+      <p class="finding-text">Unlike social or career skills — built through deliberate practice — romantic and intimate skills were never developed. They are competent adults with one functional gap.</p>
+      <blockquote>
+        "I've never dated, flirted, or been in a relationship with anyone, so I only know how to treat people as my friends, even if I'd want something else."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">2473 pts</span> r/dating_advice · 23M</span>
+      </blockquote>
+      <blockquote>
+        "I originally thought dating was a serious step and didn't want to make a move too fast. Taking someone out on a date, or asking them out on a date was not something you did until you realized you both love each other. I'm naturally an introvert so this made sense. Me confessing my feelings towards a girl was the equivalent of a marriage proposal in my mind."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">4174 pts</span> r/socialskills · 25M</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">C &nbsp;·&nbsp; Nice Guy conditioning — learned suppression of authentic needs</div>
+      <p class="finding-text">A significant subset were raised to suppress their own desires, seek approval, and relate through giving rather than authentic presence. They don't know what they actually want because they've been performing "what a good man does" for so long.</p>
+      <blockquote>
+        "I was a Nice Guy throughout my high school years and early college life. I didn't understand back then why I was getting rejected by women, why I was settling making friends with people I didn't like, and why I felt afraid to get into arguments with my family. I knew the Nice Guy life was painful, but I thought that was the right way to live to be a well-rounded man."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 182 likes</span>
+      </blockquote>
+      <blockquote>
+        "Nice Guys have a set of personality traits... they think of themselves as doing everything 'right,' giving to other people, taking care of other people... But underneath the surface, they actually are desperately seeking approval from others, especially women. A Nice Guy's life revolves around trying to please a woman and make her happy. They are trying to avoid conflict, trying to hide their own flaws and mistakes, and repressing their feelings. They have difficulty making their own needs a priority."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 32 likes</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">D &nbsp;·&nbsp; Socialized without a working male model for intimacy</div>
+      <blockquote>
+        "Whether you like it or not, we live in a world where men are seriously screwed up. From early childhood we are being taught to please women. Most of us don't have a healthy male role model to follow, our fathers are distraught and generally don't care about their heritage... there's always a reasonable amount of blame and shame being poured on a teen boy who tries to have an honest interaction with a girl."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> Models – Mark Manson · 300 likes</span>
+      </blockquote>
+      <blockquote>
+        "As a kid I knew that being more real and vulnerable is the right way to have healthy and fulfilling relationships. With more and more poisonous pressure from the majority of my peers at middle school... I was persuaded to think that I WASN'T RIGHT. They were pushing MANIPULATIVE RELATIONSHIPS but I couldn't tell the difference then."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> Models – Mark Manson · 17 likes</span>
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══ 2. PAIN POINTS ══ -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-title-wrap">
+        <div class="section-title">Pain Points</div>
+        <div class="section-desc">Surface-level frustrations and day-to-day struggles they actively feel</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">A &nbsp;·&nbsp; Invisible to women despite visible success</div>
+      <p class="finding-text">The asymmetry between how they're perceived professionally (respected, valued, liked) versus romantically produces a specific, disorienting pain.</p>
+      <blockquote>
+        "I'm 43 and I'm always getting told I look about 10 years younger, I get told I look like Robert Downey Jr, I get told I have the greatest Personality and that I'm such a kind and caring good looking man. I look after myself, I Travel, I have a good clean home. I struggle getting a conversation with anyone and struggle keeping one going, I often get ghosted for no reason whatsoever."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">2679 pts</span> r/Tinder · 43M</span>
+      </blockquote>
+      <blockquote>
+        "I am proof that having a successful career and a high social status will get you absolutely nowhere."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">631 pts</span> r/ForeverAlone</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">B &nbsp;·&nbsp; Loneliness that existing friendships cannot solve</div>
+      <p class="finding-text">They know precisely what they're missing. Good friendships make the specific gap more visible, not less.</p>
+      <blockquote>
+        "I hate seeing couples. Wherever I turn, there's always a genuinely or seemingly happy couple... I've always been that friend who gave killer relationship advice but never had a relationship of their own. I'm tired of pretending to listen to people vent about their relationships."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">725 pts</span> r/lonely</span>
+      </blockquote>
+      <blockquote>
+        "It was one of those nights: I was cuddling up with some girl I do know irl... It was touchy, it was cutesy; just generally everything I do want in a partner... Then I woke up."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">1036 pts</span> r/dating</span>
+      </blockquote>
+      <blockquote>
+        "I make $2 million / year and am completely alone. Everyone believes I'm doing great, but in truth I'm deeply depressed. Despite making dating a top priority over the past three years, I've been completely unsuccessful."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">7900 pts</span> r/TrueOffMyChest · 37M</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">C &nbsp;·&nbsp; Time as compounding shame</div>
+      <p class="finding-text">Each passing year without experience makes the problem feel increasingly irreversible. The embarrassment of the gap itself becomes a blocker.</p>
+      <blockquote>
+        "I will be turning 42 in a month. Never had a girlfriend. Never received romantic attention or love from a woman. A long time ago I held a positive attitude and an optimistic outlook, sincerely believing that things will get better in life. That optimism is gone now."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">505 pts</span> r/ForeverAlone</span>
+      </blockquote>
+      <blockquote>
+        "I honestly never thought I would make it to 30 and still be forever alone."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">456 pts</span> r/ForeverAlone · 30M</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">D &nbsp;·&nbsp; Self-improvement loop disillusionment</div>
+      <p class="finding-text">When years of prescribed personal development produce no romantic results, the disillusionment is specific and bitter — they feel they were given a false promise.</p>
+      <blockquote>
+        "It almost feels like a case of genetic pre-determinism these days. Either you're born with 'it' or you're born to fuck off and die alone and the advice of working on yourself is just cope."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">1107 pts</span> r/self · 34M</span>
+      </blockquote>
+      <blockquote>
+        "People here talk about casually dating multiple people all the time. How the hell is it happening so easily for everyone? I'm 24M and never had any woman interested in me. I earn good money, have a stable career..."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">287 pts</span> r/dating_advice</span>
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══ 3. TRIGGERS ══ -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-title-wrap">
+        <div class="section-title">Triggers</div>
+        <div class="section-desc">What specifically activates the loneliness feeling</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">A &nbsp;·&nbsp; Seeing couples in public — especially quiet, intimate moments</div>
+      <blockquote>
+        "I make $2 million / year and am completely alone. Last weekend I went to a farmer's market by myself. I watched a couple share a sample of cheese."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">7900 pts</span> r/TrueOffMyChest</span>
+      </blockquote>
+      <blockquote>
+        "I'm at the point where I hate seeing couples. Wherever I turn, there's always a genuinely or seemingly happy couple, and literally everyone's bragging about their partner or crush."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">725 pts</span> r/lonely</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">B &nbsp;·&nbsp; Age milestones and expiring social timelines</div>
+      <blockquote>
+        "'Don't worry, you'll meet someone in high school'... 'most people don't date in high school, you'll meet someone in college'... 'not hooking up in first year is normal'... 'sure you've been single for a while, but now that you've graduated and gotten a job you'll have people lining up.'"
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">330 pts</span> r/ForeverAlone · cataloguing the false reassurances that expired</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">C &nbsp;·&nbsp; Being outperformed romantically by men perceived as less accomplished</div>
+      <blockquote>
+        "I have observed, in many occasions, guys who objectively have less going for them than I do, yet they somehow manage to attract women much more easily than I do."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">631 pts</span> r/ForeverAlone</span>
+      </blockquote>
+      <blockquote>
+        "I can't for the life of me understand what I'm doing that makes it so I cannot get a girlfriend when I can clearly see guys who appear to make even less effort than I do end up with these beautiful girls."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">2317 pts</span> r/dating_advice</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">D &nbsp;·&nbsp; Social situations where romantic inexperience becomes visible</div>
+      <blockquote>
+        "Accidentally told my co-worker today that I never had a girlfriend at the age of 25. She was shocked. She asked me why and I had no good reason to give her."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">699 pts</span> r/ForeverAlone</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">E &nbsp;·&nbsp; Dating app futility after prolonged effort</div>
+      <blockquote>
+        "I have to have a very good profile. Good pictures and a relationship-oriented profile with a witty response to one of the prompts. I have to make her laugh, witty banter with her, ask her out on a date, logistically plan the date, pay for the date, ask her out on a second date and so on. I have to do all of this or the relationship ends. She doesn't have to initiate anything."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">1662 pts</span> r/dating_advice</span>
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══ 4. SOLUTIONS THEY USE ══ -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-title-wrap">
+        <div class="section-title">Solutions They Often Use</div>
+        <div class="section-desc">What they actually try — ranging from effective to counterproductive</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">A &nbsp;·&nbsp; The self-improvement loop (primary default)</div>
+      <p class="finding-text">Gym, career, therapy, hobbies — pursued as credentials to eventually "deserve" love, not as ends in themselves.</p>
+      <blockquote>
+        "(34m) Spent half my life following the advice of 'working on myself'. Got a good job, am in great shape, got hobbies."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">1107 pts</span> r/self</span>
+      </blockquote>
+      <blockquote>
+        "I'm 30, never had a girlfriend or sex, only 1 date. I'm determined to make up for lost time. I've been working in therapy for a year."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">320 pts</span> r/AskMenOver30</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">B &nbsp;·&nbsp; Dating apps (dominant channel, leads to burnout)</div>
+      <blockquote>
+        "No matches on apps, not many female connections through friends as I'm new to the city, no women interested in me at bars even when drunk. No luck in meetups or social events. I'm not socially awkward, I never have issues making male friends. I earn good money, have a stable career..."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">287 pts</span> r/dating_advice</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">C &nbsp;·&nbsp; Reading male psychology books — seeking a conceptual framework</div>
+      <p class="finding-text">Telling: they don't go to therapists or friends first. They seek books that explain the underlying mechanism. They want to <em>understand</em> before they act — diagnosis before prescription.</p>
+      <blockquote>
+        "I read Neill Strauss' The Game and got sucked into the hype. I actually ended up getting laid a lot less. These techniques are designed for people who have no personality nor social skills whatsoever. Then Manson came out with Models and the whole thing was turned on its head for me."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> Models – Mark Manson · 10 likes</span>
+      </blockquote>
+      <blockquote>
+        "This is a must read book for any man who has struggled to connect with or communicate with women. Mark Manson's concepts on True Confidence, False Confidence, and vulnerability are very clear to understand."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> Models – Mark Manson · 24 likes</span>
+      </blockquote>
+      <blockquote>
+        "This transcends self-help: it is self-debugging in the form of having a giant mirror of truth held up to your psyche while you re-evaluate your life."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 5 likes</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">D &nbsp;·&nbsp; Reddit and online communities (processing / venting loop)</div>
+      <p class="finding-text">Coming to forums to seek validation, compare notes, vent, and occasionally receive actionable insight. A significant portion of activity is emotional processing, not problem-solving.</p>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">E &nbsp;·&nbsp; Resignation (the giving-up solution)</div>
+      <blockquote>
+        "Honestly, it feels so much better when you've completely given up all hope. The worst was when I was still hopeful."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">406 pts</span> r/self · 25M</span>
+      </blockquote>
+      <blockquote>
+        "I have resigned myself to the fact that I will be FA all my life."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">505 pts</span> r/ForeverAlone · 42M</span>
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══ 5. CAUSE OF LONELINESS ══ -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-title-wrap">
+        <div class="section-title">Their Take on the Cause</div>
+        <div class="section-desc">What they believe explains their situation</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">A &nbsp;·&nbsp; Socialized wrong — taught to please, not to attract</div>
+      <blockquote>
+        "From early childhood we are being taught to please women. Most of us don't have a healthy male role model to follow, our fathers are distraught and generally don't care about their heritage."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> Models – Mark Manson · 300 likes</span>
+      </blockquote>
+      <blockquote>
+        "Nice Guys have, through long post-modern cultural indoctrination, lost their voice."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 46 likes</span>
+      </blockquote>
+      <blockquote>
+        "The increasing absence of fathers in the lives of their sons since World War II contributes to this poor conditioning, as well as the increasing prevalence of women as authority figures."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 76 likes</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">B &nbsp;·&nbsp; Prioritized the wrong thing at the right time</div>
+      <blockquote>
+        "When I was 25/26, I was often approached by women interested in relationships, but I turned them down because I wanted to focus on spending time with friends and advancing my career. Many of those women are now married."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">856 pts</span> r/AskMenOver30 · 32M</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">C &nbsp;·&nbsp; Missing a specific skill — not a general character flaw</div>
+      <p class="finding-text">This framing — "I have a skill gap, not a self-worth problem" — is psychologically important and appears frequently. It's how they preserve self-esteem while still acknowledging a problem exists.</p>
+      <blockquote>
+        "I figured out why women are repelled by me, finally! I originally thought dating was a serious step and didn't want to make a move too fast... Me confessing my feelings towards a girl was the equivalent of a marriage proposal in my mind."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">4174 pts</span> r/socialskills · 25M</span>
+      </blockquote>
+      <blockquote>
+        "Neediness is defined by being more highly invested in other people's perceptions of you than your perceptions of yourself... It comes down to what's being sub-communicated."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> Models – Mark Manson · 100 likes</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">D &nbsp;·&nbsp; Structural / modern dating (growing minority framing)</div>
+      <blockquote>
+        "I make $2 million / year and am completely alone. Despite making dating a top priority over the past three years, I've been completely unsuccessful."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">7900 pts</span> r/TrueOffMyChest</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">E &nbsp;·&nbsp; Fate / genetics — a late-stage conclusion after years of failure</div>
+      <blockquote>
+        "It almost feels like a case of genetic pre-determinism these days. Either you're born with 'it' or you're born to fuck off and die alone and the advice of working on yourself is just cope."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">1107 pts</span> r/self · 34M, after ~20 years of trying</span>
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══ 6. ROMANTIC EXPERIENCE ══ -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div class="section-title-wrap">
+        <div class="section-title">Romantic Experience</div>
+        <div class="section-desc">What their actual history looks like — mostly limited or negative</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">A &nbsp;·&nbsp; Near-zero experience (largest group)</div>
+      <blockquote>
+        "I'm 35, introverted, financially very comfortable, in good shape, living alone, with a solid career. On the surface, everything is in place. Except this one part. I've never had a girlfriend. Never been in a relationship. No real dating experience at all. I'm not awkward in everyday life. I work with people, I socialize when I have to, I function."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">325 pts</span> r/dating_advice · 35M</span>
+      </blockquote>
+      <blockquote>
+        "I will be turning 42 in a month. Never had a girlfriend. Never received romantic attention or love from a woman."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">505 pts</span> r/ForeverAlone</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">B &nbsp;·&nbsp; Some experience but felt disconnected or hollow</div>
+      <blockquote>
+        "This is despite me being objectively good looking, intelligent, good career, good salary etc etc. Basically I'm trying to say that, on paper and according to my friends and family, I was a catch. I just had no idea how to connect with women romantically."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">1769 pts</span> r/TrueOffMyChest</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">C &nbsp;·&nbsp; Painful experiences — friendzone, rejection, being used</div>
+      <blockquote>
+        "I was friends with her for about 6 months before I asked. It hurts so much knowing I'll never be really close to her, I'll never get to hug her. 90% of my life so far has just been grinding school, alone."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">623 pts</span> r/lonely · 20M</span>
+      </blockquote>
+      <blockquote>
+        "I got dumped on holiday by my (now) ex girlfriend. It turns out that as well-adjusted and 'better on paper' I am than her abusive ex, she is/has been in love with him this whole time. And never been in love with me. Never felt the same connection, and faked it the whole time while she was secretly in love with someone else."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">542 pts</span> r/self</span>
+      </blockquote>
+      <blockquote>
+        "I was a Nice Guy throughout my high school years and early college life. I didn't understand back then why I was getting rejected by women."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 182 likes</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">D &nbsp;·&nbsp; Positive breakthrough moments — highest-engagement posts</div>
+      <p class="finding-text">A smaller subset have had genuine turning points. These generate the most upvotes and comments — signalling high desire for proof that change is possible.</p>
+      <blockquote>
+        "Today has been surreal for me. Out of nowhere I have gotten attention from girls (yes that's plural) for the first time in years. I am 22M and never had a girlfriend. Since the start of the year I have been trying to improve myself. I have been hitting the gym with some consistency for about 4 or 5 months. Just been trying to improve my image and that seems to be working."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">1746 pts</span> r/socialskills</span>
+      </blockquote>
+      <blockquote>
+        "Helped me view myself for what I was at that moment: a perfect, pure Nice Guy. Found a lot of hurting truths... I am now on my way to getting my needs met, being authentic and getting what I want in love and life."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 9 likes</span>
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══ 7. BLOCKERS ══ -->
+  <div class="section" id="s7">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <div class="section-title-wrap">
+        <div class="section-title">Blockers</div>
+        <div class="section-desc">What they assume is standing in their way</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">A &nbsp;·&nbsp; Can't signal romantic intent — a specific gap, not general social failure</div>
+      <blockquote>
+        "I figured out why women are repelled by me, finally!... Taking someone out on a date was not something you did until you realized you both love each other. Me confessing my feelings towards a girl was the equivalent of a marriage proposal in my mind."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">4174 pts</span> r/socialskills</span>
+      </blockquote>
+      <blockquote>
+        "I've never dated, flirted, or been in a relationship with anyone, so I only know how to treat people as my friends, even if I'd want something else."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">2473 pts</span> r/dating_advice</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">B &nbsp;·&nbsp; Approach anxiety — paralysed specifically around romantic initiation</div>
+      <blockquote>
+        "I am 26M and have NEVER asked a girl out in my entire life. Asking a girl out is one of my biggest fears. Like it makes me shake. I am pretty confident in other aspects of life but this is just too intimidating for me."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">457 pts</span> r/lonely</span>
+      </blockquote>
+      <blockquote>
+        "After 6 hours clubbing I talked to a whopping 0 women. I don't know what to do anymore to learn to talk to women. I am so disappointed in myself."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">805 pts</span> r/dating_advice</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">C &nbsp;·&nbsp; Emotional suppression / inability to be vulnerable</div>
+      <blockquote>
+        "Mark Manson's concepts on True Confidence, False Confidence, and vulnerability are very clear to understand. True Confidence: the extent to which a man is vulnerable to his emotions and is able to share them with the women he pursues. This isn't solely a dating book — it's more of a starting point for a man to start living life more honestly."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> Models – Mark Manson · 24 likes</span>
+      </blockquote>
+      <blockquote>
+        "As a kid I knew that being more real and vulnerable is the right way to have healthy and fulfilling relationships. With more poisonous pressure from my peers... I was persuaded to think that I WASN'T RIGHT."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> Models – Mark Manson · 17 likes</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">D &nbsp;·&nbsp; Nice Guy approval-seeking loop — their helpfulness reads as neediness</div>
+      <blockquote>
+        "The 'Nice Guy' utilizes manipulation and covert contracts to achieve what he wants, rather than being direct and properly articulating his needs. Mr. Nice Guy utilizes methods that only backfire on himself."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 17 likes</span>
+      </blockquote>
+      <blockquote>
+        "Nice Guys are males who have mastered living in Cognitive Dissonance. They are the most creative dishonest people around. On the outside they are kind and giving. Inside there is tremendous resentment."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 46 likes</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">E &nbsp;·&nbsp; No map — no one taught them</div>
+      <blockquote>
+        "Most of us don't have a healthy male role model to follow. There's no way other than to go down the road of error and trial. And with women supervising that road, there's always a reasonable amount of blame and shame."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> Models – Mark Manson · 300 likes</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">F &nbsp;·&nbsp; Dating app asymmetry — one-sided effort burden</div>
+      <blockquote>
+        "I have to have a very good profile. I have to make her laugh, witty banter with her, ask her out, logistically plan the date, pay for the date, ask her out on a second date and so on. I have to do all of this or the relationship ends. She doesn't have to initiate anything."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">1662 pts</span> r/dating_advice</span>
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══ 8. JOBS TO BE DONE ══ -->
+  <div class="section" id="s8">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <div class="section-title-wrap">
+        <div class="section-title">Jobs to Be Done</div>
+        <div class="section-desc">What they're actually trying to hire a solution to accomplish</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">A &nbsp;·&nbsp; "Tell me what's actually broken — specifically"</div>
+      <p class="finding-text">The highest-engagement posts are diagnostic revelations. What they want is an accurate diagnosis, not more encouragement. The relief in discovering a specific, nameable cause is enormous.</p>
+      <blockquote>
+        "I figured out why women are repelled by me, finally!"
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">4174 pts</span> r/socialskills · the title alone says everything about what this audience craves</span>
+      </blockquote>
+      <blockquote>
+        "The book is extremely relatable and targeted at folks like me — 'the nice guys'... the author approaches it like a therapist talking about the psychological underpinnings... strategies to overcome common pitfalls."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 8 likes</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">B &nbsp;·&nbsp; "Give me a framework I can trust — not pickup, not cope"</div>
+      <p class="finding-text">They've been burned by PUA content. They want an honest model of how attraction works — one that respects their intelligence and doesn't require inauthenticity.</p>
+      <blockquote>
+        "These techniques are designed for people who have no personality nor social skills whatsoever. Then Manson came out with Models and the whole thing was turned on its head for me."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> Models – Mark Manson · 10 likes</span>
+      </blockquote>
+      <blockquote>
+        "'When you change your belief and mindsets, the behavior follows.' What I expected was a series of shallow, superficial advice. Instead, there's a whole section dedicated to the inner work that needs to be done first."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> Models – Mark Manson · 139 likes</span>
+      </blockquote>
+      <blockquote>
+        "Neediness is defined by being more highly invested in other people's perceptions of you than your perceptions of yourself. Intentions speak way louder than lines. It comes down to what's being sub-communicated."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> Models – Mark Manson · 100 likes</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">C &nbsp;·&nbsp; "Help me reclaim my own voice after years of suppressing it"</div>
+      <blockquote>
+        "This is a book about how 'Nice Guys' have, through long post-modern cultural indoctrination, lost their voice and how to get it back."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 46 likes</span>
+      </blockquote>
+      <blockquote>
+        "The core of this book is about letting go of the desire for people to accept you and to just be you without any strings attached to others. To do things that you want to do — not to do things for the acceptance or attention of others."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 11 likes</span>
+      </blockquote>
+      <blockquote>
+        "I am now on my way to getting my needs met, being authentic and getting what I want in love and life."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 9 likes</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">D &nbsp;·&nbsp; "Break the loop — why hasn't self-improvement been enough?"</div>
+      <blockquote>
+        "(34m) Spent half my life following the advice of 'working on myself', feel scammed."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">1107 pts</span> r/self</span>
+      </blockquote>
+      <blockquote>
+        "I can't get a single date. Why is it so hard even after figuring out everything in life?"
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">287 pts</span> r/dating_advice</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">E &nbsp;·&nbsp; "Become a complete person — not a provider waiting to be chosen"</div>
+      <blockquote>
+        "I was always the 'good guy'. I understood that being the man is having the purpose more important than the relationship. It's about the understanding of masculine and feminine energy."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> The Way of the Superior Man · 212 likes</span>
+      </blockquote>
+      <blockquote>
+        "It never talks about a healthy relationship with yourself. It only talks about how you can use the external world of women to boost your ego to a point where you can feel secure in your skin. It doesn't teach you a thing about becoming a healthy human being."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> The Rational Male · 312 likes · negative review naming what's missing: internal validation</span>
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══ 9. IDEAL OUTCOME ══ -->
+  <div class="section" id="s9">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <div class="section-title-wrap">
+        <div class="section-title">Ideal Outcome</div>
+        <div class="section-desc">What they think success actually looks like</div>
+      </div>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">A &nbsp;·&nbsp; Not primarily sex — intimacy, companionship, being known</div>
+      <blockquote>
+        "I fantasize about being in relationships and think it's awesome. Not really the sexual part, but just like kissing, holding hands, getting ice cream together or whatever, just cute scenarios."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">2317 pts</span> r/dating_advice</span>
+      </blockquote>
+      <blockquote>
+        "I make $2 million / year and am completely alone. Last weekend I went to a farmer's market by myself. I watched a couple share a sample of cheese."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">7900 pts</span> r/TrueOffMyChest · the most-upvoted post in the dataset — the farmer's market image is the clearest statement of what they actually want</span>
+      </blockquote>
+      <blockquote>
+        "It was one of those nights: I was cuddling up with some girl... it was touchy, it was cutesy; just generally everything I do want in a partner. Then I woke up."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">1036 pts</span> r/dating</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">B &nbsp;·&nbsp; A relationship where they can be authentic — no more performing</div>
+      <blockquote>
+        "There's always a reasonable amount of blame and shame being poured on a teen boy who tries to have an honest interaction with a girl."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> Models – Mark Manson · 300 likes · what they ultimately want: honest interaction, no performance</span>
+      </blockquote>
+      <blockquote>
+        "The core of this book: to do things that you want to do and not to do things for the acceptance or attention of others."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 11 likes</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">C &nbsp;·&nbsp; To be loved for who they are — not for what they provide or perform</div>
+      <blockquote>
+        "I was a catch. I just had no idea how to connect with women romantically."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">1769 pts</span> r/TrueOffMyChest</span>
+      </blockquote>
+      <blockquote>
+        "Upon reading Glover's book, I could identify quite a few 'nice guy' characteristics in my own way of operating. By the end, I am excited to engage in the transformation to become a more integrated man."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 5 likes</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">D &nbsp;·&nbsp; For the rules to apply to them too — fairness, not winning</div>
+      <p class="finding-text">The real outcome isn't "get a girlfriend." It's fairness — they want the effort-results contract honored, the same one that worked everywhere else in their life.</p>
+      <blockquote>
+        "(34m) Spent half my life following the advice of 'working on myself', feel scammed."
+        <span class="quote-source"><span class="tag-reddit">Reddit</span> <span class="tag-pts">1107 pts</span> r/self · the word "scammed" is the key signal — they want the contract honored</span>
+      </blockquote>
+    </div>
+
+    <div class="finding">
+      <div class="finding-label">E &nbsp;·&nbsp; To understand themselves so they can stop the pattern</div>
+      <p class="finding-text">The highest-converting content in their world is not tips on approaching — it is precise diagnosis followed by a path to integration. They trust that if they understand, the rest follows.</p>
+      <blockquote>
+        "This transcends self-help: it is self-debugging in the form of having a giant mirror of truth held up to your psyche while you re-evaluate your life."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 5 likes</span>
+      </blockquote>
+      <blockquote>
+        "Already, after trying on some of the tips — such as asking for what I want clearly and directly — I have experienced surprisingly positive consequences."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> No More Mr. Nice Guy · 5 likes</span>
+      </blockquote>
+      <blockquote>
+        "I finally read some stuff from The Red Pill without getting triggered. The more I learn and the more I heal my own inner alpha-male, I can see the truth and humanity behind what the 'manosphere' has to say."
+        <span class="quote-source"><span class="tag-goodreads">Goodreads</span> The Rational Male · 31 likes</span>
+      </blockquote>
+    </div>
+  </div>
+
+  <!-- ═══ SYNTHESIS ═══ -->
+  <div class="synthesis">
+    <div class="synthesis-label">Key Synthesis</div>
+    <p class="synthesis-text">
+      The through-line in this data is not <em>"how do I get a girlfriend."</em> It is:
+      <em>"I have done everything I was told, I am not broken as a person, and yet something is structurally wrong in how I relate romantically — and no one has ever explained it to me honestly."</em>
+      <br><br>
+      The most resonant content — highest upvotes, most likes — is always diagnostic: explain the mechanism, name the pattern, reflect it accurately. The ideal outcome is not a relationship as a prize. It is <em>becoming the kind of person for whom connection is natural</em>, because they finally understand themselves and stopped hiding.
+    </p>
+  </div>
+
+</div><!-- /content -->
+
+</body>
+</html>
