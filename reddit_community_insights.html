@@ -1,0 +1,2348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Reddit Community Insights — Men Self-Improvement</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#080c14;font-family:'Segoe UI',system-ui,sans-serif;color:#D1D5DB;padding-bottom:80px}
+
+h1{text-align:center;color:#F59E0B;font-size:16px;font-weight:700;letter-spacing:3px;
+    text-transform:uppercase;padding:32px 0 5px}
+.subtitle{text-align:center;color:#374151;font-size:11px;letter-spacing:1.5px;
+           text-transform:uppercase;margin-bottom:24px}
+
+/* ── Root stats ── */
+.root-stats{display:flex;justify-content:center;gap:40px;padding:0 0 28px;flex-wrap:wrap}
+.rstat{text-align:center}
+.rstat-val{font-size:24px;font-weight:700;color:#F59E0B}
+.rstat-lbl{font-size:9.5px;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
+
+/* ── Nav ── */
+.nav-wrap{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+           padding:0 24px 24px;max-width:1400px;margin:0 auto}
+.nav-btn{
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);
+  color:#9CA3AF;font-size:11px;padding:7px 16px;border-radius:6px;cursor:pointer;
+  transition:all 0.15s;letter-spacing:0.3px;display:flex;align-items:center;gap:7px
+}
+.nav-btn:hover,.nav-btn.active{
+  background:color-mix(in srgb, var(--cc) 15%, transparent);
+  border-color:color-mix(in srgb, var(--cc) 50%, transparent);
+  color:#F3F4F6
+}
+.nav-btn.active{font-weight:600}
+.nav-count{background:rgba(255,255,255,0.07);border-radius:10px;
+            padding:1px 7px;font-size:9.5px;color:#6B7280}
+
+/* ── Category section ── */
+.category-section{max-width:1440px;margin:0 auto 40px;padding:0 20px}
+.category-section.hidden{display:none}
+.cat-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;
+             padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.cat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.cat-title{font-size:13px;font-weight:700;letter-spacing:0.5px}
+.cat-stats{font-size:10px;color:#6B7280;margin-left:4px}
+
+/* ── Cards grid ── */
+.cards-grid{display:flex;flex-direction:column;gap:16px}
+
+/* ── Community card ── */
+.community-card{
+  background:rgba(8,12,22,0.98);
+  border-top:3px solid;
+  border-left:1px solid rgba(255,255,255,0.06);
+  border-right:1px solid rgba(255,255,255,0.06);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  border-radius:10px;overflow:hidden
+}
+.card-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px 12px;border-bottom:1px solid rgba(255,255,255,0.06);
+  flex-wrap:wrap;gap:12px
+}
+.sub-name{font-size:16px;font-weight:700}
+.sub-cat{font-size:10px;color:#6B7280;letter-spacing:0.5px;text-transform:uppercase;margin-top:2px}
+.header-stats{display:flex;gap:20px;flex-wrap:wrap}
+.hstat{text-align:center}
+.hv{display:block;font-size:16px;font-weight:700;color:#E5E7EB}
+.hl{font-size:9px;color:#6B7280;text-transform:uppercase;letter-spacing:0.4px}
+
+/* ── Card body ── */
+.card-body{display:grid;grid-template-columns:340px 1fr;gap:0}
+@media(max-width:900px){.card-body{grid-template-columns:1fr}}
+.col-left{padding:16px 20px;border-right:1px solid rgba(255,255,255,0.05)}
+.col-right{padding:16px 20px}
+
+.section-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:#6B7280;margin-bottom:10px}
+
+/* Segment bars */
+.seg-list{display:flex;flex-direction:column;gap:7px}
+.seg-row{display:flex;align-items:center;gap:8px}
+.seg-name{font-size:9.5px;width:200px;flex-shrink:0;line-height:1.3}
+.seg-bar-wrap{flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px}
+.seg-bar{height:100%;border-radius:2px;opacity:0.75}
+.seg-pct{font-size:9px;color:#6B7280;width:28px;text-align:right}
+
+/* Comments */
+.comments-list{display:flex;flex-direction:column;gap:10px}
+.comment-item{background:rgba(255,255,255,0.02);border-left:2px solid rgba(255,255,255,0.08);
+  padding:8px 10px;border-radius:0 4px 4px 0}
+.c-score{font-size:10px;font-weight:700;color:#F59E0B;margin-bottom:4px;display:block}
+.c-body{font-size:10.5px;color:#9CA3AF;line-height:1.5;margin-bottom:4px}
+.c-origin{font-size:9px;color:#4B5563;font-style:italic}
+
+/* Posts */
+.posts-list{display:flex;flex-direction:column;gap:12px}
+.post-item{border-bottom:1px solid rgba(255,255,255,0.04);padding-bottom:12px}
+.post-item:last-child{border-bottom:none;padding-bottom:0}
+.post-meta{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+.score{font-size:11px;font-weight:700;color:#F59E0B}
+.cmts{font-size:10px;color:#6B7280}
+.seg-badge{font-size:9px;padding:2px 7px;border-radius:3px;border:1px solid;font-weight:600}
+.post-title{font-size:11.5px;color:#E5E7EB;line-height:1.4;margin-bottom:4px}
+.post-body{font-size:10px;color:#6B7280;line-height:1.5;
+  border-left:2px solid rgba(255,255,255,0.07);padding-left:8px;margin-top:4px;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+</style>
+</head>
+<body>
+
+<h1>Reddit Community Insights</h1>
+<p class="subtitle">Men self-improvement · 15 communities · raw signal from real conversations</p>
+
+<div class="root-stats">
+  <div class="rstat"><div class="rstat-val">15</div><div class="rstat-lbl">Communities</div></div>
+  <div class="rstat"><div class="rstat-val">1,178</div><div class="rstat-lbl">Posts analyzed</div></div>
+  <div class="rstat"><div class="rstat-val">4,803</div><div class="rstat-lbl">Top comments</div></div>
+  <div class="rstat"><div class="rstat-val">7</div><div class="rstat-lbl">Pain segments</div></div>
+</div>
+
+<div class="nav-wrap">
+  <button class="nav-btn active" data-cat="all" style="--cc:#F59E0B">All communities <span class="nav-count">1178</span></button>
+  <button class="nav-btn" data-cat="Core Self-Improvement" style="--cc:#06B6D4">Core Self-Improvement<span class="nav-count">344</span></button><button class="nav-btn" data-cat="Male Identity" style="--cc:#F59E0B">Male Identity<span class="nav-count">308</span></button><button class="nav-btn" data-cat="Philosophy &amp; Mindset" style="--cc:#8B5CF6">Philosophy &amp; Mindset<span class="nav-count">100</span></button><button class="nav-btn" data-cat="Discipline &amp; Habits" style="--cc:#10B981">Discipline &amp; Habits<span class="nav-count">200</span></button><button class="nav-btn" data-cat="Mental Health" style="--cc:#EF4444">Mental Health<span class="nav-count">100</span></button><button class="nav-btn" data-cat="Social &amp; Confidence" style="--cc:#3B82F6">Social &amp; Confidence<span class="nav-count">100</span></button><button class="nav-btn" data-cat="Male-Specific" style="--cc:#EC4899">Male-Specific<span class="nav-count">26</span></button>
+</div>
+
+
+    <div class="category-section" data-cat="Core Self-Improvement">
+      <div class="cat-header">
+        <span class="cat-dot" style="background:#06B6D4"></span>
+        <span class="cat-title" style="color:#06B6D4">Core Self-Improvement</span>
+        <span class="cat-stats">344 posts · 1014 comments</span>
+      </div>
+      <div class="cards-grid">
+        
+    <div class="community-card" id="sub-selfimprovement">
+      <div class="card-header" style="border-top-color:#06B6D4">
+        <div class="header-left">
+          <div class="sub-name" style="color:#06B6D4">r/selfimprovement</div>
+          <div class="sub-cat">Core Self-Improvement</div>
+        </div>
+        <div class="header-stats">
+          <div class="hstat"><span class="hv">100</span><span class="hl">posts</span></div>
+          <div class="hstat"><span class="hv">357</span><span class="hl">comments</span></div>
+          <div class="hstat"><span class="hv">197</span><span class="hl">avg score</span></div>
+          <div class="hstat"><span class="hv">47</span><span class="hl">avg replies</span></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="col-left">
+          <div class="section-label">Pain segment distribution</div>
+          <div class="seg-list">
+        <div class="seg-row">
+          <span class="seg-name" style="color:#3B82F6">General Self-Improvement Struggle</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:54%;background:#3B82F6"></div>
+          </div>
+          <span class="seg-pct">54%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:19%;background:#6366F1"></div>
+          </div>
+          <span class="seg-pct">19%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#8B5CF6">Lost Purpose / No Direction</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:12%;background:#8B5CF6"></div>
+          </div>
+          <span class="seg-pct">12%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#F97316">No Discipline / Can&#x27;t Stick to Anything</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:6%;background:#F97316"></div>
+          </div>
+          <span class="seg-pct">6%</span>
+        </div></div>
+          <div class="section-label" style="margin-top:16px">Top comments by upvotes</div>
+          <div class="comments-list">
+        <div class="comment-item">
+          <span class="c-score">▲ 390</span>
+          <div class="c-body">I think you need to remove mid from your vocab because all you’re doing is trying to succeed by your perceived metrics of others. I don’t think even statisticians recommend living by statistics alone. Go look at a tree and eat a cupcake, my dude. Buy a crazy striped sweater at a thrift store. Live.</div>
+          <div class="c-origin">on: It takes an unbelievable amount of work to be mid.</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 215</span>
+          <div class="c-body">Hey man you didn&#x27;t fail at life. You have a legit job and are contributing to society and helping the environment. Your existence is a net positive in this confusing world. The environmental field is vast and your background could translate to many roles. Have you looked into GIS or management positions?</div>
+          <div class="c-origin">on: I have failed at life</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 197</span>
+          <div class="c-body">Hey bud. Take a break from the books and dating life and work on your self-esteem.   Find happiness from things you can control.   Relationships are great, but sadly they aren&#x27;t the silver bullet to happiness that you are looking for.</div>
+          <div class="c-origin">on: I’ve been reading &quot;6 Harsh Truths That Will Make You a Better Person,&quot; and it hi</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 172</span>
+          <div class="c-body">Damn where the hell are your parents</div>
+          <div class="c-origin">on: Im a complete degenerate</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 152</span>
+          <div class="c-body">Admit yourself to rehab. You don’t have control over yourself.</div>
+          <div class="c-origin">on: Im a complete degenerate</div>
+        </div></div>
+        </div>
+        <div class="col-right">
+          <div class="section-label">Top posts by score</div>
+          <div class="posts-list">
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,363</span>
+            <span class="cmts">💬 241</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#8B5CF6;color:#8B5CF6">Lost Purpose / No Direction</span>
+          </div>
+          <div class="post-title">Aristotle&#x27;s formula for lifemaxxing. And no, it&#x27;s not using moisturizer and lifting weights.</div>
+          <div class="post-body">Lifemaxxing (Gen Z for living your best life) has been thrown around a lot lately by kids who spend their time getting perms, moisturizing their faces, and “mogging”. But if you ask them what it actually means, no one seems to be able to give a definition that works for everyone.
+
+**By the end of this, you&#x27;ll know what living your best life actually means, how to do it according to Aristotle, and </div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,141</span>
+            <span class="cmts">💬 365</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#6366F1;color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          </div>
+          <div class="post-title">I just needed to WORK. I don&#x27;t need therapy, I don&#x27;t need a girlfriend, I don&#x27;t need to work on myself. I just needed to WORK.</div>
+          <div class="post-body">I am so fucking mad, all these years wasting my life working on myself, trying to get a girlfriend, improving my mental health. When all I needed was to WORK. I found a high stress, high volume job and it is HEAVEN. My brain shuts up for 12 hours straight, I don&#x27;t have any negative thoughts, I don&#x27;t think about dating, or how I&#x27;m hurt. It&#x27;s all just the work that I have to do NOW. People were real</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,039</span>
+            <span class="cmts">💬 103</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">nobody prepares you for how quiet it gets when you actually start improving</div>
+          <div class="post-body">this might not be the typical here&#x27;s my routine post but I think it needs to be said
+
+I spent most of last year in a hole. sleeping til afternoon, skipping meals, glued to my phone doing nothing productive. the kind of stretch where you know you&#x27;re wasting your life but you can&#x27;t make yourself care enough to stop
+
+around november I just snapped and started forcing changes. gym consistently. fixed </div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 907</span>
+            <span class="cmts">💬 61</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#10B981;color:#10B981">Active Builder / Already on the Path</span>
+          </div>
+          <div class="post-title">Life Hacks That Actually Hack Life?</div>
+          <div class="post-body">I&#x27;ve been in this community for about a month now. Y&#x27;all need help. I&#x27;m most likely contributing to that very reason y&#x27;all need help, so I&#x27;d like to try and contribute something that *doesn&#x27;t* piss off the entire community. No insults, no dirty talk (yet!), just an unfinished list of some self-improvement life hacks that could actually improve your life. Why unfinished? Because there&#x27;s always room</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 786</span>
+            <span class="cmts">💬 41</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#F97316;color:#F97316">No Discipline / Can&#x27;t Stick to Anything</span>
+          </div>
+          <div class="post-title">A complete 3-step process to quit literally any addiction</div>
+          <div class="post-body">I&#x27;m making this post to save you from wasting years of your life trying to quit, just like I did.
+
+But first, let me give you a quick introduction- I&#x27;ve spent the past 2.5 years on self improvement, and with that, I started trying to overcome my bad habits- porn, phone addiction, junk food/sugar, video games, binging TV shows, etc.
+
+About 450 days ago, I watched porn for the last time in my life. </div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="community-card" id="sub-getdisciplined">
+      <div class="card-header" style="border-top-color:#06B6D4">
+        <div class="header-left">
+          <div class="sub-name" style="color:#06B6D4">r/getdisciplined</div>
+          <div class="sub-cat">Core Self-Improvement</div>
+        </div>
+        <div class="header-stats">
+          <div class="hstat"><span class="hv">100</span><span class="hl">posts</span></div>
+          <div class="hstat"><span class="hv">308</span><span class="hl">comments</span></div>
+          <div class="hstat"><span class="hv">166</span><span class="hl">avg score</span></div>
+          <div class="hstat"><span class="hv">31</span><span class="hl">avg replies</span></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="col-left">
+          <div class="section-label">Pain segment distribution</div>
+          <div class="seg-list">
+        <div class="seg-row">
+          <span class="seg-name" style="color:#3B82F6">General Self-Improvement Struggle</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:33%;background:#3B82F6"></div>
+          </div>
+          <span class="seg-pct">33%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:23%;background:#6366F1"></div>
+          </div>
+          <span class="seg-pct">23%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#8B5CF6">Lost Purpose / No Direction</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:15%;background:#8B5CF6"></div>
+          </div>
+          <span class="seg-pct">15%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#F97316">No Discipline / Can&#x27;t Stick to Anything</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:12%;background:#F97316"></div>
+          </div>
+          <span class="seg-pct">12%</span>
+        </div></div>
+          <div class="section-label" style="margin-top:16px">Top comments by upvotes</div>
+          <div class="comments-list">
+        <div class="comment-item">
+          <span class="c-score">▲ 285</span>
+          <div class="c-body">I liked Can’t Hurt Me but I wonder if Goggins might use some of his undeniable mental toughness and tenacity in the direction of love and emotional intelligence rather than relentless physical feats. Men are on the whole quite good at the latter and not so good at the former, the author notwithstanding</div>
+          <div class="c-origin">on: David Goggins’ “Warning Order” — A Brutal Wake-Up Call</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 256</span>
+          <div class="c-body">I used to think I needed to do everything perfectly or not at all, and that mindset killed all momentum. Now I just try to do something, even if it’s half-done or messy Progress beats perfection every time.</div>
+          <div class="c-origin">on: It’s crazy how easy it is to ruin your life by doing NOTHING</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 183</span>
+          <div class="c-body">Bit over the top innit. Sometimes I wonder if Goggins is even happy lol, he&#x27;s made this suffering shit his entire identity I truly think if he stopped he&#x27;d have no idea what to do</div>
+          <div class="c-origin">on: David Goggins’ “Warning Order” — A Brutal Wake-Up Call</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 183</span>
+          <div class="c-body">I did the yearly math once and immediately closed the calculator like it personally attacked me. We’re out here donating years of our lives to watching strangers argue about nothing. Incredible.</div>
+          <div class="c-origin">on: Accidentally saw my screen time report and honestly want to throw up</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 172</span>
+          <div class="c-body">Wtf is going all in on start ups 😹😹😭</div>
+          <div class="c-origin">on: A month of reading and no social media completely rewired my brain.</div>
+        </div></div>
+        </div>
+        <div class="col-right">
+          <div class="section-label">Top posts by score</div>
+          <div class="posts-list">
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,873</span>
+            <span class="cmts">💬 81</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#F97316;color:#F97316">No Discipline / Can&#x27;t Stick to Anything</span>
+          </div>
+          <div class="post-title">For years I struggled with zero-motivation and lethargy. Everything changed once I discovered how motivation ACTUALLY works and is generated. Today I&#x27;m not perfect, but man, I’m doing way better. [Method]</div>
+          <div class="post-body">You’re stuck in a rut.
+
+Apathy. Lethargy. Whole days wasted away on Reddit or YouTube. Procrastinating on basically everything. Coasting by in a mediocre existence.
+
+You don’t want to keep living like this. You want to break out—to work hard and change your lifestyle, get fit, get a better job, start a business, pursue a creative dream—but for whatever reason, it&#x27;s just impossible. You can never f</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 995</span>
+            <span class="cmts">💬 63</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">It’s crazy how easy it is to ruin your life by doing NOTHING</div>
+          <div class="post-body">It’s wild how fast time passes when you’re just existing instead of living. I keep telling myself I’ll start tomorrow - eat better, focus more, actually follow through on the stuff I say I’ll do  and somehow months just disappear. I didn’t mess up my life by doing something wrong, I just slowly did nothing.
+
+Every day it’s the same loop: wake up, scroll, eat, work, scroll again, sleep. I tell myse</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 943</span>
+            <span class="cmts">💬 93</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#F97316;color:#F97316">No Discipline / Can&#x27;t Stick to Anything</span>
+          </div>
+          <div class="post-title">[Advice] I have had zero work ethic my entire life and have always been completely addicted and motivated by escapism, is this even fixable?</div>
+          <div class="post-body">For starters both of my parents are extremely hard working, and always tried to instill that in me. They didn&#x27;t spoil me and buy me whatever I wanted, and they always tried to keep my busy by putting my in extra curriculars as a kid. It just didn&#x27;t stick no matter what. I&#x27;m just too good at coasting it seems. I also grew up solidly middle class with very involved parents so I had a lot of opportun</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 765</span>
+            <span class="cmts">💬 48</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">Replaced 90 min of doom scrolling before bed with long form audio and it fixed my sleep, my mood, and weirdly my job performance</div>
+          <div class="post-body">Ok I know the title sounds clickbait, stay with me bc this genuinely changed things and the fix is dumb simple.
+
+Context. 29M, software engineer, was in a really bad cycle of phone scrolling for 1-2 hours in bed every night. Reddit rabbit holes, instagram reels, stupid twitter arguments I wasnt even part of. Would fall asleep around 1am wired and vaguely anxious, wake up at 7 exhausted, survive th</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 728</span>
+            <span class="cmts">💬 43</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#6366F1;color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          </div>
+          <div class="post-title">Social media isn’t just distracting you, it is physically rewiring your brain to find hard work impossible. Here is how to reverse the damage.</div>
+          <div class="post-body">We need to talk about why &quot;just put the phone down&quot; feels impossible.
+​I recently came across a breakdown of how social media impacts cognitive function, and it hit me like a ton of bricks. It explained exactly why I can sit on TikTok for 3 hours effortlessly, but reading 10 pages of a book feels like climbing Everest.
+​If you feel like your ambition is collecting dust while your screen time goes </div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="community-card" id="sub-DecidingToBeBetter">
+      <div class="card-header" style="border-top-color:#06B6D4">
+        <div class="header-left">
+          <div class="sub-name" style="color:#06B6D4">r/DecidingToBeBetter</div>
+          <div class="sub-cat">Core Self-Improvement</div>
+        </div>
+        <div class="header-stats">
+          <div class="hstat"><span class="hv">100</span><span class="hl">posts</span></div>
+          <div class="hstat"><span class="hv">311</span><span class="hl">comments</span></div>
+          <div class="hstat"><span class="hv">159</span><span class="hl">avg score</span></div>
+          <div class="hstat"><span class="hv">31</span><span class="hl">avg replies</span></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="col-left">
+          <div class="section-label">Pain segment distribution</div>
+          <div class="seg-list">
+        <div class="seg-row">
+          <span class="seg-name" style="color:#3B82F6">General Self-Improvement Struggle</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:42%;background:#3B82F6"></div>
+          </div>
+          <span class="seg-pct">42%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:20%;background:#6366F1"></div>
+          </div>
+          <span class="seg-pct">20%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#8B5CF6">Lost Purpose / No Direction</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:14%;background:#8B5CF6"></div>
+          </div>
+          <span class="seg-pct">14%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#F97316">No Discipline / Can&#x27;t Stick to Anything</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:12%;background:#F97316"></div>
+          </div>
+          <span class="seg-pct">12%</span>
+        </div></div>
+          <div class="section-label" style="margin-top:16px">Top comments by upvotes</div>
+          <div class="comments-list">
+        <div class="comment-item">
+          <span class="c-score">▲ 185</span>
+          <div class="c-body">Love this bullet point approach you took to figuring out your life. Looks like you are a problem solver. You analyse the problems, reflect on why they happened,  and get to the solution.   No, you are absolutely not doomed to stay like this.</div>
+          <div class="c-origin">on: On the brink of divorce due to not &#x27;stepping up&#x27; in the relationship. Am I doome</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 148</span>
+          <div class="c-body">&gt;You Need a Reason to Get Up  I figured this out quite a while ago. Just like when you were a kid, getting up on a normal Tuesday for school was miserable but getting up the morning of a field trip was the easiest thing in the world!   You have to find something that gets you excited. Not super excited, just enough to look forward to it every day. On days I work remote, I have ZERO issues waking up in the morning.       I know that I dont have to commute through traffic for an hour and that make</div>
+          <div class="c-origin">on: You Don’t Need a 5AM Routine, You Need a Reason to Get Up</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 142</span>
+          <div class="c-body">6 weeks sober after smoking an Oz of top shelf a week for 4 years, just like you   Highly recommend Being You by Anil Seth, The Brain: The Story of You by David Eagleman   Any of Thict Nhat Hanh’s books for meditation and also Why Buddhism is True   Yoga with Adrienne on YouTube is good too, so are the yoga workouts on Nike Training Club   Join a 12 step group to stay sober, you can check out Recovery by Russell Brand to help you with that</div>
+          <div class="c-origin">on: Rewiring My Brain Through Reading</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 142</span>
+          <div class="c-body">One thing that helped me when I felt overwhelmed was making the goal ridiculously small. Instead of clean the house, I&#x27;d spend 10 mins cleaning. Instead of fix my diet, I&#x27;d make one meal at home. It sounds almost too simple, but doing something consistently was way better than planning the perfect reset and doing nothing.</div>
+          <div class="c-origin">on: I have 2 months to get my life together. What daily habits actually changed your</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 142</span>
+          <div class="c-body">Just to help with accountability (and it seems like you’re doing well), just gotta say that if you were having romantic conversations with your first ex-wife while you were with your 2nd ex-wife…you said that wasn’t cheating.  It is.</div>
+          <div class="c-origin">on: On the brink of divorce due to not &#x27;stepping up&#x27; in the relationship. Am I doome</div>
+        </div></div>
+        </div>
+        <div class="col-right">
+          <div class="section-label">Top posts by score</div>
+          <div class="posts-list">
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,593</span>
+            <span class="cmts">💬 132</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#EF4444;color:#EF4444">Post-Setback Reinvention</span>
+          </div>
+          <div class="post-title">Decided to turn my life around 8 months ago. Here&#x27;s where I am now.</div>
+          <div class="post-body">I have never posted on reddit before, but I thought that if posting my story would inspire at least one person, then it would be worth it.
+
+In September 2020, I ended a four year relationship with the girl of my dreams - someone who I thought I was going to end up marrying. She was my best friend, we did anything and everything together, and would often fantasize about our future with one another.</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,570</span>
+            <span class="cmts">💬 75</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#F97316;color:#F97316">No Discipline / Can&#x27;t Stick to Anything</span>
+          </div>
+          <div class="post-title">At 18 years old I was a depressed introvert, afraid of responsibility and playing around with suicidal thoughts. 3 years later I can proudly say I turned my life around and see everything I wished for myself slowly turning real.</div>
+          <div class="post-body">In Summer 2017 I was in a dark place, even though I didn&#x27;t really understood this by that time. I just graduated from High School, my grades were not exceptionally good but not bad either, but I had a problem... I had no Idea what was coming next. No, actually I didn&#x27;t really care about what was coming next. Ever since the beginning of my last year in High School, the thought of me graduating and </div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 796</span>
+            <span class="cmts">💬 85</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#6366F1;color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          </div>
+          <div class="post-title">Girlfriend of 2.5yrs left me for someone else. I&#x27;m gonna use this situation to my advantage and turbo-charge my life.</div>
+          <div class="post-body"># TL;DR
+
+My ex-gf emotionally cheated on me by secretly having feelings for and getting emotionally involved with another guy while still with me. She broke up with me and proceeded to get with him after only a month. This has made me realize I shouldn&#x27;t do what she&#x27;s done by jumping into dating and have set out four goals to better myself, which I&#x27;ll work on over the next 2.5 years. These goals a</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 720</span>
+            <span class="cmts">💬 60</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#8B5CF6;color:#8B5CF6">Lost Purpose / No Direction</span>
+          </div>
+          <div class="post-title">If you’re deciding to be better, start with THIS!</div>
+          <div class="post-body">I read through this subreddit quite a bit and try to help out wherever possible, and there is one important thing that stands out to me in a lot of the posts here. It is the language that people are using that is actually a major issue for many people.
+
+Here are a few snippets from some recent posts I read:
+
+* “I’m a ruiner. And now I just keep digging myself down further.” “I feel like I’m totall</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 701</span>
+            <span class="cmts">💬 40</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#8B5CF6;color:#8B5CF6">Lost Purpose / No Direction</span>
+          </div>
+          <div class="post-title">This isn&#x27;t a perfect method for changing your life - but it’s close</div>
+          <div class="post-body">We’re weeks away from the annual “new year, new me,” bullshit.
+
+Instead of setting goals this year, change who you are.
+
+Goals trick you into thinking there’s a finish line. It’s why most people who lose weight gain it back. It’s why most New Year’s resolution&#x27;s fail by mid-February.
+
+Some people are willing to change until they get what they want. But most quit before they get there. Either way, </div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="community-card" id="sub-selfhelp">
+      <div class="card-header" style="border-top-color:#06B6D4">
+        <div class="header-left">
+          <div class="sub-name" style="color:#06B6D4">r/selfhelp</div>
+          <div class="sub-cat">Core Self-Improvement</div>
+        </div>
+        <div class="header-stats">
+          <div class="hstat"><span class="hv">44</span><span class="hl">posts</span></div>
+          <div class="hstat"><span class="hv">38</span><span class="hl">comments</span></div>
+          <div class="hstat"><span class="hv">63</span><span class="hl">avg score</span></div>
+          <div class="hstat"><span class="hv">19</span><span class="hl">avg replies</span></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="col-left">
+          <div class="section-label">Pain segment distribution</div>
+          <div class="seg-list">
+        <div class="seg-row">
+          <span class="seg-name" style="color:#3B82F6">General Self-Improvement Struggle</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:41%;background:#3B82F6"></div>
+          </div>
+          <span class="seg-pct">41%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#EF4444">Post-Setback Reinvention</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:20%;background:#EF4444"></div>
+          </div>
+          <span class="seg-pct">20%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#8B5CF6">Lost Purpose / No Direction</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:14%;background:#8B5CF6"></div>
+          </div>
+          <span class="seg-pct">14%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#F97316">No Discipline / Can&#x27;t Stick to Anything</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:11%;background:#F97316"></div>
+          </div>
+          <span class="seg-pct">11%</span>
+        </div></div>
+          <div class="section-label" style="margin-top:16px">Top comments by upvotes</div>
+          <div class="comments-list">
+        <div class="comment-item">
+          <span class="c-score">▲ 70</span>
+          <div class="c-body">Hey AI, write me a post to subtly promote my app, thanks.</div>
+          <div class="c-origin">on: [METHOD] How I escaped 5 years of wasted life and became unrecognizable in 60 da</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 46</span>
+          <div class="c-body">I don&#x27;t know if this helps but every addict in recovery has gone through a similar thing - only it&#x27;s much worse for addicts of dopamine-boosting chemicals because they had been artificially boosting their dopamine levels way beyond what is possible from a porn or game addiction. You&#x27;re right that it takes time for the brain to reboot, in the case of drugs/alcohol it can potentially take years to get back to baseline (varies a lot depending on an individuals chemistry, drug of choice, length of u</div>
+          <div class="c-origin">on: I Quit Porn, Gaming, and Every Dopamine Hit—Now Nothing Makes Me Happy Anymore. </div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 41</span>
+          <div class="c-body">Do you think you have depression? Do you live in a country where you can find help for how your feeling? You mentioned self improvement, what have you done so far to improve?  &amp;#x200B;  Its shit that you feel this way. It really is. There are things you can do to help though. It may never go away completely, although that is possible! But it can definitely, 100% get you to a happier place. A place you can smile. Wake up and feel energised and motivated. The catch is that it takes some effort. An</div>
+          <div class="c-origin">on: I fantasize about blowing my brains out</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 39</span>
+          <div class="c-body">I would recommend reading the dopamine nation book, it may shed light on why the withdrawal is hard for you, or you can just watch the author&#x27;s podcast episode on diary of a ceo.</div>
+          <div class="c-origin">on: I Quit Porn, Gaming, and Every Dopamine Hit—Now Nothing Makes Me Happy Anymore. </div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 33</span>
+          <div class="c-body">If you are in the US you will have a court appointed attorney, call the courthouse for information about it. Good luck mate</div>
+          <div class="c-origin">on: I may possibly get locked up soon.</div>
+        </div></div>
+        </div>
+        <div class="col-right">
+          <div class="section-label">Top posts by score</div>
+          <div class="posts-list">
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 217</span>
+            <span class="cmts">💬 84</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">For all men who think their lives suck</div>
+          <div class="post-body">&amp;#x200B;
+
+22M here. Straight to the point, basically I used to be a piece of shit. I was who would sit around all day, playing videogames, smoking weed with friends and constantly jerking off to porn, yeah I know, a lot of self-deprecating behaviours. All these things messed up my head, specially porn and masturbation after years of doing it, I thought it was all ok. I also think this has a lot to</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 179</span>
+            <span class="cmts">💬 40</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#EF4444;color:#EF4444">Post-Setback Reinvention</span>
+          </div>
+          <div class="post-title">What I wish I&#x27;d been told when I was a young woman...</div>
+          <div class="post-body">When you are in your 20&#x27;s, you do not know yourself.
+
+You are just beginning though to try.
+
+Go ahead, fall in love, lust, and/or like with whomever and whenever the mood strikes.
+
+Don&#x27;t be scared to put yourself out there and don&#x27;t worry about what others think nor rejection.
+
+Falling in love is easy as your expectations are non existent at this time.
+
+Since you don&#x27;t really know yourself, you do</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 144</span>
+            <span class="cmts">💬 21</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">Distraction is a habit. Are you ready to replace it with focus?</div>
+          <div class="post-body">In 1943, Abraham Maslow introduced the world to his now-famous Hierarchy of Needs. Through intense and deliberate study of human development, Maslow determined every human being, regardless of their pursuits, must satisfy each of these needs to fulfill their grandest ambitions.
+
+The final stage in Maslow’s hierarchy is self-actualization and came from Maslow’s observation that “What a man *can* be</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 137</span>
+            <span class="cmts">💬 40</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#8B5CF6;color:#8B5CF6">Lost Purpose / No Direction</span>
+          </div>
+          <div class="post-title">I Quit Porn, Gaming, and Every Dopamine Hit—Now Nothing Makes Me Happy Anymore. Has Anyone Else Felt This Void?</div>
+          <div class="post-body">I don’t know how to start this, but here goes nothing. I’m 23, and for as long as I can remember, my life has revolved around chasing pleasure. I grew up getting dopamine hits from porn, gaming, YouTube, and whatever else gave me that quick escape from reality. It all started when I was 11. Yeah, 11. That’s when I first discovered porn, and it became a staple in my life. It got to a point where I </div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 130</span>
+            <span class="cmts">💬 49</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#8B5CF6;color:#8B5CF6">Lost Purpose / No Direction</span>
+          </div>
+          <div class="post-title">How to be &quot;you&quot; when you are not sure who &quot;you&quot; is</div>
+          <div class="post-body">I am a 20 yr old in college. I used to think I knew who I was.
+
+Example: I used to think I found beauty in math. Then I delved into more and more difficult math courses, and I eventually convinced myself I was too stupid to do it and could not appreciate its beauty any more.
+
+I used to think I knew a lot of other stuff about myself too. It was comforting. Events took those certainties away from me</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+    <div class="category-section" data-cat="Male Identity">
+      <div class="cat-header">
+        <span class="cat-dot" style="background:#F59E0B"></span>
+        <span class="cat-title" style="color:#F59E0B">Male Identity</span>
+        <span class="cat-stats">308 posts · 2296 comments</span>
+      </div>
+      <div class="cards-grid">
+        
+    <div class="community-card" id="sub-AskMen">
+      <div class="card-header" style="border-top-color:#F59E0B">
+        <div class="header-left">
+          <div class="sub-name" style="color:#F59E0B">r/AskMen</div>
+          <div class="sub-cat">Male Identity</div>
+        </div>
+        <div class="header-stats">
+          <div class="hstat"><span class="hv">100</span><span class="hl">posts</span></div>
+          <div class="hstat"><span class="hv">369</span><span class="hl">comments</span></div>
+          <div class="hstat"><span class="hv">470</span><span class="hl">avg score</span></div>
+          <div class="hstat"><span class="hv">129</span><span class="hl">avg replies</span></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="col-left">
+          <div class="section-label">Pain segment distribution</div>
+          <div class="seg-list">
+        <div class="seg-row">
+          <span class="seg-name" style="color:#3B82F6">General Self-Improvement Struggle</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:71%;background:#3B82F6"></div>
+          </div>
+          <span class="seg-pct">71%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:12%;background:#6366F1"></div>
+          </div>
+          <span class="seg-pct">12%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#8B5CF6">Lost Purpose / No Direction</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:11%;background:#8B5CF6"></div>
+          </div>
+          <span class="seg-pct">11%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#F97316">No Discipline / Can&#x27;t Stick to Anything</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:4%;background:#F97316"></div>
+          </div>
+          <span class="seg-pct">4%</span>
+        </div></div>
+          <div class="section-label" style="margin-top:16px">Top comments by upvotes</div>
+          <div class="comments-list">
+        <div class="comment-item">
+          <span class="c-score">▲ 727</span>
+          <div class="c-body">Big boy pants and break up.    Dragging it on isn&#x27;t helping anyone.    You can be kind about it, but you just need to sit here down one day and tell her. She&#x27;ll cry and tell you she&#x27;s upset but you need to hold the line.    Tell her the truth, don&#x27;t fuck around. Don&#x27;t sugar coat it.    And don&#x27;t let her tell you she will change and do better. Tell her that you don&#x27;t want to change her and it&#x27;s not just one or two things, it&#x27;s just that youve grown into someone different.    You talk it out for a</div>
+          <div class="c-origin">on: how do you deal with a situation of you, outgrowing your girlfriend?</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 622</span>
+          <div class="c-body">Yes. It’s a midlife crisis. But the crisis part is actually optional. When men hit midlife, they begin to reflect on the way they have been choosing to live and the result of those choices.  They realise they won’t live forever. They see the decline of their physical self. They feel lacklustre and lose passion for things that used to consume them like their career or family or a relationship.  They start looking for external change. The often through chaos into the personal and professional live</div>
+          <div class="c-origin">on: I think I&#x27;m having a midlife crisis. Is this what it is? </div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 587</span>
+          <div class="c-body">These comments disappoint me. Its not as simple as &quot;choose to be miserable or break up&quot; its a 7 year long relationship.   Sit her down and tell her how you feel. But also acknowledge the possibility maybe she has something of her own thats making her feel insecure or depressed and she doesnt know.how to show it.  Girls have this very sensitive emotional awareness, they can sense the slightest change in someones energy, and maybe she feels thats with you and she feels youre going to dump her and </div>
+          <div class="c-origin">on: how do you deal with a situation of you, outgrowing your girlfriend?</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 428</span>
+          <div class="c-body">She&#x27;s being a bitch to him.  That&#x27;s not support. That&#x27;s goading him.</div>
+          <div class="c-origin">on: Who is right?</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 307</span>
+          <div class="c-body">As someone who was once unemployed for an embarrassingly long time, here are tips I learned the hard way.  **Networking Tips**  * Start building your network ***before* you need one**. The book *Dig Your Well Before You&#x27;re Thirsty* by Harvey Mackay was titled after that concept. If you only try to network when you&#x27;re looking for a job, it&#x27;s already too late. When I made that mistake, I&#x27;d go to networking events and only meet people who were looking for jobs too.  * Defined goals. What are you af</div>
+          <div class="c-origin">on: Men of reddit, have you ever been under qualified for basically every hiring job</div>
+        </div></div>
+        </div>
+        <div class="col-right">
+          <div class="section-label">Top posts by score</div>
+          <div class="posts-list">
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 26,011</span>
+            <span class="cmts">💬 1,848</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#8B5CF6;color:#8B5CF6">Lost Purpose / No Direction</span>
+          </div>
+          <div class="post-title">My best friend lost a bunch of weight and now he&#x27;s expecting women to go crazy for him, yet they aren&#x27;t because he became the ultimate nice guy in a Chad body. How do I bring this up without sounding like an asshole?</div>
+          <div class="post-body">Before losing weight, he treated women well and had a normal And healthy mindset. Now, he almost expects attractive women to want to date with him and gets extremely upset when they turn him down. Extremely upset as in &quot;going to the basement and punching a pillow for God knows how long&quot;. He no longer wants to have female friends (another change) unless they dating, saying &quot;why do I have to keep up</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 7,604</span>
+            <span class="cmts">💬 1,113</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">&quot;Rules are made to be broken&quot;.When did you realize following all the rules in not gonna cut it?</div>
+          <div class="post-body">As asked in the title, what are the rules set by the society that are meant to be broken in order to be happy?
+
+Edit 1:There is a difference between rules and laws. As Arnold Schwarzenegger said:
+
+We have so many rules in life about everything, break the rules! It is impossible to be a true original if you’re too well behaved and are not breaking the rules, you have to think outside the box. What </div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,264</span>
+            <span class="cmts">💬 482</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">I just turned 27, and I feel like I want run away and start over anew; a quarter-life crisis, I suppose. Has this happened to any of you guys? What have you done?</div>
+          <div class="post-body">Last week, I turned 27. And it hit me kind of hard. 
+
+To sum it up, I guess I feel like I&#x27;m living the last gasps of my youth and I&#x27;m staring down the barrel of eternity and a life of ennui. I know I&#x27;m not old yet, but it&#x27;s coming. 
+
+To start, I&#x27;ve been dating a girl (21) for about a year now. What began as a fling (with her being much younger than I and feelings of it couldn&#x27;t work) turned into a</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,120</span>
+            <span class="cmts">💬 672</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">I&#x27;m getting married next year. My fiancé&#x27;s family is much more financially secure than mine. Now they want to buy her a house. Guys that have been in similar situations, how have you dealt with it?</div>
+          <div class="post-body">Hi All,
+
+So my fiancé and I are getting married next year. Her family is very well off, whereas mine is lower middle class.
+
+This week, her parents told her that they would be prepared to buy our first home (budget of 500k). As a result, we would need to sign a prenup. 
+
+Now i know that this is a great opportunity to live mortgage/rent free, but the broader implications are not so comforting to me</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 838</span>
+            <span class="cmts">💬 642</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">How do I (35m) stop resenting women that want to be in a relationship with me now that I’m financially secure?</div>
+          <div class="post-body">I (35m) decided at the age of 27 to walk away from a high paying career in the hedge fund world so that I could work in commercial construction.  That decision cut my pay nearly in half, and it took me 7 years to get back to making the kind money that I was making in finance.  Over the course of this past year (year 8 in new industry), I decided to shop my resume &amp; practically doubled my income by</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="community-card" id="sub-AskMenOver30">
+      <div class="card-header" style="border-top-color:#F59E0B">
+        <div class="header-left">
+          <div class="sub-name" style="color:#F59E0B">r/AskMenOver30</div>
+          <div class="sub-cat">Male Identity</div>
+        </div>
+        <div class="header-stats">
+          <div class="hstat"><span class="hv">100</span><span class="hl">posts</span></div>
+          <div class="hstat"><span class="hv">362</span><span class="hl">comments</span></div>
+          <div class="hstat"><span class="hv">90</span><span class="hl">avg score</span></div>
+          <div class="hstat"><span class="hv">102</span><span class="hl">avg replies</span></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="col-left">
+          <div class="section-label">Pain segment distribution</div>
+          <div class="seg-list">
+        <div class="seg-row">
+          <span class="seg-name" style="color:#3B82F6">General Self-Improvement Struggle</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:59%;background:#3B82F6"></div>
+          </div>
+          <span class="seg-pct">59%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:27%;background:#6366F1"></div>
+          </div>
+          <span class="seg-pct">27%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#8B5CF6">Lost Purpose / No Direction</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:6%;background:#8B5CF6"></div>
+          </div>
+          <span class="seg-pct">6%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#EF4444">Post-Setback Reinvention</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:4%;background:#EF4444"></div>
+          </div>
+          <span class="seg-pct">4%</span>
+        </div></div>
+          <div class="section-label" style="margin-top:16px">Top comments by upvotes</div>
+          <div class="comments-list">
+        <div class="comment-item">
+          <span class="c-score">▲ 152</span>
+          <div class="c-body">You really want to spend the rest of your life comparing your journey to the highlight reels of other people who don&#x27;t care about you?   Hint: You really don&#x27;t want to do that.</div>
+          <div class="c-origin">on: I am feeling stuck at 35. Advice?</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 127</span>
+          <div class="c-body">i used to party with my friend a lot back in our teens/20s. I finished school, got a good job, climbed up the ladder etc.  he didn&#x27;t; he continued to party well into his 30s. Did whatever jobs to fund his partying.  I ran into him a while ago (we were both in our late 30s at the time) and found out he was in his 2nd year of university! He said he woke up one day, looked around and realized that he was partying with 20-somethings while all of his 30-something friends all had careers, families, ha</div>
+          <div class="c-origin">on: For those of you that got their life together in their 30s (Proper job, financia</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 123</span>
+          <div class="c-body">For that scenario in particular yes go get a normal job.  You’re killing yourself for all the risk and very low reward</div>
+          <div class="c-origin">on: Guys who closed down their business and took a &quot;regular job&quot;, how&#x27;s it going? I&#x27;</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 121</span>
+          <div class="c-body">Personally I would not let that individual be around me or my family (especially children) despite being a blood relative or not.  Your brother needs therapy or rehab, probably both. If your father is the only person your brother can talk to, then that messaging needs to come from him.   If your father is not willing to push your brother to get help, you should move out and protect your family (ie son).</div>
+          <div class="c-origin">on: What can my family and I do about my abusive bully brother? He made us scared to</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 118</span>
+          <div class="c-body">Travel with your wife and kids. Enjoy life when you’re not at work. If you’re burnt out, find a career you actually like.</div>
+          <div class="c-origin">on: Regrets of spending whole life working</div>
+        </div></div>
+        </div>
+        <div class="col-right">
+          <div class="section-label">Top posts by score</div>
+          <div class="posts-list">
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,626</span>
+            <span class="cmts">💬 1,128</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">My wife of 10 years just left me. Where to find the strength to keep going?</div>
+          <div class="post-body">Hey guys, i dont know if these kinds of posts are allowed here or not, but im desperate.
+
+My wife and best friend of 10 years (been together for 14) just ended things. We just bought a house a year ago (well actually her mother bought the house for us all to live in and poured all kinds of money into renovating an in-law suite on the bottom floor). Her mother-in-law has been more of a mother to me</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 493</span>
+            <span class="cmts">💬 387</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">I&#x27;ve removed bad things (smoking/vaping, alcohol, porn, binge eating) and now don&#x27;t know what else to do outside of work and gym. Same day every day.</div>
+          <div class="post-body">I try to be grateful of the little things try new things. Smell the flowers, get some sun, try a new cafe or cook something new. Idk wtf else to do. I swear the last year I&#x27;ve done absolutely nothing but just exist and go to work while staying really fit and healthy. I don&#x27;t crave alcohol anymore or vaping or porn watching or eating biscuits watching mindless crap online to &#x27;pass time&#x27;.
+
+But now I</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 319</span>
+            <span class="cmts">💬 277</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">My dudes, is this a midlife crisis?</div>
+          <div class="post-body">So yeah, I’m a 36-year-old dad with an amazing wife and an even more amazing little guy. I’ve got a job that pays fine and the work-life balance is honestly great. On paper, life’s solid.
+
+But for a while now, I’ve just felt completely unfulfilled. Like… I did everything “right” and still somehow feel way behind where I should be. I’m technically in a “leadership” role, but I have basically zero i</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 274</span>
+            <span class="cmts">💬 147</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#6366F1;color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          </div>
+          <div class="post-title">35, Almost Divorced. Guess I just need to get things of my chest.</div>
+          <div class="post-body">I am in the final stages of a divorce, will probably be finalized by the end of year. It has been rough, and it sucks as I didn&#x27;t think it&#x27;d happen, but the positive side is that it has been amicable. 
+
+I moved from England for this woman (dumbass I know). Living in the Midwest in a pretty boring state. I will probably bounce in the next year or two, but for now I&#x27;m just working, spending time wit</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 274</span>
+            <span class="cmts">💬 306</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#6366F1;color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          </div>
+          <div class="post-title">I’m 30 and I play video games almost everyday. Do others here do the same? </div>
+          <div class="post-body">I’m 30 and have played video games my entire life. I still play video games almost every day as it’s a hobby at this point. It allows me to relax after a day of work (although I’m playing competitive shooters). 
+
+However, I often feel guilty about how much time I play video games for. I feel like I’m wasting my life away. But another part of my mind is like, no, this is a hobby that you enjoy so w</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="community-card" id="sub-AskMenOver40">
+      <div class="card-header" style="border-top-color:#F59E0B">
+        <div class="header-left">
+          <div class="sub-name" style="color:#F59E0B">r/AskMenOver40</div>
+          <div class="sub-cat">Male Identity</div>
+        </div>
+        <div class="header-stats">
+          <div class="hstat"><span class="hv">8</span><span class="hl">posts</span></div>
+          <div class="hstat"><span class="hv">14</span><span class="hl">comments</span></div>
+          <div class="hstat"><span class="hv">41</span><span class="hl">avg score</span></div>
+          <div class="hstat"><span class="hv">51</span><span class="hl">avg replies</span></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="col-left">
+          <div class="section-label">Pain segment distribution</div>
+          <div class="seg-list">
+        <div class="seg-row">
+          <span class="seg-name" style="color:#3B82F6">General Self-Improvement Struggle</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:88%;background:#3B82F6"></div>
+          </div>
+          <span class="seg-pct">88%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:12%;background:#6366F1"></div>
+          </div>
+          <span class="seg-pct">12%</span>
+        </div></div>
+          <div class="section-label" style="margin-top:16px">Top comments by upvotes</div>
+          <div class="comments-list">
+        <div class="comment-item">
+          <span class="c-score">▲ 48</span>
+          <div class="c-body">Walk with him around the block and talk. Just 2-3 times a week. Then in a month or so walk around the block 2 times, and talk to him.</div>
+          <div class="c-origin">on: My father is stuck in a midlife crisis and is waiting for his life to end</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 26</span>
+          <div class="c-body">Hey! I am in my 40s and many of your comments and situation parallel my own. You are certainly not a loser. Several years ago I was forced to make a job change. What I learned is that I was capable of more than I thought and was able to handle risk beyond my preconceived tolerance. I would bet you can too. You are capable of changing your situation. Start writing out what you might want to do to change and make that your plan. Wishing you the best of luck!</div>
+          <div class="c-origin">on: I&#x27;m a year away from hitting 40 and on the verge of a full midlife crisis. I nee</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 24</span>
+          <div class="c-body">You&#x27;re not going to want to hear this, but IMO, your life is too easy.  You need to do hard things.  Checkout The Comfort Crisis by Michael Easter.</div>
+          <div class="c-origin">on: Bored with life but should be grateful instead</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 19</span>
+          <div class="c-body">I hear you, I understand, and I have no further words of wisdom to offer you. I simply hope that this too shall pass.</div>
+          <div class="c-origin">on: 42M — Feeling lost and unmotivated despite having a good life</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 17</span>
+          <div class="c-body">You are far from alone.    Therapy has helped me understand I have continued to grow as a person as I age and that im not the same person I was, and its completely normal to &quot;feel lost while navigating this transitional state in your life&quot;.    New hobbies, passions and experiences are something I&#x27;m encourage to seek out. Last winter I took up crocheting, I garden, we fostered dogs, I volunteer in the community, got into yoga, go for mani + pedi&#x27;s with the wife or a day at the spa, joining men&#x27;s </div>
+          <div class="c-origin">on: 42M — Feeling lost and unmotivated despite having a good life</div>
+        </div></div>
+        </div>
+        <div class="col-right">
+          <div class="section-label">Top posts by score</div>
+          <div class="posts-list">
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 102</span>
+            <span class="cmts">💬 17</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">I Started a men’s group on MeetUp and it’s been amazing. 57M</div>
+          <div class="post-body">Hey guys! 
+
+I was reading the sub this morning and was struck, as I often am, by how many men in our country feel alone, abandoned, and like they have to do it all themselves. I can relate. 
+
+At 57 (or any age) it’s been hard to make new friends and find other IRL guys to talk to about what it’s like to be a man. So, back in August, I started a men’s group on MeetUp to see if other guys were feeli</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 59</span>
+            <span class="cmts">💬 55</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">I&#x27;m a year away from hitting 40 and on the verge of a full midlife crisis. I need some advice.</div>
+          <div class="post-body">I&#x27;ll try to keep it brief, but just looking for some life wisdom from guys who have been here.
+
+- The good: Amazing wife who is loving, smart, successful. Two great kids under age 7. A house we can afford and no real money worries. I&#x27;m employed full time with what I think is a solid 8/10 CV of good positions behind me, and a paycheck that is good by any normal middle class standard.
+
+- And yet, I </div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 41</span>
+            <span class="cmts">💬 32</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">42M — Feeling lost and unmotivated despite having a good life</div>
+          <div class="post-body">Hi Everyone
+
+I’m a 42-year-old guy and, on paper, my life is objectively good. I have a great job with quite a bit of flexibility, a loving and supportive wife, and a healthy family (parents and siblings back home in UK). I know I’m lucky, and I don’t take that for granted — which is part of why I feel guilty even writing this.
+
+Despite all that, I’ve completely lost my motivation and interest in </div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 35</span>
+            <span class="cmts">💬 103</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">43M. Single. 1.5Mil in networth. Lost in life</div>
+          <div class="post-body">Left US, to Asia a few years ago. I’m lost and tired of everything. Tired of chasing money. Tired of running my business. Tired of dealing with my virtual employees. Tired of traveling. Seen the world and traveling doesn’t excite me anymore. Tired of dating. Tired of people around me. 
+
+I realize that as the years go by, it’s all meaningless unless I have a family and kids. This gives me the purpo</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 29</span>
+            <span class="cmts">💬 59</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">My father is stuck in a midlife crisis and is waiting for his life to end</div>
+          <div class="post-body">My father is in his late 40s and is going through a midlife crisis. He has no energy and no motivation to do anything. Over the years he has become very unhealthy and out of shape, and whenever he tries to begin working out again, he quits in a week. Even if he tries to take it slow he ends up quitting. He used to watch movies and play games to pass the time but even those have gotten stale for hi</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="community-card" id="sub-MensLib">
+      <div class="card-header" style="border-top-color:#F59E0B">
+        <div class="header-left">
+          <div class="sub-name" style="color:#F59E0B">r/MensLib</div>
+          <div class="sub-cat">Male Identity</div>
+        </div>
+        <div class="header-stats">
+          <div class="hstat"><span class="hv">100</span><span class="hl">posts</span></div>
+          <div class="hstat"><span class="hv">1551</span><span class="hl">comments</span></div>
+          <div class="hstat"><span class="hv">505</span><span class="hl">avg score</span></div>
+          <div class="hstat"><span class="hv">108</span><span class="hl">avg replies</span></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="col-left">
+          <div class="section-label">Pain segment distribution</div>
+          <div class="seg-list">
+        <div class="seg-row">
+          <span class="seg-name" style="color:#8B5CF6">Lost Purpose / No Direction</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:56%;background:#8B5CF6"></div>
+          </div>
+          <span class="seg-pct">56%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#3B82F6">General Self-Improvement Struggle</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:41%;background:#3B82F6"></div>
+          </div>
+          <span class="seg-pct">41%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#10B981">Active Builder / Already on the Path</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:2%;background:#10B981"></div>
+          </div>
+          <span class="seg-pct">2%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:1%;background:#6366F1"></div>
+          </div>
+          <span class="seg-pct">1%</span>
+        </div></div>
+          <div class="section-label" style="margin-top:16px">Top comments by upvotes</div>
+          <div class="comments-list">
+        <div class="comment-item">
+          <span class="c-score">▲ 308</span>
+          <div class="c-body">Agree with u/Subject_Economy. You&#x27;re only responsible for your actions. That said, I would respect any hint of &quot;no&quot; and not accept &quot;you should have tried harder.&quot; That&#x27;s bs. Partners should tell each other what they want clearly. I do want to have sex. I don&#x27;t want to have sex. For that matter I think people should be clear about what they want for dinner or what movie to see. It would certainly be okay to say, I&#x27;m not sure what I want.  And if you&#x27;re with a partner you know and care about, a gi</div>
+          <div class="c-origin">on: Dating as a black man and the triple dose of toxic masculinity</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 288</span>
+          <div class="c-body">Don&#x27;t use an acronym without spelling it out right away.</div>
+          <div class="c-origin">on: How&#x27;s your INU?</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 284</span>
+          <div class="c-body">I&#x27;m cautious of this negative view of anger, because anger is typically for a reason.   If someone is hurting me, discussing my anger as a &#x27;me thing&#x27; can be a way of deflecting responsibility for the hurt being inflicted on me such that calming down becomes a form of emotional labor I&#x27;m doing for someone who is hurting me, disguised as something I&#x27;m supposed to do for myself.   Its a nice idea that you need to stop being angry to let people in, but they say that where there&#x27;s smoke there&#x27;s fire,</div>
+          <div class="c-origin">on: Reading The Will to Change by bell hooks, and I appreciated this quote on anger</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 283</span>
+          <div class="c-body">I think you hit the nail on the head. Just the fact that it&#x27;s so often called erectile dysfunction where in many cases it&#x27;s merely a lack of desire, a lack of feeling comfortable with your partner, with yourself, societal pressure, body image, and so on. It&#x27;s mostly perfectly normal that you&#x27;re not going to be aroused when you don&#x27;t feel safe, seen and heard (this includes yourself).   This is where gender stereotypes are so damaging. There&#x27;s so much that men can relate with that women go throug</div>
+          <div class="c-origin">on: Erectile Dysfunction - Maybe sex is just kinda hard sometimes?</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 270</span>
+          <div class="c-body">To me, the tightrope walk isnt about balancing being emotionally vulnerable with being an &quot;in control man&quot;, which i think is what youre getting at. To me, its about balancing how much emotional labour i ask of people compared to how much i give.  Your friends curt response clearly implied she didnt have any emotional labour to give you and perhaps she felt she needed to shut it down which she did effectively. You havent necessarily alienated her, but clearly she&#x27;s not into sharing deep emotional</div>
+          <div class="c-origin">on: Is your expression of emotions a bit of a tightrope walk?</div>
+        </div></div>
+        </div>
+        <div class="col-right">
+          <div class="section-label">Top posts by score</div>
+          <div class="posts-list">
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 3,045</span>
+            <span class="cmts">💬 324</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">Fact Checking False Rape Accusations and Why We Shouldn&#x27;t Fear a False Rape Epidemic.</div>
+          <div class="post-body">One of the main resistance to changes in how police and society handle Rape, Sexual Assault and even Harassment is the counter argument that men then would be plagued by False Rape accusations. The fear is always that we crossed some line that no longer allows reasonable doubt and that one man life can be sent to jail by one accusation. We of course have seen stories of such things in the news and</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 2,295</span>
+            <span class="cmts">💬 128</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#8B5CF6;color:#8B5CF6">Lost Purpose / No Direction</span>
+          </div>
+          <div class="post-title">A surprisingly high percentage of rapists do not recognize their behavior as rape, despite what the law clearly says. This Sexual Assault Awareness Month, educate yourself and a friend so you can be sure the people in your life are on the right side of the law</div>
+          <div class="post-body">[Sexual activity without consent is sexual assault](https://en.wikipedia.org/wiki/Sexual_assault). [Some](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7878243/) (in fact, [many](https://canadianwomen.org/blog/consent-study/)) people are legit confused about what constitutes consent, such as [this teenager](https://www.nytimes.com/2018/02/07/magazine/teenagers-learning-online-porn-literacy-sex-educ</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 2,099</span>
+            <span class="cmts">💬 223</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#8B5CF6;color:#8B5CF6">Lost Purpose / No Direction</span>
+          </div>
+          <div class="post-title">I&#x27;m grateful to be an LGBT man- I think the gender roles straight men are socialised into are incredibly constrictive</div>
+          <div class="post-body">I&#x27;m an LGBT man (bisexual to be precise) and I&#x27;ve definitely had my struggles in life because of that. Sexual abuse, ridicule, assault, verbal abuse or shaming, the list goes on.
+
+But I am so glad to be bisexual because I think it has shown me that masculinity can be a bit freer than I otherwise would have known.
+
+To be sure, the gay community can be very toxic. But the difference is that in the g</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 2,065</span>
+            <span class="cmts">💬 186</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#8B5CF6;color:#8B5CF6">Lost Purpose / No Direction</span>
+          </div>
+          <div class="post-title">Fact Checking False Rape Accusations and Why We Shouldn&#x27;t Fear a False Rape Epidemic.</div>
+          <div class="post-body">TW: Sexual Assault, Rape, Sexual Violence
+
+Three years ago we had a post by a now-deleted user that we deemed so good we added it to our sidebar. Since we lost it when the author deleted their account, this is my attempt to recreate it while editing minor things for clarity, plus adding a section on race that was left as a comment on the original post[.](https://imgur.com/SwYsaQd)
+
+# Fact Checking</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,896</span>
+            <span class="cmts">💬 337</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#8B5CF6;color:#8B5CF6">Lost Purpose / No Direction</span>
+          </div>
+          <div class="post-title">There&#x27;s good news about height discrimination</div>
+          <div class="post-body">There was a post earlier on here about height discrimination, and I found the discussion surrounding it on this sub pretty interesting. I feel like for the most part we&#x27;re on the right track and trying our best to find the right path forward. Even those that got the downvote hammer.
+
+I think it&#x27;s pretty obvious to most of us why height discrimination among men is a sticky issue, especially for a c</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+    <div class="category-section" data-cat="Philosophy &amp; Mindset">
+      <div class="cat-header">
+        <span class="cat-dot" style="background:#8B5CF6"></span>
+        <span class="cat-title" style="color:#8B5CF6">Philosophy &amp; Mindset</span>
+        <span class="cat-stats">100 posts · 300 comments</span>
+      </div>
+      <div class="cards-grid">
+        
+    <div class="community-card" id="sub-Stoicism">
+      <div class="card-header" style="border-top-color:#8B5CF6">
+        <div class="header-left">
+          <div class="sub-name" style="color:#8B5CF6">r/Stoicism</div>
+          <div class="sub-cat">Philosophy &amp; Mindset</div>
+        </div>
+        <div class="header-stats">
+          <div class="hstat"><span class="hv">100</span><span class="hl">posts</span></div>
+          <div class="hstat"><span class="hv">300</span><span class="hl">comments</span></div>
+          <div class="hstat"><span class="hv">156</span><span class="hl">avg score</span></div>
+          <div class="hstat"><span class="hv">40</span><span class="hl">avg replies</span></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="col-left">
+          <div class="section-label">Pain segment distribution</div>
+          <div class="seg-list">
+        <div class="seg-row">
+          <span class="seg-name" style="color:#3B82F6">General Self-Improvement Struggle</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:69%;background:#3B82F6"></div>
+          </div>
+          <span class="seg-pct">69%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#8B5CF6">Lost Purpose / No Direction</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:8%;background:#8B5CF6"></div>
+          </div>
+          <span class="seg-pct">8%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:6%;background:#6366F1"></div>
+          </div>
+          <span class="seg-pct">6%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#10B981">Active Builder / Already on the Path</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:5%;background:#10B981"></div>
+          </div>
+          <span class="seg-pct">5%</span>
+        </div></div>
+          <div class="section-label" style="margin-top:16px">Top comments by upvotes</div>
+          <div class="comments-list">
+        <div class="comment-item">
+          <span class="c-score">▲ 277</span>
+          <div class="c-body">Stoics talking about downvotes always tickles me.</div>
+          <div class="c-origin">on: &quot;Men Can&#x27;t Be Men Anymore&quot;</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 258</span>
+          <div class="c-body">You can say “Fuck it” and ruin your life.  You can say “Fuck it” and build your life.   The difference is you.</div>
+          <div class="c-origin">on: The realization of choice has changed my entire life</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 189</span>
+          <div class="c-body">It seems you have a very beautiful relationship with you father. I lost my father 25 years ago. With all due respect, let the tears flow and tell him everything you ever wanted him to know and then some now. Feel every part of this important moment in your life and do not believe there is anything you have to do &quot;just&quot; the right way.       These are the moments that all the preparation in the world could never truly equip you for and there are no missteps to be had when it comes to expressing yo</div>
+          <div class="c-origin">on: My dad was diagnosed with stage 4 duodenum cancer today.</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 133</span>
+          <div class="c-body">One big thing you can do is adding some form of service to your routine. Not achievement, entertainment, or self-improvement: service.  Volunteer at a soup kitchen, read to kids at the library, visit isolated seniors, help with community cleanups or tree planting, walk dogs at a shelter. Anything where your presence genuinely helps another living being.  Stoicism puts a lot of emphasis on virtue and our role within the human community. The Stoics believed we aren’t meant to live only for private</div>
+          <div class="c-origin">on: I think life is inherently meaningless but it&#x27;s something to be enjoyed. The old</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 131</span>
+          <div class="c-body">There is no such thing as winning or losing. There is just experiences.   As soon as you put a label on an experience (win or lose), you put an arbitrary value to it; which you allow to be dictated by external forces. You have to let all that go. Be grateful for the experiences you have, learn from them and move forward.   The past does not exist. So all that you have done or not done, is irrelevant. Don&#x27;t waste energy on analyzing it.  You are reborn every morning you wake. Make the effort to l</div>
+          <div class="c-origin">on: Why do we feel like we’re never winning in life?</div>
+        </div></div>
+        </div>
+        <div class="col-right">
+          <div class="section-label">Top posts by score</div>
+          <div class="posts-list">
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,415</span>
+            <span class="cmts">💬 135</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">Farewell</div>
+          <div class="post-body">In the last two years, I have posted to this group a few times.
+
+Last year, I posted ([“Here’s the thing: you’re dying, too.”](https://www.reddit.com/r/Stoicism/comments/1ifz1cr/heres_the_thing_youre_dying_too/?utm_source=share&amp;utm_medium=web3x&amp;utm_name=web3xcss&amp;utm_term=1&amp;utm_content=share_button)) about my attempt to meet a diagnosis of ALS with amor fati— and about the journal I was keeping. So</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 835</span>
+            <span class="cmts">💬 38</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">The realization of choice has changed my entire life</div>
+          <div class="post-body">One of the key tenants of Stoicism is that we should focus on what we CAN control. To be honest, I think people truly underestimate just how much we control and how much choice in the matter we have.
+
+I read that Victor Frankl quote“**Between stimulus and response there is a space.** **In that space is our power to choose our response.** **In our response lies our growth and our freedom.”**
+
+Throu</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 827</span>
+            <span class="cmts">💬 46</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#10B981;color:#10B981">Active Builder / Already on the Path</span>
+          </div>
+          <div class="post-title">Understanding Fear &amp; Anxiety</div>
+          <div class="post-body">Fear, like most every other emotion, is motivated by our assumptions, values, expectations and insecurities. If you were to stand on the edge of a cliff, there would be an alarm going off in your head reminding you to remain present and attentive in every step you take, to be more careful than you normally would be. The scenario of you slipping and falling is played out within your mind, you imagi</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 706</span>
+            <span class="cmts">💬 125</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">Stoicism defused a potentially violent confrontation</div>
+          <div class="post-body">I wanted to share an anecdote that happened to me recently. A few days ago I was taking a train downtown and saw a man waiting on the platform. By his body language I could already tell he was full of anger and frustration. He was holding a slice of pizza and a can of Pepsi, and maliciously ripping toppings off the pizza and throwing them on the floor. 
+
+As we got on to the train, it was immediate</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 648</span>
+            <span class="cmts">💬 35</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">How I finally broke free from 10 years of crippling social anxiety</div>
+          <div class="post-body">For most of my life, I was trapped in my own head. Social anxiety had me rehearsing every conversation before it happened, analyzing every interaction after, and avoiding anything that might make me look stupid. I missed out on friendships, fun, and so many normal life experiences because I couldn’t stop overthinking. Just a few months ago, I had a realization that changed everything: my anxiety w</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+    <div class="category-section" data-cat="Discipline &amp; Habits">
+      <div class="cat-header">
+        <span class="cat-dot" style="background:#10B981"></span>
+        <span class="cat-title" style="color:#10B981">Discipline &amp; Habits</span>
+        <span class="cat-stats">200 posts · 461 comments</span>
+      </div>
+      <div class="cards-grid">
+        
+    <div class="community-card" id="sub-productivity">
+      <div class="card-header" style="border-top-color:#10B981">
+        <div class="header-left">
+          <div class="sub-name" style="color:#10B981">r/productivity</div>
+          <div class="sub-cat">Discipline &amp; Habits</div>
+        </div>
+        <div class="header-stats">
+          <div class="hstat"><span class="hv">100</span><span class="hl">posts</span></div>
+          <div class="hstat"><span class="hv">310</span><span class="hl">comments</span></div>
+          <div class="hstat"><span class="hv">213</span><span class="hl">avg score</span></div>
+          <div class="hstat"><span class="hv">42</span><span class="hl">avg replies</span></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="col-left">
+          <div class="section-label">Pain segment distribution</div>
+          <div class="seg-list">
+        <div class="seg-row">
+          <span class="seg-name" style="color:#3B82F6">General Self-Improvement Struggle</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:46%;background:#3B82F6"></div>
+          </div>
+          <span class="seg-pct">46%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#F97316">No Discipline / Can&#x27;t Stick to Anything</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:28%;background:#F97316"></div>
+          </div>
+          <span class="seg-pct">28%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:17%;background:#6366F1"></div>
+          </div>
+          <span class="seg-pct">17%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#10B981">Active Builder / Already on the Path</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:5%;background:#10B981"></div>
+          </div>
+          <span class="seg-pct">5%</span>
+        </div></div>
+          <div class="section-label" style="margin-top:16px">Top comments by upvotes</div>
+          <div class="comments-list">
+        <div class="comment-item">
+          <span class="c-score">▲ 423</span>
+          <div class="c-body">three months without brainrot and already reading REAL books and quoting Thoreau? damn dude keep this up who knows what you could do with a whole year of this!!!! very motivating to read this on reddit as a part of my 4 hour doomscroll routine. bless! heart emoji</div>
+          <div class="c-origin">on: After Deleting All Unnecessary Social Media Apps for Three Months, My Friends Sa</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 234</span>
+          <div class="c-body">For me, you made journaling seem even harder than what it should. I feel like you are not talking about journaling, you are talking about lifestyle changes. If I did what you are saying, without journals, how will that be different from doing a journal?     Spending less time on the computer and phone will automatically make you more productive, so writing about things you are grateful for, how will that make me more productive?      Writing about whom you want to be, sound better. But when once</div>
+          <div class="c-origin">on: You need to journal, Its non negotiable</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 233</span>
+          <div class="c-body">Reading this within the first 45 mins of waking up</div>
+          <div class="c-origin">on: The 6 step morning routine that changed my life</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 213</span>
+          <div class="c-body">This could be a reason behind why my brain gets all kinds of thoughts and ideas just when I am trying to sleep. I might not be giving my brain enough &#x27;rest&#x27; time during the day. I should try this technique.</div>
+          <div class="c-origin">on: 10 Minutes of Daily Boredom Helped Me Beat Procrastination</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 193</span>
+          <div class="c-body">This was uncomfortable to read. I’m sorry to be so negative but I don’t think the internet needs another influencer preaching about how great they are through the guise of ‘productivity’. You sound like someone who’s maybe just started out on this journey and it’s amazing that you are working to make yourself a subjectively better person. The tone of your post is so prescriptive and rigid. If you wrote it as more of an anecdotal account of what’s worked for you so far, it wouldn’t have raised so</div>
+          <div class="c-origin">on: You need to journal, Its non negotiable</div>
+        </div></div>
+        </div>
+        <div class="col-right">
+          <div class="section-label">Top posts by score</div>
+          <div class="posts-list">
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,358</span>
+            <span class="cmts">💬 226</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">How I Managed to Do More (Without Adding More Hours to My Day)</div>
+          <div class="post-body">\*\*\*I posted this yesterday and sorry - I am new here. I added a link to the tool which I was not meant to do - and the post got removed. I was really taken back by how many people found the post useful so I am just going to leave this advise here. I am not sure how to get the tool to those who asked\*\*\*
+
+
+
+At the start of 2024, I genuinely thought I had my life under control.
+
+I was balancing</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,102</span>
+            <span class="cmts">💬 102</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#6366F1;color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          </div>
+          <div class="post-title">After Deleting All Unnecessary Social Media Apps for Three Months, My Friends Say I&#x27;m Like a Different Person</div>
+          <div class="post-body">Once, I was the kind of person who knew everyone&#x27;s coffee preferences, weekend plans, and breakfast choices. Not because I cared, but because algorithms had turned me into a reluctant voyeur of mundane lives. My time was meaninglessly consumed by endless social messages, entertainment videos, and gossip news. These days of zero growth didn&#x27;t make me happy. Every time I closed my phone, I began reg</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,012</span>
+            <span class="cmts">💬 54</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#F97316;color:#F97316">No Discipline / Can&#x27;t Stick to Anything</span>
+          </div>
+          <div class="post-title">10 Minutes of Daily Boredom Helped Me Beat Procrastination</div>
+          <div class="post-body">Every day, I consciously allow myself to be bored… for just 10 minutes. And I’ve never been more productive.
+
+I’ve built a new habit: I take 10 minutes each day to deliberately do nothing. No phone. No laptop. Just silence.
+
+These short windows of intentional boredom have massively boosted my productivity and creativity.
+
+I know it sounds weird.
+
+But just last week, this quiet time led me to a sma</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 945</span>
+            <span class="cmts">💬 78</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#10B981;color:#10B981">Active Builder / Already on the Path</span>
+          </div>
+          <div class="post-title">The 6 step morning routine that changed my life</div>
+          <div class="post-body">here&#x27;s the morning routine that astronomically changed my life / improved my productivity and why:
+
+**Electrolytes (or water) immediately upon waking up:** overnight you lose fluids, mild dehydration makes you foggy when you wake up. water is good, electrolytes better. Gets you out of groggy foggy state faster
+
+**No phone 45 min upon waking:** When you wake up your brain is still shifting from alp</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 881</span>
+            <span class="cmts">💬 71</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#F97316;color:#F97316">No Discipline / Can&#x27;t Stick to Anything</span>
+          </div>
+          <div class="post-title">The one question that stops my procrastination</div>
+          <div class="post-body">Let me share the question that is changing my life. The question I keep asking myself several times a day. The question that saves me from mindless procrastination. The question that helps me be the best version of myself even when I don’t feel like it.
+
+This question is
+
+## “What’s the alternative? If not this, then what?”
+
+Let me explain it using some real-life examples.
+
+## Scenario #1
+
+You hav</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="community-card" id="sub-NoFap">
+      <div class="card-header" style="border-top-color:#10B981">
+        <div class="header-left">
+          <div class="sub-name" style="color:#10B981">r/NoFap</div>
+          <div class="sub-cat">Discipline &amp; Habits</div>
+        </div>
+        <div class="header-stats">
+          <div class="hstat"><span class="hv">100</span><span class="hl">posts</span></div>
+          <div class="hstat"><span class="hv">151</span><span class="hl">comments</span></div>
+          <div class="hstat"><span class="hv">169</span><span class="hl">avg score</span></div>
+          <div class="hstat"><span class="hv">30</span><span class="hl">avg replies</span></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="col-left">
+          <div class="section-label">Pain segment distribution</div>
+          <div class="seg-list">
+        <div class="seg-row">
+          <span class="seg-name" style="color:#3B82F6">General Self-Improvement Struggle</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:56%;background:#3B82F6"></div>
+          </div>
+          <span class="seg-pct">56%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#F97316">No Discipline / Can&#x27;t Stick to Anything</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:17%;background:#F97316"></div>
+          </div>
+          <span class="seg-pct">17%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:11%;background:#6366F1"></div>
+          </div>
+          <span class="seg-pct">11%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#8B5CF6">Lost Purpose / No Direction</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:10%;background:#8B5CF6"></div>
+          </div>
+          <span class="seg-pct">10%</span>
+        </div></div>
+          <div class="section-label" style="margin-top:16px">Top comments by upvotes</div>
+          <div class="comments-list">
+        <div class="comment-item">
+          <span class="c-score">▲ 161</span>
+          <div class="c-body">You can’t change the past but you can always change the future</div>
+          <div class="c-origin">on: Having watched r*pe porn is ruining my life</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 123</span>
+          <div class="c-body">Really really specific…but at least it made me feel good about myself that I’ve never done any of that…like I’m just here to quit porn dawg</div>
+          <div class="c-origin">on: The 10 substitutes of porn that you should avoid at all costs</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 118</span>
+          <div class="c-body">Bro described all the canon events</div>
+          <div class="c-origin">on: How to Enjoy Sex in 1,406 Easy Steps</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 111</span>
+          <div class="c-body">Who the fuck does #3?????  I swear to god artists are horny on a whole other level lmao</div>
+          <div class="c-origin">on: The 10 substitutes of porn that you should avoid at all costs</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 86</span>
+          <div class="c-body">Why is she your wife? If you’ve known this about her before marriage, why is she your wife?</div>
+          <div class="c-origin">on: Day 2: sexual rejection in marriage (potentially triggering)</div>
+        </div></div>
+        </div>
+        <div class="col-right">
+          <div class="section-label">Top posts by score</div>
+          <div class="posts-list">
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,452</span>
+            <span class="cmts">💬 39</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">Getting lean will give you the confidence and energy to change your life and leave this habit behind. Advice from a 40yo.</div>
+          <div class="post-body">I never appreciated the importance of having a good physique when I was younger. I thought six packs were just about showing off to girls. How wrong I was.
+
+I will be 40 this year, and there are many things I imagined I would have achieved by now, that have not come to pass. I imagined I&#x27;d be successful and wealthy. I imagined I&#x27;d be happily married. I imagined I&#x27;d be a proud father. None of these</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,334</span>
+            <span class="cmts">💬 55</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#EF4444;color:#EF4444">Post-Setback Reinvention</span>
+          </div>
+          <div class="post-title">COMPLETE GUIDE TO QUIT PORN FOR GOOD AND IMPROVE YOUR LIFE</div>
+          <div class="post-body">This is not written by me, but **I HAD TO** share it with all of you, because **this is not some temporary trick** to achieve 30, 60, 90 days target. It is a **step by step** **guide** for the **complete reboot**, to completely change your approach towards quitting porn and tackle PMO in the right manner.
+
+I&#x27;ve shared it in a few other subs, because I want to reach as many people as possible.
+
+It </div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,213</span>
+            <span class="cmts">💬 42</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">Years of my life this addiction robbed, I have no tears left but to accept and move on.</div>
+          <div class="post-body">I have left this completely and now as I&#x27;m not indulging in heavy dopamine content (including music) I am realising that how numb I use to make myself just to escape from a bad emotion.
+It feels a heavy rock ready to crush me and I cannot move but try my best.
+
+Today I was studying and halfway through the chapter I just realised I&#x27;ve spent years escaping using porn and what it has got me? Absolute</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 551</span>
+            <span class="cmts">💬 36</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#10B981;color:#10B981">Active Builder / Already on the Path</span>
+          </div>
+          <div class="post-title">I USED TO MASTURBATE 4 TIMES IN A DAY AND NOW IT&#x27;S BEEN 100 DAYS SINCE I HAVE MASTURBATED…</div>
+          <div class="post-body">It wasn’t easy at all.
+
+I never saw it as a problem—just something everyone does to blow off steam. 
+
+But that illusion shattered the day I was with someone I truly cared about… and felt absolutely nothing.
+
+You can’t even imagine what I had to do just to feel something…
+
+I was with my partner, but in my head, I was fantasizing about other women—because reality wasn’t enough anymore.
+
+And not only</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 488</span>
+            <span class="cmts">💬 92</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">The 10 substitutes of porn that you should avoid at all costs</div>
+          <div class="post-body"># 1. Social media
+
+Let’s get the main one out of the way first, should we?
+
+Social media is a big fat thirst trap and we all know it.
+
+I’m not sure how it came to that (it all happened so gradually I barely noticed), but somewhere along the way apps like Instagram — once home to artsy photographs, selfies with friends, and little more — were taken by a storm of sexualized content from all sorts of</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+    <div class="category-section" data-cat="Mental Health">
+      <div class="cat-header">
+        <span class="cat-dot" style="background:#EF4444"></span>
+        <span class="cat-title" style="color:#EF4444">Mental Health</span>
+        <span class="cat-stats">100 posts · 265 comments</span>
+      </div>
+      <div class="cards-grid">
+        
+    <div class="community-card" id="sub-malementalhealth">
+      <div class="card-header" style="border-top-color:#EF4444">
+        <div class="header-left">
+          <div class="sub-name" style="color:#EF4444">r/malementalhealth</div>
+          <div class="sub-cat">Mental Health</div>
+        </div>
+        <div class="header-stats">
+          <div class="hstat"><span class="hv">100</span><span class="hl">posts</span></div>
+          <div class="hstat"><span class="hv">265</span><span class="hl">comments</span></div>
+          <div class="hstat"><span class="hv">57</span><span class="hl">avg score</span></div>
+          <div class="hstat"><span class="hv">30</span><span class="hl">avg replies</span></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="col-left">
+          <div class="section-label">Pain segment distribution</div>
+          <div class="seg-list">
+        <div class="seg-row">
+          <span class="seg-name" style="color:#3B82F6">General Self-Improvement Struggle</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:65%;background:#3B82F6"></div>
+          </div>
+          <span class="seg-pct">65%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#8B5CF6">Lost Purpose / No Direction</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:23%;background:#8B5CF6"></div>
+          </div>
+          <span class="seg-pct">23%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#EF4444">Post-Setback Reinvention</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:5%;background:#EF4444"></div>
+          </div>
+          <span class="seg-pct">5%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#10B981">Active Builder / Already on the Path</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:4%;background:#10B981"></div>
+          </div>
+          <span class="seg-pct">4%</span>
+        </div></div>
+          <div class="section-label" style="margin-top:16px">Top comments by upvotes</div>
+          <div class="comments-list">
+        <div class="comment-item">
+          <span class="c-score">▲ 98</span>
+          <div class="c-body">You clearly are not ugly. From what you wrote it sounds like you need some support and training on mental wellbeing. What you wrote it conflicting and disorganized... I&#x27;m angry because I can never get a girl but if I had a girl I would be an asshole to her anyway. You need to work on your mood and attitudes, what underlying assumptions and rules you have about life, and the sense of entitlement that you should be receiving attention and praise despite admitting to not being mentally healthy enou</div>
+          <div class="c-origin">on: I’m Becoming So Bitter And Angry For Being Rejected By Women Despite Working On </div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 85</span>
+          <div class="c-body">it seems like you view women as a trophy that is given to you after you accomplish all these made up standards, you’re right you probably won’t even sustain a relationship with a girl even if you had the chance to be in a relationship, it would be toxic. pls seek a therapist for your huge body dysmorphia this can lead to ideation or aggression towards yourself and others.</div>
+          <div class="c-origin">on: I’m Becoming So Bitter And Angry For Being Rejected By Women Despite Working On </div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 78</span>
+          <div class="c-body">There will be tension in your relationship if you keep playing it as &quot;you vs gf&quot;.  My man she is feeling the same things as you are right now, open up about it, there is no one on the planet that can understand this experience better then you two.</div>
+          <div class="c-origin">on: I never thought I would be faced with such a difficult decision at 23 Y/O</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 72</span>
+          <div class="c-body">Women date women who don’t have penises.   Many or most of women don’t care that much. It’s more important that you’re clean, confident, and into giving them pleasure.  Work on yourself and confidence will follow.  You’re worthy of love, buddy.</div>
+          <div class="c-origin">on: I hate that I have a small dick</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 61</span>
+          <div class="c-body">There&#x27;s a middle ground, but I usually ask, &quot;So I&#x27;m not worthy of love until I love myself?&quot;   It&#x27;s usually just a way of placing blame on the individual, washing away any responsibility of others to uphold the social contract. That way they don&#x27;t have to admit any faults within themselves.  Much love brother.</div>
+          <div class="c-origin">on: I&#x27;m so fucking sick of &quot;work on yourself&quot;</div>
+        </div></div>
+        </div>
+        <div class="col-right">
+          <div class="section-label">Top posts by score</div>
+          <div class="posts-list">
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 226</span>
+            <span class="cmts">💬 123</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#8B5CF6;color:#8B5CF6">Lost Purpose / No Direction</span>
+          </div>
+          <div class="post-title">Dealing with resentment with women and feminism</div>
+          <div class="post-body">I was raised by a feministic mother in a feministic society and later on hang out in left leaning friend circles. One of my best friends is a woman still. I mean I know this is reddit so probably some people who read this will be triggered by this post. Sorry about that and that I don&#x27;t fit your worldview.
+
+Being raised in that community was wonderful for my sisters. For them feminism offered path</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 155</span>
+            <span class="cmts">💬 48</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">I struggle with Porn Addiction and I just turned 18</div>
+          <div class="post-body">I&#x27;ve just turned 18 and struggled with porn addiction since I was 14.
+
+&amp;#x200B;
+
+I&#x27;ve just graduated high school and have come to the realisation that my life is a mess. Maybe not financially and I&#x27;m happy that I was born into a somewhat privileged family living in Australia but mentally I&#x27;m honestly farked mate. I&#x27;ve been very insecure ever since I became a teenager. I&#x27;m pretty average looking an</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 150</span>
+            <span class="cmts">💬 12</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">Divorce is like chemotherapy. It&#x27;s the worst thing ever... but it beats the alternative.</div>
+          <div class="post-body">**So, my [last post](https://www.reddit.com/r/malementalhealth/comments/89ycq3/red_flags_in_the_rearview_mirror_my_marriage_post/) on red flags in relationships got more traction than I expected**, so I thought I&#x27;d put together something about how I survived my divorce - something which I was against and did not want.  This all happened about four and a half years ago now.  This is going to be a w</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 138</span>
+            <span class="cmts">💬 16</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">I&#x27;m really lonely now, and I don&#x27;t think I know how to connect with people properly outside of a romantic setting.</div>
+          <div class="post-body">I broke up with my girlfriend yesterday. We were together for over a year but we had been close friends for longer. I love her a lot, she was literally my best friend. I told her everything. Every stupid thought, every ridiculous idea, every dream, I told her about my hopes, my dreams, my insecurities, my fears and literally everything else. Everything I said, she loved me more and more. Now that </div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 118</span>
+            <span class="cmts">💬 17</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">I&#x27;m 31 and I think I&#x27;ve lived a lie .</div>
+          <div class="post-body">There&#x27;s no way to argue my case, so I&#x27;ll just get on with it .
+
+Backstory: I grew up in a very quiet part of the country, in a valley that went for 13 miles. We had neighbors but they were the sort that was southern backwards and kept to their own. 
+
+Growing up I can remember never having friends and being this little weird kid who just kept to himself. I was picked on in school and didn&#x27;t really </div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+    <div class="category-section" data-cat="Social &amp; Confidence">
+      <div class="cat-header">
+        <span class="cat-dot" style="background:#3B82F6"></span>
+        <span class="cat-title" style="color:#3B82F6">Social &amp; Confidence</span>
+        <span class="cat-stats">100 posts · 442 comments</span>
+      </div>
+      <div class="cards-grid">
+        
+    <div class="community-card" id="sub-socialskills">
+      <div class="card-header" style="border-top-color:#3B82F6">
+        <div class="header-left">
+          <div class="sub-name" style="color:#3B82F6">r/socialskills</div>
+          <div class="sub-cat">Social &amp; Confidence</div>
+        </div>
+        <div class="header-stats">
+          <div class="hstat"><span class="hv">100</span><span class="hl">posts</span></div>
+          <div class="hstat"><span class="hv">442</span><span class="hl">comments</span></div>
+          <div class="hstat"><span class="hv">410</span><span class="hl">avg score</span></div>
+          <div class="hstat"><span class="hv">49</span><span class="hl">avg replies</span></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="col-left">
+          <div class="section-label">Pain segment distribution</div>
+          <div class="seg-list">
+        <div class="seg-row">
+          <span class="seg-name" style="color:#3B82F6">General Self-Improvement Struggle</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:64%;background:#3B82F6"></div>
+          </div>
+          <span class="seg-pct">64%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#6366F1">Stuck / Stagnant / Going Nowhere</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:17%;background:#6366F1"></div>
+          </div>
+          <span class="seg-pct">17%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#F97316">No Discipline / Can&#x27;t Stick to Anything</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:7%;background:#F97316"></div>
+          </div>
+          <span class="seg-pct">7%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#10B981">Active Builder / Already on the Path</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:6%;background:#10B981"></div>
+          </div>
+          <span class="seg-pct">6%</span>
+        </div></div>
+          <div class="section-label" style="margin-top:16px">Top comments by upvotes</div>
+          <div class="comments-list">
+        <div class="comment-item">
+          <span class="c-score">▲ 372</span>
+          <div class="c-body">I was housebound with obsessive compulsive disorder for 9 years. It&#x27;s going to be rough, you will say awkward things and you will embarress yourself.  You have to focus on the output, putting yourself out there, rather than the result. It doesn&#x27;t matter if you succeed or fail socially. What matters is that you put yourself out there.  It gets better. You&#x27;ll get better</div>
+          <div class="c-origin">on: How do I make up for lost years of social isolation ?</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 351</span>
+          <div class="c-body">What’s crazy is that I clicked into this thinking “Ooo! I definitely gotta work on my conversation skills! Let’s read” only to find out that I actually I’ve most if not all of these starters. A little reminder to be kinder to myself and acknowledge my progress!</div>
+          <div class="c-origin">on: 7 Go-to conversation starters that actually work (with examples)</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 308</span>
+          <div class="c-body">As a friend, he should feel awful too that he&#x27;s screwing you over by being late. This goes both ways. Respect. As a friend and colleague.</div>
+          <div class="c-origin">on: I had to discipline my best friend at work and now he won’t talk to me. I feel t</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 277</span>
+          <div class="c-body">These questions sound like something you have to ask during a company ice breaker meeting or something, I would find them very awkward.  How are you or how&#x27;s your day going is much more comfortable for me personally.</div>
+          <div class="c-origin">on: Why ‘How Are You?’ Is the Worst Way to Start a Conversation (and what to say ins</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 242</span>
+          <div class="c-body">Might sound harsh but you gotta prioritize yourself over grandma. You need your own life at this point</div>
+          <div class="c-origin">on: How to make friends locally when you&#x27;re not allowed to leave the house?</div>
+        </div></div>
+        </div>
+        <div class="col-right">
+          <div class="section-label">Top posts by score</div>
+          <div class="posts-list">
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 4,334</span>
+            <span class="cmts">💬 160</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#10B981;color:#10B981">Active Builder / Already on the Path</span>
+          </div>
+          <div class="post-title">How to be attractive</div>
+          <div class="post-body">This is what I learned in my short time of being on this planet and I thought it might help others when I share it here. It is basically a step by step guide to be a little more successful in your personal life and the social circles you come across.
+
+1. Taking care of yourself:
+
+\- Try to be as healthy as possible (watch what you eat, try to get in enough nutrients, keep up social interactions in</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 4,178</span>
+            <span class="cmts">💬 297</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">Take it from someone who felt like a loser for the first 35 years of his life: if you&#x27;re not working at this every day, you&#x27;re not going to get there.</div>
+          <div class="post-body">You ever heard of that book, &quot;So Good They Can&#x27;t Ignore You&quot;? People parade it around, like they leveled up just by being *aware* of it. 
+
+Here&#x27;s the gist: count on toiling in obscurity for a long time before seeing the payoff.
+
+That&#x27;s how social skills work. No payoff for a long time and suddenly, you&#x27;re making it. 
+
+Now here&#x27;s the thing: the people I see in day to day life, even the people I see</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 3,557</span>
+            <span class="cmts">💬 162</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#8B5CF6;color:#8B5CF6">Lost Purpose / No Direction</span>
+          </div>
+          <div class="post-title">The 9 Habits of Socially Anxious People (and How to Change Them)</div>
+          <div class="post-body">This is my first post. I also posted in r/socialanxiety. Hopefully, it can help someone out here too.
+
+I had severe social anxiety until I was about 28. As a man, I was embarrassed that I had to go to a therapist because I was so nervous about talking to people.
+
+I used to read about how to overcome the fear of talking to people and get excited about changing my life.
+
+Books about communication sk</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 3,353</span>
+            <span class="cmts">💬 175</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">How to Build Self-Esteem: The Ultimate Step-by-Step Guide [it might be useful]</div>
+          <div class="post-body">EDIT: i was thinking about posting a similar article about confidence. Are you interested?
+
+Self-esteem is arguably the most discussed topic in the self-improvement community, and for a good reason:
+
+**It&#x27;s the foundation for personal development.**
+
+If you&#x27;ve been wanting to learn how to build self-esteem, you&#x27;ve come to the right place. Unlike other resources where you&#x27;ll find &quot;quick tips&quot; or &quot;h</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 1,762</span>
+            <span class="cmts">💬 194</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">Practice. PRACTICE. PRACTICE!</div>
+          <div class="post-body">This&#x27;ll probably get buried, but in case anyone comes across it, here&#x27;s my little soap box:
+
+There&#x27;s a reason they&#x27;re called &quot;social *skills*&quot; and not &quot;social *gifts*.&quot; A gift is something you receive whether you want it or not. If you don&#x27;t like it, hopefully they kept the receipt. A skill on the other hand can be practiced, practiced, practiced.
+
+Yes, some people are better at certain skills tha</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+    <div class="category-section" data-cat="Male-Specific">
+      <div class="cat-header">
+        <span class="cat-dot" style="background:#EC4899"></span>
+        <span class="cat-title" style="color:#EC4899">Male-Specific</span>
+        <span class="cat-stats">26 posts · 25 comments</span>
+      </div>
+      <div class="cards-grid">
+        
+    <div class="community-card" id="sub-manprovement">
+      <div class="card-header" style="border-top-color:#EC4899">
+        <div class="header-left">
+          <div class="sub-name" style="color:#EC4899">r/manprovement</div>
+          <div class="sub-cat">Male-Specific</div>
+        </div>
+        <div class="header-stats">
+          <div class="hstat"><span class="hv">15</span><span class="hl">posts</span></div>
+          <div class="hstat"><span class="hv">19</span><span class="hl">comments</span></div>
+          <div class="hstat"><span class="hv">102</span><span class="hl">avg score</span></div>
+          <div class="hstat"><span class="hv">21</span><span class="hl">avg replies</span></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="col-left">
+          <div class="section-label">Pain segment distribution</div>
+          <div class="seg-list">
+        <div class="seg-row">
+          <span class="seg-name" style="color:#3B82F6">General Self-Improvement Struggle</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:47%;background:#3B82F6"></div>
+          </div>
+          <span class="seg-pct">47%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#8B5CF6">Lost Purpose / No Direction</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:33%;background:#8B5CF6"></div>
+          </div>
+          <span class="seg-pct">33%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#10B981">Active Builder / Already on the Path</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:20%;background:#10B981"></div>
+          </div>
+          <span class="seg-pct">20%</span>
+        </div></div>
+          <div class="section-label" style="margin-top:16px">Top comments by upvotes</div>
+          <div class="comments-list">
+        <div class="comment-item">
+          <span class="c-score">▲ 35</span>
+          <div class="c-body">14 is use chatgpt to farm karma</div>
+          <div class="c-origin">on: The Brutal Reality Check Every Guy in His 20s Needs to Hear (From Someone Who Le</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 28</span>
+          <div class="c-body">God bless your dad but no shame in staying with him as he might need you too soon enough.</div>
+          <div class="c-origin">on: Lost at 40</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 22</span>
+          <div class="c-body">Sorry to say, as a psoychospiritual psychology prpofpessional, I cannot recommend Dr. Glover&#x27;s program or framework. It is emotionally stunted. He asks what you are doing wrong, at the behavioral surface, not the existential core rooted in trauma to create this persona. There is no &quot;shadow work,&quot; or archetypal deconstruction.    It is an atrocity that his program assumes heteronormativity because all men are the same. This viewpoint is emotionally reductive and erases trauma-based deviations, es</div>
+          <div class="c-origin">on: Not Your Fucking Friend: A Guide to Breaking the Nice Guy Mentality</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 22</span>
+          <div class="c-body">Seems like money might be a core issue here. I’d say pick something you think you’ll like and go back to school for it. As someone approaching 40 who dropped a lucrative career to start over, I can say it’s never too late to start over.   It also seems like you have nothing to lose. Take advantage of your housing and the fact that you already have a family. You can become a mechanic or a nurse and make more than twice what you do now.  Your self worth will improve, you can move out, you can prov</div>
+          <div class="c-origin">on: Lost at 40</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 22</span>
+          <div class="c-body">I totally agree with you. To add to what you&#x27;ve mentioned, some of the videos here are not just shameless self-promotion, but also totally toxic. I&#x27;ve seen videos of guys talking at the camera and just saying stuff like &quot;You&#x27;re worthless and sad because you&#x27;re not enough of a man. You don&#x27;t have the courage to ask the girl out, so you&#x27;ll never be happy.&quot; Honestly these types of videos are skippable trash. There&#x27;s no discussion about how to actually improve, just crying from the mountaintops from</div>
+          <div class="c-origin">on: This subreddit fucking sucks</div>
+        </div></div>
+        </div>
+        <div class="col-right">
+          <div class="section-label">Top posts by score</div>
+          <div class="posts-list">
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 528</span>
+            <span class="cmts">💬 49</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">The Brutal Reality Check Every Guy in His 20s Needs to Hear (From Someone Who Learned the Hard Way)</div>
+          <div class="post-body">After 15 years of making every mistake in the book, here&#x27;s what I desperately wish someone had grabbed me by the shoulders and told me when I was younger. Maybe it&#x27;ll save you some pain.
+
+1. **Your energy levels aren&#x27;t &quot;just genetics.&quot;** I spent years thinking I was naturally lazy until I realized I was eating garbage, never moving my body, and sleeping 4 hours a night. Fix your basics first - eve</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 192</span>
+            <span class="cmts">💬 14</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#10B981;color:#10B981">Active Builder / Already on the Path</span>
+          </div>
+          <div class="post-title">50 Habits That Every Man Needs To Do</div>
+          <div class="post-body">1.       Sit In Silence For 10 Minutes Every Morning- No phone, no music, let your mind sharpen before the world attempts to dull it. Meet the day before you are interrupted.
+
+ 
+
+2.       Memorize Your Monthly Expenses- If you are unaware of expenses you don&#x27;t control your life.
+
+ 
+
+3.       Don&#x27;t Explain Yourself When It&#x27;s Not Required- Speak with clarity not permission. If someone misunderstands</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 113</span>
+            <span class="cmts">💬 32</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#8B5CF6;color:#8B5CF6">Lost Purpose / No Direction</span>
+          </div>
+          <div class="post-title">Not Your Fucking Friend: A Guide to Breaking the Nice Guy Mentality</div>
+          <div class="post-body">TLDR: How does a guy break out of the Nice Guy mindset?
+
+- Be vigilant about Covert Contracts
+
+- Be physically strong and fit
+
+- Embrace competition with other men
+
+- Hold grounded boundaries, particularly with immediate family 
+
+- Have a clearly defined purpose and self identity, live a life of integrity
+
+- Do not put women on a lustful pedestal 
+
+
+
+Be Vigilant About Covert Contracts
+
+Covert Cont</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 105</span>
+            <span class="cmts">💬 29</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#8B5CF6;color:#8B5CF6">Lost Purpose / No Direction</span>
+          </div>
+          <div class="post-title">Not Your Fucking Friend: A Guide to Breaking the Nice Guy Mentality</div>
+          <div class="post-body">TLDR: How does a guy break out of the Nice Guy mindset?
+
+- Be vigilant about Covert Contracts
+
+- Be physically strong and fit
+
+- Embrace competition with other men
+
+- Hold grounded boundaries, particularly with immediate family 
+
+- Have a clearly defined purpose and self identity, live a life of integrity
+
+- Do not put women on a lustful pedestal 
+
+
+
+Be Vigilant About Covert Contracts
+
+Covert Cont</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 96</span>
+            <span class="cmts">💬 27</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">Lost at 40</div>
+          <div class="post-body">Gentlemen. Life has passed me by so quickly, I cannot believe I turn 40 years old next weekend. I don’t believe this to be a crisis of any sort, however I do feel incredibly stuck in every facet of life. I’ve had the same job since I was 20. I barely make any money (under 40k) I am divorced and have 2 wonderful kids. Because of the divorce I’ve had to move back in with my father. I am unbelievably</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="community-card" id="sub-becomeaman">
+      <div class="card-header" style="border-top-color:#EC4899">
+        <div class="header-left">
+          <div class="sub-name" style="color:#EC4899">r/becomeaman</div>
+          <div class="sub-cat">Male-Specific</div>
+        </div>
+        <div class="header-stats">
+          <div class="hstat"><span class="hv">11</span><span class="hl">posts</span></div>
+          <div class="hstat"><span class="hv">6</span><span class="hl">comments</span></div>
+          <div class="hstat"><span class="hv">67</span><span class="hl">avg score</span></div>
+          <div class="hstat"><span class="hv">25</span><span class="hl">avg replies</span></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="col-left">
+          <div class="section-label">Pain segment distribution</div>
+          <div class="seg-list">
+        <div class="seg-row">
+          <span class="seg-name" style="color:#3B82F6">General Self-Improvement Struggle</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:64%;background:#3B82F6"></div>
+          </div>
+          <span class="seg-pct">64%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#8B5CF6">Lost Purpose / No Direction</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:18%;background:#8B5CF6"></div>
+          </div>
+          <span class="seg-pct">18%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#10B981">Active Builder / Already on the Path</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:9%;background:#10B981"></div>
+          </div>
+          <span class="seg-pct">9%</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-name" style="color:#F97316">No Discipline / Can&#x27;t Stick to Anything</span>
+          <div class="seg-bar-wrap">
+            <div class="seg-bar" style="width:9%;background:#F97316"></div>
+          </div>
+          <span class="seg-pct">9%</span>
+        </div></div>
+          <div class="section-label" style="margin-top:16px">Top comments by upvotes</div>
+          <div class="comments-list">
+        <div class="comment-item">
+          <span class="c-score">▲ 51</span>
+          <div class="c-body">**Rule #9: Spend Your Money On Plenty Of Good Food - NOT The Latest Supplement**  Supplements did not make Jay Culter huge. Go back and read Rules #1 and #3. The industry is big money. The athletes are paid to advertise those supplements. Stacks are bullshit to get you to buy into a whole bunch of supplements at once. Remember 0 + 0 = 0. Any effect you see maybe a placebo effect. If you want supplements with results just get some roids. That&#x27;s what they call supplements that work. Steroids ^^or </div>
+          <div class="c-origin">on: &#x27;Hit the gym&#x27; you&#x27;ve heard it a million times, here are 18 Rules on how to build</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 37</span>
+          <div class="c-body">**Rule #14:  Progression Is KING**  This may be the most important rule of all so I&#x27;m going to be as clear as I can. **Building bigger muscles and increased strength is not determined by training to failure, taking any supplement, using secret exercises or anything else equally, or even more, appealing. Getting bigger and stronger is a product of progressive resistance. You simply MUST improve your training performance - either by using more weight or doing more reps, particularly in the 5-20 re</div>
+          <div class="c-origin">on: &#x27;Hit the gym&#x27; you&#x27;ve heard it a million times, here are 18 Rules on how to build</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 29</span>
+          <div class="c-body">**Rule #16: Keep A Training Log**  Always record your poundages, sets and reps. &quot;The palest ink is better than the sharpest memory.&quot; -Chinese proverb  Rule #14 warns,  the ultimate determinant  will be whether or not you can continuously, though gradually, increase your training poundages. If you don&#x27;t keep track of your performances, how can you know if you&#x27;re improving or not? You can&#x27;t. If you can on days you feel in the zone, add an extra rep, but becareful, not to push to hard. Better start</div>
+          <div class="c-origin">on: &#x27;Hit the gym&#x27; you&#x27;ve heard it a million times, here are 18 Rules on how to build</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 15</span>
+          <div class="c-body">I&#x27;m actually disappointed that this is the most upvoted answer here, it is the stock answer that people can agree with, because while it is correct, it basically tells the guy sweet fuck all.  Op is a hard case newbie.  https://www.youtube.com/watch?v=GGp25fn25Cs  Now read this: [Confessions of a Reformed InCel](https://whoism3.wordpress.com/2012/11/17/confessions-of-a-reformed-incel/)  So, you&#x27;re not the only one to come from rock bottom. You have a long way to go, you know this. Go to the main</div>
+          <div class="c-origin">on: I want to take the red pill</div>
+        </div>
+        <div class="comment-item">
+          <span class="c-score">▲ 11</span>
+          <div class="c-body">Fucking great post. One caveat for skinny dudes trying to bulk. Exercising every day works for cardio and cutting but if you are looking to build strength and gain mass a strength program like stronglifts or SS with a rest day in between every session will make your lifts all go up by 20-30lbs in the first month or so. Just follow the program and eat!</div>
+          <div class="c-origin">on: RP Do&#x27;s and Dont&#x27;s I have learned in the last month</div>
+        </div></div>
+        </div>
+        <div class="col-right">
+          <div class="section-label">Top posts by score</div>
+          <div class="posts-list">
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 278</span>
+            <span class="cmts">💬 73</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#10B981;color:#10B981">Active Builder / Already on the Path</span>
+          </div>
+          <div class="post-title">&#x27;Hit the gym&#x27; you&#x27;ve heard it a million times, here are 18 Rules on how to build a killer body, drug free. [Long]</div>
+          <div class="post-body">Hey Guys, 
+The Red pill has changed my life so I&#x27;m trying to give back. The following is a condensed version of this [website](http://www.weightrainer.net/training/rules.html) written by Casey Butt Ph.D. *I wanted to cut down what he said to a paragraph for each rule but each rule is just packed with so much information it became impossible. below is my version, mostly his words but I have rearran</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 92</span>
+            <span class="cmts">💬 30</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">RP Do&#x27;s and Dont&#x27;s I have learned in the last month</div>
+          <div class="post-body">If you are going to grow as a Man, you must know that your undertaking will be long and difficult, marked with failure and most people in your life will tell you to just throw in the towel.  Why?  Because THEY threw in the towel.  Fuck them.  Make them rue the day they underestimated you. 
+
+Backstory: I am 32, single with no kids and currently weigh 275 lbs.  I found out my wife was done with me i</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 77</span>
+            <span class="cmts">💬 20</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#F97316;color:#F97316">No Discipline / Can&#x27;t Stick to Anything</span>
+          </div>
+          <div class="post-title">None of this will help, until you fix this</div>
+          <div class="post-body">No amount of PUA, Red Pill, or Alpha articles will help you until you fix this one core issue.
+
+
+You have a fear of abandonment. 
+
+
+This is the one thing holding you back in every aspect of your life.
+
+Symptoms:
+
+-You are way too agreeable
+-You avoid confrontation (leads to you going ape-shit at the smallest infraction)
+-You get shit on by your friends constantly; You are at the bottom of your soc</div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 68</span>
+            <span class="cmts">💬 16</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#3B82F6;color:#3B82F6">General Self-Improvement Struggle</span>
+          </div>
+          <div class="post-title">14 Traits Men/Leaders should Have &amp; Practice</div>
+          <div class="post-body">I am currently studying quite a bit and doing research in order to pursue my goal of becoming a USMC officer. I did some extra research into the 14 Leadership traits stated by the USMC and I believe all men would benefit practicing and valuing these 14 traits. It also comes with suggestions for improvement with each trait
+
+1.JUSTICE
+Definition: Justice is defined as the practice of being fair and </div>
+        </div>
+        <div class="post-item">
+          <div class="post-meta">
+            <span class="score">▲ 51</span>
+            <span class="cmts">💬 26</span>
+            <span class="seg-badge" style="background:rgba(0,0,0,0);border-color:#8B5CF6;color:#8B5CF6">Lost Purpose / No Direction</span>
+          </div>
+          <div class="post-title">My reading list for 2016 to becoming a better man</div>
+          <div class="post-body">Hey, if you have any suggestions on better arrangement for the list or any suggestions I&#x27;m happy to hear them!
+
+--------------------------------------------------------------------
+
+**Core:**
+
+The Power of Now
+
+Stillness Speaks
+
+New Earth
+
+The Four Agreements
+
+How to Stop Worrying and Start Living
+
+--------------------------------------------------------------------
+
+**Self-Control:**
+
+Eat That Fr</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+
+<script>
+const btns = document.querySelectorAll('.nav-btn');
+btns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    btns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cat = btn.dataset.cat;
+    document.querySelectorAll('.category-section').forEach(s => {
+      s.classList.toggle('hidden', cat !== 'all' && s.dataset.cat !== cat);
+    });
+  });
+});
+</script>
+</body>
+</html>
