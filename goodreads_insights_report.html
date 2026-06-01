@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audience Insights Driven from Book Reviews · 1,345 Reviews</title>
+<style>
+  :root {
+    --bg:       #0d0d14;
+    --surface:  #161623;
+    --card:     #1e1e2e;
+    --border:   #2a2a3d;
+    --text:     #e2e2f0;
+    --muted:    #7c7c9a;
+    --anxious:  #ff6b9d;
+    --avoidant: #43e8c2;
+    --fa:       #a78bfa;
+    --secure:   #f59e0b;
+    --attached: #ff6b9d;
+    --guide:    #a78bfa;
+    --workbook: #43e8c2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 1.65; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(13,13,20,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; gap: 0; }
+  nav a { color: var(--muted); text-decoration: none; padding: .75rem 1.1rem; font-size: .8rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; border-bottom: 2px solid transparent; transition: all .2s; }
+  nav a:hover { color: var(--text); }
+  nav a.attached { border-color: var(--attached); color: var(--attached); }
+  nav a.guide    { border-color: var(--guide);    color: var(--guide);    }
+  nav a.workbook { border-color: var(--workbook); color: var(--workbook); }
+
+  /* HERO */
+  .hero { padding: 4rem 2rem 3rem; max-width: 1100px; margin: 0 auto; }
+  .hero h1 { font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, #ff6b9d, #a78bfa, #43e8c2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: .5rem; }
+  .hero p { color: var(--muted); font-size: 1rem; max-width: 640px; }
+  .stat-row { display: flex; gap: 1.5rem; margin-top: 2rem; flex-wrap: wrap; }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.6rem; min-width: 140px; }
+  .stat .num { font-size: 2rem; font-weight: 800; line-height: 1; }
+  .stat .lbl { color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .07em; margin-top: .3rem; }
+
+  /* LAYOUT */
+  main { max-width: 1100px; margin: 0 auto; padding: 0 2rem 5rem; }
+  section { margin-bottom: 4rem; scroll-margin-top: 60px; }
+  h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; padding-bottom: .6rem; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: .8rem; }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+  @media (max-width: 720px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  /* CARDS */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.4rem; }
+  .card.attached { border-top: 3px solid var(--attached); }
+  .card.guide    { border-top: 3px solid var(--guide);    }
+  .card.workbook { border-top: 3px solid var(--workbook); }
+
+  /* CLUSTER HEADER */
+  .cluster-header { display: flex; align-items: baseline; gap: .8rem; margin-bottom: 1.2rem; }
+  .cluster-badge { font-size: .7rem; font-weight: 700; padding: .2rem .7rem; border-radius: 20px; text-transform: uppercase; letter-spacing: .08em; }
+  .badge-attached { background: rgba(255,107,157,.15); color: var(--attached); }
+  .badge-guide    { background: rgba(167,139,250,.15); color: var(--guide);    }
+  .badge-workbook { background: rgba(67,232,194,.15);  color: var(--workbook); }
+
+  /* ATTACHMENT BARS */
+  .style-row { margin-bottom: .9rem; }
+  .style-label { display: flex; justify-content: space-between; font-size: .82rem; margin-bottom: .3rem; }
+  .bar-track { background: var(--border); border-radius: 4px; height: 8px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; }
+  .bar-anxious  { background: var(--anxious);  }
+  .bar-avoidant { background: var(--avoidant); }
+  .bar-fa       { background: var(--fa);       }
+  .bar-secure   { background: var(--secure);   }
+
+  /* JTBD */
+  .jtbd-card { background: var(--card); border: 1px solid var(--border); border-left: 4px solid; border-radius: 0 14px 14px 0; padding: 1.3rem 1.5rem; margin-bottom: 1rem; }
+  .jtbd-card.j1 { border-color: var(--anxious);  }
+  .jtbd-card.j2 { border-color: var(--avoidant); }
+  .jtbd-card.j3 { border-color: var(--fa);       }
+  .jtbd-card.j4 { border-color: var(--secure);   }
+  .jtbd-card.j5 { border-color: #60a5fa;         }
+  .jtbd-card.j6 { border-color: #fb923c;         }
+  .jtbd-card.j7 { border-color: #34d399;         }
+  .jtbd-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: .4rem; }
+  .jtbd-text  { font-size: .95rem; line-height: 1.6; }
+  .jtbd-text em { font-style: normal; font-weight: 700; }
+
+  /* QUOTE */
+  .quote-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; margin-bottom: .9rem; }
+  .quote-card blockquote { font-size: .9rem; font-style: italic; color: #c8c8e0; line-height: 1.7; margin-bottom: .6rem; }
+  .quote-meta { font-size: .75rem; color: var(--muted); }
+
+  /* INSIGHT CALLOUT */
+  .callout { background: rgba(167,139,250,.08); border: 1px solid rgba(167,139,250,.25); border-radius: 12px; padding: 1.2rem 1.4rem; margin-top: 1.2rem; font-size: .9rem; color: #d4d4f0; }
+  .callout strong { color: var(--fa); }
+
+  /* PILL ROW */
+  .pill-row { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .8rem; }
+  .pill { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: .25rem .8rem; font-size: .78rem; color: var(--muted); }
+  .pill.hot { border-color: var(--anxious); color: var(--anxious); background: rgba(255,107,157,.07); }
+
+  /* PATTERN ROW */
+  .pattern-item { padding: .6rem 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: .88rem; }
+  .pattern-item:last-child { border-bottom: none; }
+  .pattern-count { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: .1rem .5rem; font-size: .75rem; color: var(--muted); }
+
+  /* OUTCOME GRID */
+  .outcome-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.3rem; }
+  .outcome-icon { font-size: 1.4rem; margin-bottom: .5rem; }
+  .outcome-title { font-weight: 700; font-size: .92rem; margin-bottom: .3rem; }
+  .outcome-desc { font-size: .82rem; color: var(--muted); line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#overview">Overview</a>
+  <a href="#styles">Attachment Styles</a>
+  <a href="#clusters">Book Clusters</a>
+  <a href="#struggles">Struggles</a>
+  <a href="#outcomes">Desired Outcomes</a>
+  <a href="#jtbd">JTBDs</a>
+  <a href="#voices">Verbatim Voices</a>
+</nav>
+
+<div class="hero">
+  <h1>Audience Insights Driven from Book Reviews</h1>
+  <p>Patterns, struggles, and jobs-to-be-done extracted from 1,345 verified reader reviews across 3 attachment theory books. Used as a proxy for the attachment-aware audience we're building for.</p>
+  <div class="stat-row">
+    <div class="stat"><div class="num" style="color:var(--attached)">1,345</div><div class="lbl">Total Reviews</div></div>
+  </div>
+</div>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════════ OVERVIEW -->
+<section id="overview">
+  <h2>Who Is This Audience?</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Profile at a Glance</h3>
+      <p style="color:var(--muted);font-size:.88rem;margin-bottom:1rem;">Based on self-disclosure signals across 1,345 reviews.</p>
+      <div class="pattern-item">Already familiar with attachment theory <span class="pattern-count">Majority</span></div>
+      <div class="pattern-item">In or recently out of a relationship <span class="pattern-count">~60%</span></div>
+      <div class="pattern-item">Single / actively dating <span class="pattern-count">~25%</span></div>
+      <div class="pattern-item">Experiencing recurring painful patterns <span class="pattern-count">High signal</span></div>
+      <div class="pattern-item">In therapy or therapy-adjacent <span class="pattern-count">~84 mentions</span></div>
+      <div class="pattern-item">Skews female (husband/boyfriend mentions dominate) <span class="pattern-count">~70%</span></div>
+      <div class="pattern-item">Multilingual / global audience (ES, PL, UK, TR, UK) <span class="pattern-count">Notable</span></div>
+    </div>
+    <div class="card">
+      <h3>Why They Picked Up the Book</h3>
+      <p style="color:var(--muted);font-size:.88rem;margin-bottom:1rem;">Triggers that drove them to seek this content.</p>
+      <div class="pattern-item">After a painful or confusing breakup <span class="pattern-count">Very high</span></div>
+      <div class="pattern-item">Trying to understand a partner's behavior <span class="pattern-count">High</span></div>
+      <div class="pattern-item">Recommended by a therapist <span class="pattern-count">Frequent</span></div>
+      <div class="pattern-item">Saw it online / viral / TikTok / social <span class="pattern-count">Growing signal</span></div>
+      <div class="pattern-item">Noticed the same relationship pattern repeating <span class="pattern-count">High</span></div>
+      <div class="pattern-item">Professional interest (therapists, coaches) <span class="pattern-count">Moderate</span></div>
+      <div class="pattern-item">Partner suggested it / reading together <span class="pattern-count">Moderate</span></div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:1.2rem;">
+    <strong>Key insight:</strong> This audience is not attachment-theory-naive. Most arrived already knowing the buzzwords — they came for the <em>next layer</em>: why they are this way, how to change it, and what to do about their specific relationship right now. Books that only explain the theory without actionable tools consistently get 2–3 stars.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ ATTACHMENT STYLES -->
+<section id="styles">
+  <h2>Attachment Style Breakdown</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Dominant Self-Identified Styles</h3>
+      <p style="color:var(--muted);font-size:.82rem;margin-bottom:1.2rem;">Based on explicit self-labeling in review text (1,345 reviews).</p>
+
+      <div class="style-row">
+        <div class="style-label"><span>Anxious / Preoccupied</span><span style="color:var(--anxious)">547 mentions · dominant</span></div>
+        <div class="bar-track"><div class="bar-fill bar-anxious" style="width:78%"></div></div>
+      </div>
+      <div class="style-row">
+        <div class="style-label"><span>Avoidant / Dismissive</span><span style="color:var(--avoidant)">490 mentions · strong</span></div>
+        <div class="bar-track"><div class="bar-fill bar-avoidant" style="width:70%"></div></div>
+      </div>
+      <div class="style-row">
+        <div class="style-label"><span>Secure</span><span style="color:var(--secure)">394 mentions · often readers' goal</span></div>
+        <div class="bar-track"><div class="bar-fill bar-secure" style="width:56%"></div></div>
+      </div>
+      <div class="style-row">
+        <div class="style-label"><span>Fearful-Avoidant / Disorganized</span><span style="color:var(--fa)">61 mentions · underserved</span></div>
+        <div class="bar-track"><div class="bar-fill bar-fa" style="width:9%"></div></div>
+      </div>
+
+      <div class="callout" style="margin-top:1rem;font-size:.83rem;">
+        <strong>Note on Secure:</strong> "Secure" is more often mentioned as a desired destination than a current identity. Readers want to <em>become</em> secure, not self-identify as already there.
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>The Underserved Segment: Fearful-Avoidant (FA)</h3>
+      <p style="font-size:.88rem;color:var(--muted);margin-bottom:.8rem;">FA readers appear in low numbers in "Attached" reviews but dominate praise for the Guide book — the only one that treats them as a first-class audience.</p>
+      <div class="quote-card">
+        <blockquote>"Especially if you are interested in fearful-avoidant style, this is the one book that will not only mention 'oh yeah, that exists and is pretty messed up' but will go into details."</blockquote>
+        <div class="quote-meta">— 5★ review, Attachment Theory: A Guide</div>
+      </div>
+      <div class="quote-card">
+        <blockquote>"I only recognize myself as trending toward the Disorganized style and can't easily differentiate between the author's choices of 'anxious-preoccupied' and 'fearful-avoidant'... as I am neither anxious nor fearful in the usual sense."</blockquote>
+        <div class="quote-meta">— 4★ review, Attachment Theory: A Guide</div>
+      </div>
+      <p style="font-size:.82rem;color:var(--muted);margin-top:.8rem;">FA readers are the most motivated to find content — they feel ignored or lumped in with anxious types by mainstream books.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1.2rem;">
+    <h3>Anxious vs. Avoidant — The Dynamic That Drives Most of This Audience</h3>
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:1rem;">The anxious-avoidant trap is the single most referenced relationship dynamic across all three books. Readers fall into two camps with very different needs:</p>
+    <div class="grid-2">
+      <div>
+        <p style="color:var(--anxious);font-weight:700;margin-bottom:.5rem;">Anxious Readers</p>
+        <div class="pill-row">
+          <span class="pill hot">Felt validated by Attached</span>
+          <span class="pill hot">Want to stop feeling "crazy"</span>
+          <span class="pill hot">Struggle with protest behavior</span>
+          <span class="pill hot">Keep dating avoidants</span>
+          <span class="pill hot">Want actionable change tools</span>
+          <span class="pill hot">Fear of abandonment is core wound</span>
+        </div>
+      </div>
+      <div>
+        <p style="color:var(--avoidant);font-weight:700;margin-bottom:.5rem;">Avoidant Readers</p>
+        <div class="pill-row">
+          <span class="pill" style="border-color:var(--avoidant);color:var(--avoidant);background:rgba(67,232,194,.07)">Felt villainized by Attached</span>
+          <span class="pill" style="border-color:var(--avoidant);color:var(--avoidant);background:rgba(67,232,194,.07)">Want to understand their walls</span>
+          <span class="pill" style="border-color:var(--avoidant);color:var(--avoidant);background:rgba(67,232,194,.07)">Left by an anxious partner</span>
+          <span class="pill" style="border-color:var(--avoidant);color:var(--avoidant);background:rgba(67,232,194,.07)">Uncomfortable with vulnerability</span>
+          <span class="pill" style="border-color:var(--avoidant);color:var(--avoidant);background:rgba(67,232,194,.07)">Skeptical of self-help tone</span>
+          <span class="pill" style="border-color:var(--avoidant);color:var(--avoidant);background:rgba(67,232,194,.07)">Fear of intimacy is core wound</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ BOOK CLUSTERS -->
+<section id="clusters">
+  <h2>Book Clusters · Reader Profiles</h2>
+  <div class="grid-3">
+
+    <!-- Attached -->
+    <div class="card attached" id="attached">
+      <div class="cluster-header">
+        <span class="cluster-badge badge-attached">Book 1</span>
+        <span style="color:var(--muted);font-size:.8rem;">1,180 reviews · avg 3.81★</span>
+      </div>
+      <h3 style="color:var(--attached)">Attached: The Science of Adult Attachment</h3>
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem;">Levine & Heller · Most-read, most divisive</p>
+
+      <h3 style="font-size:.88rem;margin-bottom:.5rem;">Reader Profile</h3>
+      <div class="pattern-item">Skews anxiously attached <span class="pattern-count">Dominant</span></div>
+      <div class="pattern-item">Came after a painful breakup or confusing relationship <span class="pattern-count">High</span></div>
+      <div class="pattern-item">Viral/social discovery (TikTok, Instagram, friend) <span class="pattern-count">Growing</span></div>
+      <div class="pattern-item">First attachment book they've read <span class="pattern-count">~50%</span></div>
+      <div class="pattern-item">Avoidant readers feel misrepresented <span class="pattern-count">Significant</span></div>
+      <div class="pattern-item">Professional readers (therapists, coaches) <span class="pattern-count">Present</span></div>
+
+      <h3 style="font-size:.88rem;margin-top:1rem;margin-bottom:.5rem;">Primary Frustrations</h3>
+      <div class="pill-row">
+        <span class="pill hot">No actionable change tools</span>
+        <span class="pill hot">Avoidants feel vilified</span>
+        <span class="pill hot">Too much "just communicate"</span>
+        <span class="pill hot">Skips FA/disorganized style</span>
+        <span class="pill hot">Heteronormative only</span>
+        <span class="pill hot">Science feels oversimplified</span>
+      </div>
+
+      <h3 style="font-size:.88rem;margin-top:1rem;margin-bottom:.5rem;">What They Loved</h3>
+      <div class="pill-row">
+        <span class="pill" style="border-color:var(--attached);color:var(--attached);background:rgba(255,107,157,.07)">Finally has language for their experience</span>
+        <span class="pill" style="border-color:var(--attached);color:var(--attached);background:rgba(255,107,157,.07)">Validation that needs are normal</span>
+        <span class="pill" style="border-color:var(--attached);color:var(--attached);background:rgba(255,107,157,.07)">Explains partner's behavior</span>
+        <span class="pill" style="border-color:var(--attached);color:var(--attached);background:rgba(255,107,157,.07)">Science-backed framework</span>
+      </div>
+    </div>
+
+    <!-- Guide -->
+    <div class="card guide" id="guide">
+      <div class="cluster-header">
+        <span class="cluster-badge badge-guide">Book 2</span>
+        <span style="color:var(--muted);font-size:.8rem;">100 reviews · avg 3.78★</span>
+      </div>
+      <h3 style="color:var(--guide)">Attachment Theory: A Guide to Strengthening Relationships</h3>
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem;">Thais Gibson · For the deeper diver</p>
+
+      <h3 style="font-size:.88rem;margin-bottom:.5rem;">Reader Profile</h3>
+      <div class="pattern-item">Already read "Attached" or similar <span class="pattern-count">High</span></div>
+      <div class="pattern-item">Fearful-avoidant / disorganized dominant <span class="pattern-count">Highest of 3 books</span></div>
+      <div class="pattern-item">More self-aware, therapy-experienced <span class="pattern-count">High</span></div>
+      <div class="pattern-item">Wants transformation, not just understanding <span class="pattern-count">Strong signal</span></div>
+      <div class="pattern-item">Practitioners / coaches <span class="pattern-count">Present</span></div>
+      <div class="pattern-item">Combines multiple therapeutic modalities <span class="pattern-count">Appreciated</span></div>
+
+      <h3 style="font-size:.88rem;margin-top:1rem;margin-bottom:.5rem;">Primary Frustrations</h3>
+      <div class="pill-row">
+        <span class="pill hot">Lacks scientific rigor <span>(some reviews)</span></span>
+        <span class="pill hot">Repetitive structure</span>
+        <span class="pill hot">Case studies feel manufactured</span>
+      </div>
+
+      <h3 style="font-size:.88rem;margin-top:1rem;margin-bottom:.5rem;">What They Loved</h3>
+      <div class="pill-row">
+        <span class="pill" style="border-color:var(--guide);color:var(--guide);background:rgba(167,139,250,.07)">FA/disorganized finally fully explained</span>
+        <span class="pill" style="border-color:var(--guide);color:var(--guide);background:rgba(167,139,250,.07)">All 4 styles treated equally</span>
+        <span class="pill" style="border-color:var(--guide);color:var(--guide);background:rgba(167,139,250,.07)">Subconscious/core wound framework</span>
+        <span class="pill" style="border-color:var(--guide);color:var(--guide);background:rgba(167,139,250,.07)">CBT + mindfulness tools</span>
+        <span class="pill" style="border-color:var(--guide);color:var(--guide);background:rgba(167,139,250,.07)">Practical, non-judgmental tone</span>
+      </div>
+    </div>
+
+    <!-- Workbook -->
+    <div class="card workbook" id="workbook">
+      <div class="cluster-header">
+        <span class="cluster-badge badge-workbook">Book 3</span>
+        <span style="color:var(--muted);font-size:.8rem;">65 reviews · avg 4.05★</span>
+      </div>
+      <h3 style="color:var(--workbook)">The Attachment Theory Workbook</h3>
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem;">Annie Chen · Highest-rated, action-oriented</p>
+
+      <h3 style="font-size:.88rem;margin-bottom:.5rem;">Reader Profile</h3>
+      <div class="pattern-item">In therapy or starting therapy <span class="pattern-count">High</span></div>
+      <div class="pattern-item">Want to do structured inner work <span class="pattern-count">Dominant</span></div>
+      <div class="pattern-item">Read "Attached" first, wanted next step <span class="pattern-count">Common</span></div>
+      <div class="pattern-item">Higher commitment level (bought a workbook) <span class="pattern-count">Self-selected</span></div>
+      <div class="pattern-item">Focused on self-relationship, not just romance <span class="pattern-count">Notable</span></div>
+      <div class="pattern-item">More likely to rate it highly <span class="pattern-count">4.05★ avg</span></div>
+
+      <h3 style="font-size:.88rem;margin-top:1rem;margin-bottom:.5rem;">Primary Frustrations</h3>
+      <div class="pill-row">
+        <span class="pill hot">Some prompts too vague</span>
+        <span class="pill hot">Hard to recall specific memories</span>
+        <span class="pill hot">Better for couples than singles</span>
+      </div>
+
+      <h3 style="font-size:.88rem;margin-top:1rem;margin-bottom:.5rem;">What They Loved</h3>
+      <div class="pill-row">
+        <span class="pill" style="border-color:var(--workbook);color:var(--workbook);background:rgba(67,232,194,.07)">Exercises reinforce therapy insights</span>
+        <span class="pill" style="border-color:var(--workbook);color:var(--workbook);background:rgba(67,232,194,.07)">Feels like self-guided therapy</span>
+        <span class="pill" style="border-color:var(--workbook);color:var(--workbook);background:rgba(67,232,194,.07)">Covers all style types fairly</span>
+        <span class="pill" style="border-color:var(--workbook);color:var(--workbook);background:rgba(67,232,194,.07)">Writing prompts create clarity</span>
+        <span class="pill" style="border-color:var(--workbook);color:var(--workbook);background:rgba(67,232,194,.07)">Not just romantic relationships</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ STRUGGLES -->
+<section id="struggles">
+  <h2>Core Relationship Struggles</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Emotional & Relational Pain Points</h3>
+      <div class="pattern-item">Anxiety in relationships (fear, hypervigilance, overthinking) <span class="pattern-count">488</span></div>
+      <div class="pattern-item">Communication breakdown with partner <span class="pattern-count">212</span></div>
+      <div class="pattern-item">Dating / attracting the same incompatible type repeatedly <span class="pattern-count">High</span></div>
+      <div class="pattern-item">Don't understand why partner pulls away <span class="pattern-count">High</span></div>
+      <div class="pattern-item">Feeling "too much" or "too needy" <span class="pattern-count">Frequent</span></div>
+      <div class="pattern-item">Childhood wounds showing up in adult love <span class="pattern-count">78</span></div>
+      <div class="pattern-item">Loneliness / feeling fundamentally alone <span class="pattern-count">29</span></div>
+      <div class="pattern-item">Trauma responses mistaken for "difficult personality" <span class="pattern-count">Frequent</span></div>
+      <div class="pattern-item">Push-pull / hot-and-cold dynamic <span class="pattern-count">High</span></div>
+      <div class="pattern-item">Overthinking / rumination spirals <span class="pattern-count">20</span></div>
+    </div>
+    <div class="card">
+      <h3>What They're Angry About in Existing Books</h3>
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:.8rem;">Consistent gaps readers feel aren't served:</p>
+      <div class="pattern-item">Avoidants treated as villains, not also wounded <span class="pattern-count">Strong signal</span></div>
+      <div class="pattern-item">FA / disorganized style almost entirely ignored <span class="pattern-count">Strong signal</span></div>
+      <div class="pattern-item">Understanding only — no real "how to change" <span class="pattern-count">Very common</span></div>
+      <div class="pattern-item">Oversimplifies: real people don't fit one box neatly <span class="pattern-count">Common</span></div>
+      <div class="pattern-item">Assumes secure people have no relationship problems <span class="pattern-count">Notable</span></div>
+      <div class="pattern-item">Only addresses romantic relationships, not friendships/family <span class="pattern-count">Recurring</span></div>
+      <div class="pattern-item">Heteronormative — excludes LGBTQ+ relationships <span class="pattern-count">Recurring</span></div>
+      <div class="pattern-item">Advice too generic: "just communicate better" <span class="pattern-count">Very common</span></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>The core unmet need:</strong> Readers can name their attachment style. They can explain the theory. What they cannot do — and desperately want — is <em>actually change</em>. The gap between intellectual understanding and behavioral change is the #1 frustration across all three books and all ratings.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ DESIRED OUTCOMES -->
+<section id="outcomes">
+  <h2>Desired Outcomes</h2>
+  <div class="grid-3">
+    <div class="outcome-card">
+      <div class="outcome-icon">🪞</div>
+      <div class="outcome-title">Understand Themselves</div>
+      <div class="outcome-desc">Make sense of their own patterns, reactions, and "why I am like this." Want self-awareness that feels compassionate, not shameful. (74 direct mentions)</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">🔄</div>
+      <div class="outcome-title">Break the Cycle</div>
+      <div class="outcome-desc">Stop attracting the same type of partner. Stop triggering the same fights. Stop sabotaging good relationships. The deepest and most frequently implied desire.</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">🛡️</div>
+      <div class="outcome-title">Become Securely Attached</div>
+      <div class="outcome-desc">"Earned security" is the holy grail. Readers want proof that their style can change — that they are not permanently broken. (80 mentions)</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">💬</div>
+      <div class="outcome-title">Communicate Without Conflict</div>
+      <div class="outcome-desc">Get needs met without "protest behavior" or stonewalling. Stop the same argument from happening again. (212 communication mentions)</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">🩺</div>
+      <div class="outcome-title">Heal the Root (Not the Symptom)</div>
+      <div class="outcome-desc">Understand and address childhood origins of their patterns — not just manage symptoms in the relationship. (125 healing mentions)</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">🧩</div>
+      <div class="outcome-title">Understand Their Partner / Ex</div>
+      <div class="outcome-desc">Decode the other person's behavior — why they pull away, why they're "emotionally unavailable," why they changed. Reduce the confusion and self-blame.</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">❤️</div>
+      <div class="outcome-title">Have a Fulfilling Relationship</div>
+      <div class="outcome-desc">Not just fix what's broken — but experience real closeness, safety, and love. The implicit goal behind every other desired outcome.</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">🧠</div>
+      <div class="outcome-title">Stop Feeling "Crazy" or "Too Much"</div>
+      <div class="outcome-desc">The #1 emotional relief requested by anxious readers: validation that their needs are normal and they are not the problem.</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">📋</div>
+      <div class="outcome-title">Practical Tools, Not Just Theory</div>
+      <div class="outcome-desc">Exercises, scripts, prompts they can use today. The most common complaint across all negative reviews is that books stop at understanding and don't show the path forward.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ JTBDs -->
+<section id="jtbd">
+  <h2>Jobs To Be Done</h2>
+  <p style="color:var(--muted);font-size:.88rem;margin-bottom:1.5rem;">Format: When [situation], I want to [action], so I can [outcome].</p>
+
+  <div class="jtbd-card j1">
+    <div class="jtbd-label">JTBD 1 · Anxious — Self-Validation</div>
+    <div class="jtbd-text">When I feel anxious, clingy, or "crazy" in my relationship and my partner tells me I'm overreacting, I want to <em>understand why I'm wired this way and see it named by science</em>, so I can <em>stop blaming myself, feel normal, and stop shrinking my needs</em>.</div>
+  </div>
+
+  <div class="jtbd-card j2">
+    <div class="jtbd-label">JTBD 2 · Avoidant — Non-Judgmental Understanding</div>
+    <div class="jtbd-text">When I realize I'm emotionally unavailable or keep pushing people away and everything I read makes me feel like the villain, I want to <em>find a resource that explains my avoidance with compassion instead of blame</em>, so I can <em>understand my walls without feeling like a cold, broken person</em>.</div>
+  </div>
+
+  <div class="jtbd-card j3">
+    <div class="jtbd-label">JTBD 3 · Fearful-Avoidant — Being Seen</div>
+    <div class="jtbd-text">When I experience both desperate longing for closeness and terror the moment I get it — and every resource lumps me into "anxious" or "avoidant" — I want to <em>find content that specifically addresses fearful-avoidant / disorganized attachment</em>, so I can <em>stop feeling like a confusing edge case that no one has an answer for</em>.</div>
+  </div>
+
+  <div class="jtbd-card j4">
+    <div class="jtbd-label">JTBD 4 · The Pattern Repeater</div>
+    <div class="jtbd-text">When I notice I've had the same painful relationship dynamic with three different people and my friends tell me I "always pick the wrong ones," I want to <em>understand the unconscious pull that keeps recreating the same dynamic</em>, so I can <em>break the cycle and stop arriving at the same heartbreak from a different direction</em>.</div>
+  </div>
+
+  <div class="jtbd-card j5">
+    <div class="jtbd-label">JTBD 5 · Theory-to-Practice Gap</div>
+    <div class="jtbd-text">When I've read all the attachment theory books and can explain my style fluently but still act the exact same way in my relationship, I want <em>structured, practical exercises that translate insight into behavioral change</em>, so I can <em>actually show up differently instead of just understanding why I don't</em>.</div>
+  </div>
+
+  <div class="jtbd-card j6">
+    <div class="jtbd-label">JTBD 6 · Post-Breakup Processing</div>
+    <div class="jtbd-text">When I can't stop obsessing over a relationship that ended — replaying what went wrong, checking their social, wondering if I could have done something different — I want to <em>understand the attachment dynamic that drove what happened</em>, so I can <em>find closure, stop the spiral, and not walk into the next relationship carrying the same wound</em>.</div>
+  </div>
+
+  <div class="jtbd-card j7">
+    <div class="jtbd-label">JTBD 7 · Becoming Secure</div>
+    <div class="jtbd-text">When I realize my attachment style is the root of most of my relationship pain and I want more than just coping strategies, I want <em>a clear, believable path from where I am to "earned security"</em>, so I can <em>experience the kind of stable, close, safe relationship I've always wanted but never managed to sustain</em>.</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ VOICES -->
+<section id="voices">
+  <h2>Verbatim Voices</h2>
+  <p style="color:var(--muted);font-size:.88rem;margin-bottom:1.5rem;">Direct quotes that capture the emotional core of each cluster's experience.</p>
+
+  <h3 style="color:var(--attached);margin-bottom:.8rem;">Attached — The Anxious Reader</h3>
+  <div class="quote-card">
+    <blockquote>"I am anxiously attached, so from my perspective, I thought it was a wonderful read. It helped me to better understand myself and past unsuccessful relationships. I really did date a ton of avoidant men, and now it's evident why I did so… the insanity 'felt' like love."</blockquote>
+    <div class="quote-meta">— 5★ · Breanne</div>
+  </div>
+  <div class="quote-card">
+    <blockquote>"This book entirely changed the way I view myself and my relationships. It opened my eyes to why I operate the way that I do, and has allowed me to reflect on my behaviour with more compassion — and for others as well."</blockquote>
+    <div class="quote-meta">— 5★ · Ana</div>
+  </div>
+  <div class="quote-card">
+    <blockquote>"As an anxious attached girlieeee, I came in with expectations of more actionable items to combat insecure attachment patterns, but the examples lacked nuance and the 'advice' was... 'communicate better'. Like.. ya… we know. Off to therapy I go."</blockquote>
+    <div class="quote-meta">— 2★ · Merilla (captures the theory-to-practice gap)</div>
+  </div>
+
+  <h3 style="color:var(--avoidant);margin-top:1.5rem;margin-bottom:.8rem;">Attached — The Avoidant Reader</h3>
+  <div class="quote-card">
+    <blockquote>"I only bought this book to learn more about avoidant attachment styles. It's interesting how the authors' bias limits this book. Avoidant types are portrayed as cold, selfish, and abusive. Anxious types are portrayed as victims. Secure types are put on a pedestal."</blockquote>
+    <div class="quote-meta">— 2★ · Melody</div>
+  </div>
+  <div class="quote-card">
+    <blockquote>"As someone on the avoidant side, I expected to read about how to avoid less. But what I got was a list of things such as 'don't glorify your ex partner'… People who are avoidant usually are suffering a lot and I feel like that wasn't highlighted at all."</blockquote>
+    <div class="quote-meta">— 1★ · Marie</div>
+  </div>
+
+  <h3 style="color:var(--fa);margin-top:1.5rem;margin-bottom:.8rem;">Guide — The Fearful-Avoidant Reader</h3>
+  <div class="quote-card">
+    <blockquote>"I am truly convinced this is THE best book about attachment styles available. Especially if you are interested in fearful-avoidant style — this is the one book that will go into details and base a lot of examples on it. Anxious isn't just a craving for attention victim and avoidants aren't cold and distant all the time."</blockquote>
+    <div class="quote-meta">— 5★ · Szustalke</div>
+  </div>
+  <div class="quote-card">
+    <blockquote>"If you know a little about attachment styles and especially if you see some patterns repeating over and over again in your relationship with different partners — this is the ring. Something you have to explore about yourself."</blockquote>
+    <div class="quote-meta">— 5★ · Marta</div>
+  </div>
+
+  <h3 style="color:var(--workbook);margin-top:1.5rem;margin-bottom:.8rem;">Workbook — The Active Healer</h3>
+  <div class="quote-card">
+    <blockquote>"This book was HARD to read. Not because it was complicated — simply because it asks you to look deep within yourself and figure out why you do the things you do in relationships and why you view things the way you do. It asks extremely hard questions about your most important relationships."</blockquote>
+    <div class="quote-meta">— 5★ · Courtney</div>
+  </div>
+  <div class="quote-card">
+    <blockquote>"I often felt like I was conducting therapy on myself. Very cool. If you want to improve your life in relationships, this book is definitely for you. Short, practical, and effective."</blockquote>
+    <div class="quote-meta">— 4★ · Nazariy</div>
+  </div>
+
+  <h3 style="color:var(--secure);margin-top:1.5rem;margin-bottom:.8rem;">Cross-Cluster · Universal Moments</h3>
+  <div class="quote-card">
+    <blockquote>"I wish I had read this years ago. It would have saved me so much pain and confusion in past relationships."</blockquote>
+    <div class="quote-meta">— Recurring theme across all 3 books (77 "wish I read sooner" signals)</div>
+  </div>
+  <div class="quote-card">
+    <blockquote>"I can see why this book might not be very helpful for the avoidant attachment style folks. Also, the book puts people into their 'attachment style' box, whereas I think it's more fluid and styles could change depending on who you are with."</blockquote>
+    <div class="quote-meta">— 4★ · Mansi (captures the biggest structural critique across all books)</div>
+  </div>
+  <div class="quote-card">
+    <blockquote>"According to whoever reads it, this book can be an absurdity or a lifesaver. I don't rate it because I think you shouldn't read it for its number of stars, but because the reader is at a specific moment in their life where they're looking for answers."</blockquote>
+    <div class="quote-meta">— Laura (captures the high-stakes, moment-of-crisis trigger for this category)</div>
+  </div>
+</section>
+
+</main>
+</body>
+</html>

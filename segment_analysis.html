@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reddit Audience Segment Analysis</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0d0d11;
+      color: #e0e0ea;
+      line-height: 1.65;
+      padding-bottom: 120px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #181828 0%, #12192e 60%, #0d2240 100%);
+      padding: 52px 40px 40px;
+      border-bottom: 1px solid #1e1e30;
+    }
+    .hero h1 { font-size: 1.85rem; font-weight: 700; color: #fff; margin-bottom: 5px; letter-spacing: -.4px; }
+    .hero p { color: #6666aa; font-size: .9rem; }
+    .hero .stats { display: flex; gap: 16px; margin-top: 22px; flex-wrap: wrap; }
+    .hero .stat { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 10px 18px; }
+    .hero .stat-num { font-size: 1.4rem; font-weight: 700; color: #fff; }
+    .hero .stat-label { font-size: .7rem; color: #6666aa; text-transform: uppercase; letter-spacing: .6px; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 28px; }
+    .section-title { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.8px; color: #333366; margin: 56px 0 16px; }
+
+    /* ── CATEGORY ── */
+    .category { margin-bottom: 52px; }
+    .cat-header {
+      border-radius: 14px 14px 0 0;
+      padding: 0;
+      margin-bottom: 2px;
+    }
+    .cat-top {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 22px 26px 18px;
+    }
+    .cat-num {
+      width: 38px; height: 38px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; font-weight: 800; flex-shrink: 0; margin-top: 2px;
+    }
+    .cat-info {}
+    .cat-title { font-size: 1.2rem; font-weight: 700; color: #fff; margin-bottom: 3px; }
+    .cat-desc { font-size: .85rem; }
+
+    /* category-level jtbd + blockers */
+    .cat-meta {
+      display: grid; grid-template-columns: 1fr 1fr;
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding: 16px 26px 18px;
+      gap: 0;
+    }
+    @media(max-width:660px){ .cat-meta { grid-template-columns: 1fr; } }
+    .cat-meta-col { padding: 0 16px 0 0; }
+    .cat-meta-col:last-child { padding: 0 0 0 16px; border-left: 1px solid rgba(255,255,255,.06); }
+    .cat-meta-label {
+      font-size: .65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.2px; margin-bottom: 8px;
+    }
+    .mini-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .mini-list li { font-size: .8rem; padding-left: 14px; position: relative; color: #9999bb; line-height: 1.5; }
+    .mini-list li::before { content: '—'; position: absolute; left: 0; opacity: .4; }
+    .blocker-tag {
+      display: inline-block;
+      font-size: .62rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .5px; padding: 1px 6px; border-radius: 4px;
+      margin-left: 6px; vertical-align: middle; opacity: .85;
+    }
+
+    /* color themes */
+    .cat-1 .cat-header { background: linear-gradient(135deg, #240d0d, #1a0808); border: 1px solid #3a1010; }
+    .cat-1 .cat-num { background: #c23030; color: #fff; }
+    .cat-1 .cat-desc { color: #aa6666; }
+    .cat-1 .cat-meta-label { color: #cc5555; }
+    .cat-1 .sub-card { border-color: #281010; }
+    .cat-1 .sub-card:hover { border-color: #882222; }
+    .cat-1 .sub-dot { background: #c23030; }
+    .cat-1 .sub-lbl { color: #ff7070; }
+    .cat-1 .insight-box { border-left-color: #c23030; }
+    .cat-1 .tag { background: #180808; border-color: #3a1010; color: #cc6666; }
+    .cat-1 .jtbd-lbl { color: #ff7070; }
+    .cat-1 .blk-lbl { color: #cc5555; }
+    .cat-1 .blocker-tag { background: #3a1010; color: #ff7070; }
+
+    .cat-2 .cat-header { background: linear-gradient(135deg, #0c1c2e, #081422); border: 1px solid #103050; }
+    .cat-2 .cat-num { background: #2672c8; color: #fff; }
+    .cat-2 .cat-desc { color: #5588bb; }
+    .cat-2 .cat-meta-label { color: #4488cc; }
+    .cat-2 .sub-card { border-color: #101e30; }
+    .cat-2 .sub-card:hover { border-color: #204870; }
+    .cat-2 .sub-dot { background: #2672c8; }
+    .cat-2 .sub-lbl { color: #55aaff; }
+    .cat-2 .insight-box { border-left-color: #2672c8; }
+    .cat-2 .tag { background: #070f1a; border-color: #103050; color: #5588bb; }
+    .cat-2 .jtbd-lbl { color: #55aaff; }
+    .cat-2 .blk-lbl { color: #4488cc; }
+    .cat-2 .blocker-tag { background: #103050; color: #55aaff; }
+
+    .cat-3 .cat-header { background: linear-gradient(135deg, #1c1600, #141000); border: 1px solid #403000; }
+    .cat-3 .cat-num { background: #c89010; color: #111; }
+    .cat-3 .cat-desc { color: #aa8833; }
+    .cat-3 .cat-meta-label { color: #cc9922; }
+    .cat-3 .sub-card { border-color: #221a00; }
+    .cat-3 .sub-card:hover { border-color: #705500; }
+    .cat-3 .sub-dot { background: #c89010; }
+    .cat-3 .sub-lbl { color: #ffcc44; }
+    .cat-3 .insight-box { border-left-color: #c89010; }
+    .cat-3 .tag { background: #100d00; border-color: #403000; color: #aa8833; }
+    .cat-3 .jtbd-lbl { color: #ffcc44; }
+    .cat-3 .blk-lbl { color: #cc9922; }
+    .cat-3 .blocker-tag { background: #403000; color: #ffcc44; }
+
+    /* ── SUBCARDS ── */
+    .subcategories { display: flex; flex-direction: column; gap: 2px; }
+    .sub-card {
+      background: #111116;
+      border: 1px solid #1e1e26;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    .sub-card:last-child { border-radius: 0 0 14px 14px; }
+
+    .sub-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 22px;
+    }
+    .sub-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .sub-title { font-size: .95rem; font-weight: 600; color: #ddd; flex: 1; }
+
+    /* 5-column grid: who | quotes | jtbd | blockers | unlock */
+    .sub-body {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr 1fr;
+      border-top: 1px solid #1a1a22;
+    }
+    @media(max-width:900px){ .sub-body { grid-template-columns: 1fr 1fr; } }
+    @media(max-width:540px){ .sub-body { grid-template-columns: 1fr; } }
+
+    .sub-section {
+      padding: 16px 20px;
+      border-right: 1px solid #1a1a22;
+      border-bottom: 1px solid #1a1a22;
+    }
+    .sub-section:last-child, .sub-section.full { border-right: none; }
+
+    .sub-lbl {
+      font-size: .64rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.1px; margin-bottom: 9px;
+    }
+    .sub-section p { font-size: .82rem; color: #8888aa; line-height: 1.55; }
+
+    /* quotes */
+    .quote-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .quote-list li {
+      font-size: .8rem; color: #7777aa; padding: 7px 10px 7px 14px;
+      position: relative; font-style: italic; line-height: 1.5;
+      background: rgba(255,255,255,.025); border-radius: 5px;
+      border-left: 2px solid rgba(255,255,255,.08);
+    }
+    .quote-src { font-style: normal; font-size: .68rem; color: #444466; margin-left: 6px; }
+
+    /* jtbd list */
+    .jtbd-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .jtbd-list li {
+      font-size: .79rem; color: #9999bb; padding-left: 16px;
+      position: relative; line-height: 1.5;
+    }
+    .jtbd-list li::before { content: '→'; position: absolute; left: 0; opacity: .5; font-size: .72rem; }
+
+    /* blocker list */
+    .blk-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .blk-list li {
+      font-size: .79rem; color: #9999bb; padding-left: 16px;
+      position: relative; line-height: 1.5;
+    }
+    .blk-list li::before { content: '✕'; position: absolute; left: 0; opacity: .4; font-size: .7rem; }
+
+    /* tag cloud */
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag {
+      border-radius: 4px; padding: 2px 8px;
+      font-size: .73rem; font-family: 'SF Mono','Fira Code',monospace;
+      border: 1px solid;
+    }
+
+    /* insight box */
+    .insight-box {
+      grid-column: 1 / -1;
+      padding: 12px 22px;
+      background: rgba(255,255,255,.02);
+      border-top: 1px solid #1a1a22;
+      font-size: .82rem; color: #9999bb;
+      border-left: 3px solid;
+    }
+    .insight-box strong { color: #ddd; }
+
+    /* ── VOCAB ── */
+    .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 4px; }
+    @media(max-width:580px){ .vocab-grid { grid-template-columns: 1fr; } }
+    .vocab-card { background: #111116; border: 1px solid #1e1e28; border-radius: 12px; padding: 18px 20px; }
+    .vocab-card h3 { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 11px; }
+    .vocab-card.pain { border-color: #2a1010; }
+    .vocab-card.pain h3 { color: #cc4444; }
+    .vocab-card.desire { border-color: #0c2a14; }
+    .vocab-card.desire h3 { color: #44aa66; }
+    .vocab-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .vocab-tag { border-radius: 4px; padding: 3px 9px; font-size: .76rem; font-family: 'SF Mono','Fira Code',monospace; }
+    .vocab-card.pain .vocab-tag { background: #180808; border: 1px solid #3a1010; color: #cc7070; }
+    .vocab-card.desire .vocab-tag { background: #081410; border: 1px solid #103a20; color: #66cc88; }
+
+    .transitions { margin-top: 14px; }
+    .transitions h3 { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #333366; margin-bottom: 9px; }
+    .t-list { display: flex; flex-direction: column; gap: 6px; }
+    .t-item { background: #111116; border: 1px solid #1e1e28; border-radius: 6px; padding: 8px 13px; font-size: .81rem; color: #7777aa; font-style: italic; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container">
+    <h1>Reddit Audience Segment Analysis</h1>
+    <p>Male Charisma &amp; Social Confidence — 18,082 posts · 14 subreddits · direct quotes, JTBDs &amp; blockers</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">18,082</div><div class="stat-label">Posts scraped</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Categories</div></div>
+      <div class="stat"><div class="stat-num">9</div><div class="stat-label">Subcategories</div></div>
+      <div class="stat"><div class="stat-num">455</div><div class="stat-label">Avg upvotes</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+<div class="section-title">Audience Categories</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- CATEGORY 1: DISILLUSIONED                                  -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="category cat-1">
+  <div class="cat-header">
+    <div class="cat-top">
+      <div class="cat-num">1</div>
+      <div class="cat-info">
+        <div class="cat-title">Disillusioned</div>
+        <div class="cat-desc">Beaten by rejection, time, or self-doubt. Motivation is pain, not ambition. Needs belief restored before he can act on any method.</div>
+      </div>
+    </div>
+    <div class="cat-meta">
+      <div class="cat-meta-col">
+        <div class="cat-meta-label">Category JTBDs</div>
+        <ul class="mini-list">
+          <li>Shed the belief that he is broken or unfixable</li>
+          <li>Find proof that men exactly like him have changed</li>
+          <li>Understand WHY it keeps happening — root cause, not tips</li>
+          <li>Feel normal again — not a freak or failure for being here</li>
+          <li>Have one small win that makes trying feel worth it again</li>
+        </ul>
+      </div>
+      <div class="cat-meta-col">
+        <div class="cat-meta-label">Category Blockers</div>
+        <ul class="mini-list">
+          <li>Shame: "A real man doesn't need help with this" <span class="blocker-tag">Masculinity myth</span></li>
+          <li>Sunk cost: has tried before, it didn't stick — trying again risks more evidence of failure <span class="blocker-tag">Sunk cost</span></li>
+          <li>Learned helplessness: the brain has been trained that effort = pain <span class="blocker-tag">Conditioning</span></li>
+          <li>Identity threat: changing means admitting who he's been wasn't working <span class="blocker-tag">Self-concept</span></li>
+          <li>Trust erosion: bad advice (PUA, red pill, generic self-help) has burned him before <span class="blocker-tag">Trust deficit</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="subcategories">
+
+    <!-- 1a -->
+    <div class="sub-card">
+      <div class="sub-header">
+        <div class="sub-dot"></div>
+        <div class="sub-title">Chronically Rejected</div>
+      </div>
+      <div class="sub-body">
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Who They Are</div>
+          <p>Rejection is his pattern, not an event. Friendzoned, ghosted, or passed over repeatedly — it feels like a character trait. He knows the motions but always ends up in the same place. Niceness hasn't worked. Nothing has. He's starting to wonder if something is structurally wrong with him.</p>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Direct Reddit Quotes</div>
+          <ul class="quote-list">
+            <li>I treat my dates like I do my friends… and unsurprisingly that leads me to being friendzoned. I've never flirted or been in a relationship with anyone — so I only know how to treat people as my friends, even if I want something else. <span class="quote-src">r/dating_advice · 2.4K pts</span></li>
+            <li>"Chemistry" means attraction on the first date. "We had no spark" translates to: I'm not attracted to you. You don't really know someone after date 1 — if there's rejection it's mostly how you look and other flaws they noticed. <span class="quote-src">r/dating_advice · 1.9K pts</span></li>
+            <li>I was a clueless, socially awkward virgin who never had the guts to make a move. She was always one of the big "what ifs?" in my life. Fast forward 20 years — I kissed her. <span class="quote-src">r/dating_advice · 2.1K pts</span></li>
+            <li>I notice when you expect nothing from girls you start to see them as human beings. I was no longer creepy to girls and wasn't as awkward around them as I was the past 2 years. <span class="quote-src">r/socialskills · 3.5K pts</span></li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl jtbd-lbl">JTBDs</div>
+          <ul class="jtbd-list">
+            <li>Understand why the pattern exists, not just what to do differently next time</li>
+            <li>Stop being the "great guy" women don't want romantically</li>
+            <li>Learn to signal genuine romantic interest without seeming desperate or creepy</li>
+            <li>Create attraction (the spark), not just rapport and connection</li>
+            <li>Know what changes between "she said yes" and "she pulled away"</li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl blk-lbl">Blockers</div>
+          <ul class="blk-list">
+            <li>Attribution error: "I'm just not her type" protects ego while preventing change <span class="blocker-tag">Self-serving bias</span></li>
+            <li>Nice-guy identity protection: changing means abandoning the moral high ground he built himself on <span class="blocker-tag">Identity threat</span></li>
+            <li>Fear of becoming "that guy": assertiveness = manipulation in his current mental model <span class="blocker-tag">Category confusion</span></li>
+            <li>Conflicting advice: "be yourself" vs "be more assertive" — he's paralyzed by noise <span class="blocker-tag">Info overload</span></li>
+            <li>Shame about the pattern itself: admitting he keeps getting friendzoned is humiliating <span class="blocker-tag">Shame suppressor</span></li>
+          </ul>
+        </div>
+        <div class="insight-box">
+          <strong>Messaging unlock:</strong> Lead with the diagnosis, not the fix. "Here's why it keeps happening — and it's not what you think" outperforms any headline promising results. He needs mechanism, not motivation.
+        </div>
+      </div>
+    </div>
+
+    <!-- 1b -->
+    <div class="sub-card">
+      <div class="sub-header">
+        <div class="sub-dot"></div>
+        <div class="sub-title">Running Out of Time / Midlife Crisis</div>
+      </div>
+      <div class="sub-body">
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Who They Are</div>
+          <p>Age became a mirror. Divorce, kids leaving, a birthday, watching peers settle — something made time feel finite and real. He's starting over in his 30s, 40s, or 50s and feels simultaneously behind and embarrassed to be learning this now. The clock-awareness creates urgency and shame simultaneously.</p>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Direct Reddit Quotes</div>
+          <ul class="quote-list">
+            <li>Turning 40 changes the game. It's like life sends you an email marked "URGENT" — suddenly you're questioning your health, career, relationships, and whether you should start flossing. <span class="quote-src">r/AskMenOver30 · 8.7K pts</span></li>
+            <li>I'm over the years of social anxiety, being afraid of talking to people, afraid that I might never connect with anyone. I'm fucking tired of waiting around. <span class="quote-src">r/socialskills · 1.7K pts</span></li>
+            <li>I keep imagining I'll be in my 60s and still single, never having experienced love. I'm terrified at the thought. <span class="quote-src">r/socialskills · 1.8K pts</span></li>
+            <li>Anyone over 30 — how did dating change for you? I'm turning 40 very soon and my tastes and priorities changed completely. I became much more serious about settling down. <span class="quote-src">r/AskMen · 2.8K pts</span></li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl jtbd-lbl">JTBDs</div>
+          <ul class="jtbd-list">
+            <li>Prove to himself it is not too late — permission is the first purchase</li>
+            <li>Reconnect with who he was before he got comfortable or complacent</li>
+            <li>Navigate modern dating (apps, new norms) without feeling like a beginner</li>
+            <li>Build confidence that reads as experience and depth, not desperation</li>
+            <li>Find examples of men who rebuilt at his specific age — not general inspiration</li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl blk-lbl">Blockers</div>
+          <ul class="blk-list">
+            <li>Age shame: embarrassed to be learning this now — peers have it figured out <span class="blocker-tag">Social comparison</span></li>
+            <li>"Prime years" myth: believes peak attractiveness is behind him — fixed mindset on age <span class="blocker-tag">Fixed mindset</span></li>
+            <li>Overwhelm of unfamiliar territory: apps, texting norms, culture have changed since he last dated <span class="blocker-tag">Novelty aversion</span></li>
+            <li>Emotional baggage: old wounds make him guarded — authenticity feels risky <span class="blocker-tag">Risk aversion</span></li>
+            <li>Rushing pressure: feels he must move fast to compensate for lost time — urgency creates mistakes <span class="blocker-tag">Scarcity panic</span></li>
+          </ul>
+        </div>
+        <div class="insight-box">
+          <strong>Messaging unlock:</strong> Age-specific validation is non-negotiable. "Men who rebuilt at 40+" is a different product promise than generic confidence content. The shame of being here must be addressed first — before any method is introduced.
+        </div>
+      </div>
+    </div>
+
+    <!-- 1c -->
+    <div class="sub-card">
+      <div class="sub-header">
+        <div class="sub-dot"></div>
+        <div class="sub-title">Negative Self-Image / Considers Himself Unattractive</div>
+      </div>
+      <div class="sub-body">
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Who They Are</div>
+          <p>He has a list of physical or social disqualifiers he believes exclude him from attraction entirely: too short, face not good enough, too quiet, too awkward. He's not even at the approach problem — he's at the permission problem. He doesn't believe he's in the running before the game starts.</p>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Direct Reddit Quotes</div>
+          <ul class="quote-list">
+            <li>I'm an average looking guy. Not the ugliest kid on the block, not a giga chad. Just average. Dating apps destroy confidence — you hop right into a grave you dug yourself. <span class="quote-src">r/dating_advice · 4.5K pts</span></li>
+            <li>Why are some women so rude about men's height on Tinder? I'm 5'8 — still a person looking for love. "Don't bother if you're under 6ft." It's body shaming. I can't change my height. <span class="quote-src">r/Tinder · 4.9K pts</span></li>
+            <li>I feel like I wasted my prime years in depression and social anxiety. <span class="quote-src">r/socialskills · 5.2K pts</span></li>
+            <li>I figured out why women are repelled by me — finally. I'm 25 and have never been on a date. I assumed I was just ugly. Someone told me: "you are far from ugly, I don't understand how you can't find a relationship." Turns out I've been doing it all wrong. <span class="quote-src">r/socialskills · 4.2K pts</span></li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl jtbd-lbl">JTBDs</div>
+          <ul class="jtbd-list">
+            <li>Get permission to enter the game — belief that he qualifies before he tries anything</li>
+            <li>Neutralize the specific disqualifiers he believes eliminate him</li>
+            <li>Build an identity not defined by a physical or surface trait</li>
+            <li>Experience one positive feedback loop that starts replacing the negative assumption</li>
+            <li>Understand what actually drives attraction so looks become one factor among many</li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl blk-lbl">Blockers</div>
+          <ul class="blk-list">
+            <li>Fixed physical mindset: "I can't change my height/face" — so why try anything else <span class="blocker-tag">Fixed mindset</span></li>
+            <li>Confirmation bias: notices every rejection, filters out successes as luck <span class="blocker-tag">Confirmation bias</span></li>
+            <li>Pre-rejection reflex: disqualifies himself before others can — safer to never try <span class="blocker-tag">Defensive pessimism</span></li>
+            <li>Social media distortion: compares himself to idealized images, not real men <span class="blocker-tag">Upward comparison</span></li>
+            <li>Catastrophizing: one rejection = universal truth about his entire worth <span class="blocker-tag">All-or-nothing thinking</span></li>
+          </ul>
+        </div>
+        <div class="insight-box">
+          <strong>Messaging unlock:</strong> The permission problem comes before the skill problem. Specific counter-examples — "I'm 5'7 and got 83 matches" — beat any inspirational copy. Address the disqualifier head-on in the headline before teaching anything.
+        </div>
+      </div>
+    </div>
+
+    <!-- 1d -->
+    <div class="sub-card">
+      <div class="sub-header">
+        <div class="sub-dot"></div>
+        <div class="sub-title">Gave Up on Dating / On Himself</div>
+      </div>
+      <div class="sub-body">
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Who They Are</div>
+          <p>Past frustration — now in resignation. He's stopped trying and started building a narrative about why it's not for him. The hopelessness is quiet, not angry. He might still consume self-improvement content but doesn't believe it applies to him anymore. He's reframed giving up as wisdom.</p>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Direct Reddit Quotes</div>
+          <ul class="quote-list">
+            <li>Sometimes I just curl up in my bed and cry. I'm 22. The past few years have been hard — I've attempted suicide twice. I don't know where I am mentally and emotionally. <span class="quote-src">r/AskMen · 4.8K pts</span></li>
+            <li>It really sucks having low self esteem, low confidence, social anxiety, and just not being enough. I won't even hardly talk to a woman at all because I don't want to look like a creep. <span class="quote-src">r/socialskills · 2.9K pts</span></li>
+            <li>After 8 months I finally showered. I gave up on life 8 months ago. Today I woke up at 6am and did my routine that I have not done in 8 months. <span class="quote-src">r/DecidingToBeBetter · 3.2K pts</span></li>
+            <li>I feel like there's no hope — I've never been in a relationship. I've never kissed with tongue. Maybe you're older than me and in the same position. <span class="quote-src">r/dating_advice · 4.3K pts</span></li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl jtbd-lbl">JTBDs</div>
+          <ul class="jtbd-list">
+            <li>Find one reason to try again that doesn't feel naive or set him up for more failure</li>
+            <li>Reconnect with the version of himself that still wanted connection</li>
+            <li>Take one low-stakes action that breaks the inaction cycle safely</li>
+            <li>Feel less alone — knowing others are in the same place without judgment</li>
+            <li>Rebuild enough self-worth to believe improvement is possible for him specifically</li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl blk-lbl">Blockers</div>
+          <ul class="blk-list">
+            <li>Amygdala protection: subconscious system blocks action to prevent further pain — wired in now <span class="blocker-tag">Learned helplessness</span></li>
+            <li>Cynicism as armor: "it won't work" is psychologically safer than trying and failing again <span class="blocker-tag">Defensive pessimism</span></li>
+            <li>Social withdrawal: isolation removes the very stimuli that would normally trigger motivation <span class="blocker-tag">Avoidance loop</span></li>
+            <li>Reframed resignation: he's told himself giving up was the mature, realistic choice <span class="blocker-tag">Rationalization</span></li>
+            <li>Energy depletion: past attempts drained him — no emotional fuel left to try again <span class="blocker-tag">Resource depletion</span></li>
+          </ul>
+        </div>
+        <div class="insight-box">
+          <strong>Messaging unlock:</strong> Don't sell improvement — sell the re-entry point. "If you are in a dark place right now" lands before any aspiration. He needs permission to try again, and evidence from men who were further gone than he is.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /cat-1 -->
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- CATEGORY 2: SERIAL SELF-IMPROVER                           -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="category cat-2">
+  <div class="cat-header">
+    <div class="cat-top">
+      <div class="cat-num">2</div>
+      <div class="cat-info">
+        <div class="cat-title">Serial Self-Improver</div>
+        <div class="cat-desc">Growth-motivated. Already in motion. Needs the right system, not the right reason. Will buy when the method is credible and results are specific.</div>
+      </div>
+    </div>
+    <div class="cat-meta">
+      <div class="cat-meta-col">
+        <div class="cat-meta-label">Category JTBDs</div>
+        <ul class="mini-list">
+          <li>Find the system that actually works after trying several that didn't</li>
+          <li>Apply the same rigor to social confidence as he did to fitness or career</li>
+          <li>Get consistent, measurable results — not just occasional good days</li>
+          <li>Build a sustainable practice that doesn't require constant motivation</li>
+          <li>Close the gap between what he knows and how he actually behaves</li>
+        </ul>
+      </div>
+      <div class="cat-meta-col">
+        <div class="cat-meta-label">Category Blockers</div>
+        <ul class="mini-list">
+          <li>Method skepticism: each new approach arrives carrying baggage of past failures <span class="blocker-tag">Prior disappointment</span></li>
+          <li>Implementation gap: knows what to do intellectually, can't bridge to actual behavior <span class="blocker-tag">Knowing-doing gap</span></li>
+          <li>Perfectionism: wants to do it right before doing it at all <span class="blocker-tag">Analysis paralysis</span></li>
+          <li>Info overload: too many frameworks, teachers, conflicting approaches cancel each other <span class="blocker-tag">Decision fatigue</span></li>
+          <li>Fear of failure after investment: if this doesn't work, what does that mean? <span class="blocker-tag">Ego protection</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="subcategories">
+
+    <!-- 2a -->
+    <div class="sub-card">
+      <div class="sub-header">
+        <div class="sub-dot"></div>
+        <div class="sub-title">New Love Interest / Triggered by a Specific Person</div>
+      </div>
+      <div class="sub-body">
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Who They Are</div>
+          <p>There's a specific woman and she exposed the gap. He's not here because of a chronic pattern — he's here because of <em>her.</em> The motivation is acute and time-sensitive. He needs results faster than a long program and responds to practical, immediate action steps more than systematic courses.</p>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Direct Reddit Quotes</div>
+          <ul class="quote-list">
+            <li>Reddit, I'm going to do it! Fuck it to my fear of rejection. Fuck it because life's way too short not to ask her out. I'm saying fuck it to everything. <span class="quote-src">r/dating_advice · 2.8K pts</span></li>
+            <li>Today is the last day of my cooking course — I may never see her again. I've gotta make the move. I'll tell you all how it went. <span class="quote-src">r/dating_advice · 2.6K pts</span></li>
+            <li>I saw my crush on Tinder and gave her a superlike. I study with her at university. I don't know if I did the right thing. <span class="quote-src">r/dating_advice · 3.3K pts</span></li>
+            <li>I confessed to my crush. It took me 2 minutes to get the courage for the words to come out — we were just laughing because of how nervous I was. <span class="quote-src">r/socialskills · 3.1K pts</span></li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl jtbd-lbl">JTBDs</div>
+          <ul class="jtbd-list">
+            <li>Not let this one become another "what if" he carries for 20 years</li>
+            <li>Express genuine interest without coming across as desperate or scripted</li>
+            <li>Move from friend/colleague/acquaintance to romantic before the window closes</li>
+            <li>Create a moment or impression she'll actually remember and think about</li>
+            <li>Know what to do in the next 48–72 hours specifically, not in 6 weeks</li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl blk-lbl">Blockers</div>
+          <ul class="blk-list">
+            <li>Outcome dependence: this specific person carries too much weight — the stakes freeze him <span class="blocker-tag">High-stakes paralysis</span></li>
+            <li>Planning trap: rehearsing the perfect move instead of making any move <span class="blocker-tag">Analysis paralysis</span></li>
+            <li>Fear of ruining what they have: friendship or working relationship is at risk <span class="blocker-tag">Loss aversion</span></li>
+            <li>Imposter fear: if he tries something new and fails, it feels worse than doing nothing <span class="blocker-tag">Risk asymmetry</span></li>
+            <li>Urgency-induced freeze: window will close — the pressure itself causes the delay <span class="blocker-tag">Paradox of urgency</span></li>
+          </ul>
+        </div>
+        <div class="insight-box">
+          <strong>Messaging unlock:</strong> His urgency is already present — don't manufacture it. Speak to the specific window: "Don't let this one be the what-if you carry for 20 years." Deliver a quick win first; the full system can come after he's taken action.
+        </div>
+      </div>
+    </div>
+
+    <!-- 2b -->
+    <div class="sub-card">
+      <div class="sub-header">
+        <div class="sub-dot"></div>
+        <div class="sub-title">Major Life Change / Transition as Trigger</div>
+      </div>
+      <div class="sub-body">
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Who They Are</div>
+          <p>A life event cracked things open — divorce, new city, breakup, career shift, an empty nest. The change was painful but he's choosing to use it. He's not collapsed (Category 1) — he's converting disruption into momentum. The transformation has already started; he needs the right vehicle for what's next.</p>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Direct Reddit Quotes</div>
+          <ul class="quote-list">
+            <li>Well, I'm officially divorcing. It feels like a life redo button — now what? I'm 29, great job, good health, cute pup. I feel a pretty large weight lifting off me. <span class="quote-src">r/AskMen · 4.4K pts</span></li>
+            <li>I'm a divorced guy in my late forties. Lost a lot of weight. In the best shape of my life. It's given me a whole lot more confidence than I've ever had. Someone told me I had "Zaddy energy." <span class="quote-src">r/AskMenOver30 · 4.2K pts</span></li>
+            <li>I don't use dating apps and meet plenty of nice women. I'm 46, male, divorced. I keep fit. I'm not extroverted but fairly comfortable initiating conversation with strangers. It took some time to develop this skill. <span class="quote-src">r/dating_advice · 2.6K pts</span></li>
+            <li>I feel like I wasted my prime years in depression and social anxiety. But I've decided: not anymore. <span class="quote-src">r/socialskills · 5.2K pts</span></li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl jtbd-lbl">JTBDs</div>
+          <ul class="jtbd-list">
+            <li>Use the disruption as a real starting line, not just a story he tells later</li>
+            <li>Rebuild an identity that fits who he is now — not who he was before</li>
+            <li>Navigate changed dating landscape (apps, different ages) without feeling lost</li>
+            <li>Develop social confidence that fits his current context, not his 25-year-old self</li>
+            <li>Find momentum early — small wins that confirm the transformation is real</li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl blk-lbl">Blockers</div>
+          <ul class="blk-list">
+            <li>Identity void: the old life defined him — the crisis removed the scaffolding of his self-concept <span class="blocker-tag">Identity vacuum</span></li>
+            <li>Shame of starting over: feels like failure, not opportunity — the framing matters enormously <span class="blocker-tag">Shame reframe needed</span></li>
+            <li>Comparison to former self: measures current progress against his pre-crisis peak <span class="blocker-tag">Unfair baseline</span></li>
+            <li>Rushing recovery: social pressure to "get back out there" before he's genuinely ready <span class="blocker-tag">External pressure</span></li>
+            <li>Unfamiliar landscape: dating norms, apps, dynamics have changed — he feels behind the curve <span class="blocker-tag">Novelty overwhelm</span></li>
+          </ul>
+        </div>
+        <div class="insight-box">
+          <strong>Messaging unlock:</strong> He's already bought the premise of change — show him the vehicle. Lead with: "The crisis was the starting line, not the ending." Before/after stories from men who rebuilt post-divorce or post-breakup close this segment fast.
+        </div>
+      </div>
+    </div>
+
+    <!-- 2c -->
+    <div class="sub-card">
+      <div class="sub-header">
+        <div class="sub-dot"></div>
+        <div class="sub-title">Generally Not Satisfied / Chronic Improver Seeking the Right System</div>
+      </div>
+      <div class="sub-body">
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Who They Are</div>
+          <p>Always been in improvement mode — routines, books, podcasts. Social confidence is just the next domain to master. No crisis triggered this; he came on his own because growth is a value. He's skeptical of bad methods, comparison-shops approaches, and responds to frameworks with proven track records.</p>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Direct Reddit Quotes</div>
+          <ul class="quote-list">
+            <li>In my mid-20s I was lost, socially awkward, had zero discipline. In just a few years my life transformed completely. I'm writing this to share the lessons. <span class="quote-src">r/getdisciplined · 4.1K pts</span></li>
+            <li>Books about communication skills? I read them all. But they never seemed to stick. I couldn't figure out why I wasn't doing the things I knew I should. <span class="quote-src">r/socialskills · 3.7K pts</span></li>
+            <li>I tracked my brain fog for 6 months and tested everything. Here is what actually moved the needle. Not theory. Not 10 tips. These are the interventions that produced measurable changes. <span class="quote-src">r/selfimprovement · 4.2K pts</span></li>
+            <li>How I literally psyop'd myself into becoming successful. 2 years ago: typical underachieving college student. 2.3 GPA, zero discipline. Tried all the usual shit — nothing stuck because I was operating from the wrong identity. <span class="quote-src">r/selfimprovement · 3.7K pts</span></li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl jtbd-lbl">JTBDs</div>
+          <ul class="jtbd-list">
+            <li>Find the system that actually produces results after several that didn't stick</li>
+            <li>Apply the same mastery thinking to social confidence that worked in other domains</li>
+            <li>Understand the mechanism deeply enough to troubleshoot and adapt it himself</li>
+            <li>Get results that are consistent, not context-dependent or luck-based</li>
+            <li>Close the knowing-doing gap — bridge from theory to permanent behavior</li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl blk-lbl">Blockers</div>
+          <ul class="blk-list">
+            <li>Comparisonitis: consuming content without applying it — mistaking understanding for progress <span class="blocker-tag">Consumption trap</span></li>
+            <li>Perfectionist paralysis: waits for the right conditions before practicing in the real world <span class="blocker-tag">Readiness trap</span></li>
+            <li>Abstraction preference: loves the ideas, delays converting them to behavior <span class="blocker-tag">Knowing-doing gap</span></li>
+            <li>Diminishing returns on information: knows too much theory, not enough reps — the gap widens <span class="blocker-tag">Info-action imbalance</span></li>
+            <li>Impostor syndrome in social settings: competent everywhere else, acutely self-conscious here <span class="blocker-tag">Context-specific doubt</span></li>
+          </ul>
+        </div>
+        <div class="insight-box">
+          <strong>Messaging unlock:</strong> He's sold on the concept — he's choosing between vehicles. Don't pitch the idea; prove the system. Named frameworks, before/after specifics, and "here's the mechanism" storytelling beat inspiration every time.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /cat-2 -->
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- CATEGORY 3: AMBITIOUS TOP DOG                              -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="category cat-3">
+  <div class="cat-header">
+    <div class="cat-top">
+      <div class="cat-num">3</div>
+      <div class="cat-info">
+        <div class="cat-title">Ambitious Top Dog</div>
+        <div class="cat-desc">High-achiever who treats social confidence as an unoptimized variable. Won't tolerate soft frameworks. Buys outcomes and systems, not inspiration or healing.</div>
+      </div>
+    </div>
+    <div class="cat-meta">
+      <div class="cat-meta-col">
+        <div class="cat-meta-label">Category JTBDs</div>
+        <ul class="mini-list">
+          <li>Add social dominance to an already strong portfolio of competencies</li>
+          <li>Be the person people remember, seek out, and want in the room</li>
+          <li>Stop leaving outcomes on the table because of social friction or perception gaps</li>
+          <li>Master the invisible skill that separates good from exceptional in leadership and relationships</li>
+          <li>Make social confidence as reliable and scalable as any other skill he's built</li>
+        </ul>
+      </div>
+      <div class="cat-meta-col">
+        <div class="cat-meta-label">Category Blockers</div>
+        <ul class="mini-list">
+          <li>Ego protection: asking for help in this domain threatens the self-image of someone who "has it together" <span class="blocker-tag">Status threat</span></li>
+          <li>ROI skepticism: needs evidence it works before investing time — soft skills resist easy proof <span class="blocker-tag">Measurability gap</span></li>
+          <li>Authenticity fear: "if I'm learning this, is it actually me?" — worries training = fakeness <span class="blocker-tag">Authenticity threat</span></li>
+          <li>Impatience with slow domains: used to fast, structured results — soft skill development feels vague <span class="blocker-tag">Pace mismatch</span></li>
+          <li>Quality filter blocks action: won't engage with content below his standard — hard to reach <span class="blocker-tag">Signal-to-noise demand</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="subcategories">
+
+    <!-- 3a -->
+    <div class="sub-card">
+      <div class="sub-header">
+        <div class="sub-dot"></div>
+        <div class="sub-title">Efficiency Seeker / Wants the Optimal System</div>
+      </div>
+      <div class="sub-body">
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Who They Are</div>
+          <p>Engineer, analyst, or operator mindset. Applied precision thinking to every other area of life — now it's social confidence's turn. Doesn't want to feel his way through this. Wants the framework, the deliberate reps, and a measurable output. Vague soft-skills content insults his intelligence; specifics earn trust immediately.</p>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Direct Reddit Quotes</div>
+          <ul class="quote-list">
+            <li>I constantly felt overlooked at work despite my technical skills. After just a few weeks [of working on this], my confidence skyrocketed. I was finally recognized, promoted, and respected for who I really am. <span class="quote-src">Art of Charm testimonial / r/socialskills pattern</span></li>
+            <li>I've decided to unmatch with everyone that does not message back after 5 days. It's the best results I've ever seen. What I have seen from limiting my connections is quite a few rematches. <span class="quote-src">r/dating_advice · 5.0K pts</span></li>
+            <li>This is a step-by-step guide to be more successful in your personal life and the social circles you come across. 1. Taking care of yourself. 2. Being present… <span class="quote-src">r/socialskills · 4.4K pts</span></li>
+            <li>I tracked my brain fog for 6 months and tested everything. Not theory. Not 10 tips. These are the interventions that produced measurable changes when tested one at a time. <span class="quote-src">r/selfimprovement · 4.2K pts</span></li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl jtbd-lbl">JTBDs</div>
+          <ul class="jtbd-list">
+            <li>Get a clear, executable system he can run and measure progress against</li>
+            <li>Cut through generic self-help noise and get to what actually works</li>
+            <li>Build the skill without years of social trial-and-error — compress the learning curve</li>
+            <li>Know exactly which levers move which outcomes — not a list of vague habits</li>
+            <li>Apply the same deliberate practice model that worked in his other domains</li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl blk-lbl">Blockers</div>
+          <ul class="blk-list">
+            <li>Analytical overthinking: researches far more than he practices — information as procrastination <span class="blocker-tag">Research loop</span></li>
+            <li>Calibration difficulty: can't measure social skills the same way as technical outcomes <span class="blocker-tag">Metrics gap</span></li>
+            <li>Quality gate blocks entry: won't try a method unless it clears a high credibility threshold first <span class="blocker-tag">Perfectionist gatekeeping</span></li>
+            <li>Transactional mindset: tries to optimize social connection the way he'd optimize a process — misses the organic element <span class="blocker-tag">Domain mismatch</span></li>
+            <li>Impatience with ambiguity: social feedback is slower and messier than he's used to <span class="blocker-tag">Tolerance for ambiguity</span></li>
+          </ul>
+        </div>
+        <div class="insight-box">
+          <strong>Messaging unlock:</strong> Speak his language. Systems, data, specific metrics. "22 matches day one," "3 dates in 3 days," "got promoted" — numerical outcomes land. Soft language ("feel more confident") loses him immediately and forever.
+        </div>
+      </div>
+    </div>
+
+    <!-- 3b -->
+    <div class="sub-card">
+      <div class="sub-header">
+        <div class="sub-dot"></div>
+        <div class="sub-title">Needs to Be the Top One in Everything</div>
+      </div>
+      <div class="sub-body">
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Who They Are</div>
+          <p>Gym strong, career strong, financially disciplined — social confidence is the last unchecked box. He's not broken; he's incomplete. He applies deliberate mastery to every domain and this is simply the next one. He doesn't want to "get better" — he wants to <em>win</em> this too. Elite positioning is the only thing that earns his respect.</p>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl sub-lbl">Direct Reddit Quotes</div>
+          <ul class="quote-list">
+            <li>There are people who walk into a room and without saying a single word, every eye is already on them. They are magnetic, captivating, full of aura. What is it that gives these types of people this power? Is it something they're born with, or a skill? <span class="quote-src">r/selfimprovement · 423 pts</span></li>
+            <li>I received a new job offer. The reason: "Your charisma and your ability to connect with everyone are rare and of great value to our company." <span class="quote-src">Charisma University testimonial</span></li>
+            <li>In whatever scenario arises — women, career, confrontation, adversity — the guy who is in control of his emotions and stays calm always comes out on top. Think of the men who truly impress you. Are they hotheads? <span class="quote-src">r/dating_advice · 6.0K pts</span></li>
+            <li>My gym advice: there are a lot of muscular toddlers who are deeply insecure, with overdeveloped pecs and underdeveloped personalities. Working out can give you pride — but it doesn't give you charisma. <span class="quote-src">r/selfimprovement · 687 pts</span></li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl jtbd-lbl">JTBDs</div>
+          <ul class="jtbd-list">
+            <li>Close the last gap between current self and the complete, integrated version</li>
+            <li>Be magnetic in boardrooms, social settings, and 1:1 conversations simultaneously</li>
+            <li>Lead with presence, not just competence — be known, not just respected</li>
+            <li>Be the person people want in the room, not just the person who delivers results</li>
+            <li>Have social confidence that matches and multiplies everything else he's built</li>
+          </ul>
+        </div>
+        <div class="sub-section">
+          <div class="sub-lbl blk-lbl">Blockers</div>
+          <ul class="blk-list">
+            <li>Pride as suppressor: won't admit this is a weak spot — especially to peers <span class="blocker-tag">Status protection</span></li>
+            <li>Already-good-enough trap: gets by on status and competence alone — reduces perceived urgency <span class="blocker-tag">Complacency drift</span></li>
+            <li>Authenticity concern: "if I'm consciously learning this, is it actually charisma or just acting?" <span class="blocker-tag">Authenticity paradox</span></li>
+            <li>Peer norms: if people at his level aren't doing this work, why should he? <span class="blocker-tag">Social proof gap</span></li>
+            <li>Underestimating the gap: slightly arrogant about how much room remains to grow <span class="blocker-tag">Dunning-Kruger edge</span></li>
+          </ul>
+        </div>
+        <div class="insight-box">
+          <strong>Messaging unlock:</strong> Sell mastery, not recovery. "Social confidence is the last unchecked box" is his exact internal framing. Elite positioning, scarcity, and outcome metrics close this segment. Vulnerability or healing language will lose him permanently.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /cat-3 -->
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- COPY VOCABULARY                                            -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="section-title">Copy Vocabulary — Direct from Reddit</div>
+<div class="vocab-grid">
+  <div class="vocab-card pain">
+    <h3>Pain Language — Hooks &amp; Headlines</h3>
+    <div class="vocab-tags">
+      <span class="vocab-tag">invisible</span><span class="vocab-tag">forgettable</span>
+      <span class="vocab-tag">I freeze</span><span class="vocab-tag">I choke</span>
+      <span class="vocab-tag">no spark</span><span class="vocab-tag">friendzoned</span>
+      <span class="vocab-tag">good on paper</span><span class="vocab-tag">overthinking</span>
+      <span class="vocab-tag">no backbone</span><span class="vocab-tag">doormat</span>
+      <span class="vocab-tag">I people-please</span><span class="vocab-tag">she lost interest</span>
+      <span class="vocab-tag">before it's too late</span><span class="vocab-tag">I blend in</span>
+      <span class="vocab-tag">I was too scared</span><span class="vocab-tag">emotional spiral</span>
+      <span class="vocab-tag">she pulled away</span><span class="vocab-tag">cripples me</span>
+      <span class="vocab-tag">running out of time</span><span class="vocab-tag">rock bottom</span>
+      <span class="vocab-tag">I gave up</span><span class="vocab-tag">what's the point</span>
+      <span class="vocab-tag">I wasted my prime years</span><span class="vocab-tag">no hope</span>
+    </div>
+  </div>
+  <div class="vocab-card desire">
+    <h3>Desire Language — Outcomes &amp; Transformations</h3>
+    <div class="vocab-tags">
+      <span class="vocab-tag">presence</span><span class="vocab-tag">magnetic</span>
+      <span class="vocab-tag">confident in any room</span><span class="vocab-tag">she felt it</span>
+      <span class="vocab-tag">respected</span><span class="vocab-tag">pull</span>
+      <span class="vocab-tag">I finally made a move</span><span class="vocab-tag">I stopped overthinking</span>
+      <span class="vocab-tag">I have standards now</span><span class="vocab-tag">I rebuilt myself</span>
+      <span class="vocab-tag">I took up space</span><span class="vocab-tag">she was drawn to me</span>
+      <span class="vocab-tag">effortless</span><span class="vocab-tag">elite</span>
+      <span class="vocab-tag">unforgettable</span><span class="vocab-tag">mastery</span>
+      <span class="vocab-tag">I just went for it</span><span class="vocab-tag">natural</span>
+      <span class="vocab-tag">life redo button</span><span class="vocab-tag">I'm back</span>
+      <span class="vocab-tag">I finally feel like myself</span>
+    </div>
+  </div>
+</div>
+<div class="transitions">
+  <h3>Transition Phrases That Resonate</h3>
+  <div class="t-list">
+    <div class="t-item">"I used to… now I…"</div>
+    <div class="t-item">"After years of… I finally…"</div>
+    <div class="t-item">"I realized the problem wasn't [X] — it was [Y]"</div>
+    <div class="t-item">"One thing changed everything"</div>
+    <div class="t-item">"I stopped trying to [wrong thing] and started [right thing]"</div>
+    <div class="t-item">"Before it's too late"</div>
+    <div class="t-item">"It feels like a life redo button — now what?"</div>
+    <div class="t-item">"When the crucial moment came… I finally…"</div>
+  </div>
+</div>
+
+</div><!-- /container -->
+</body>
+</html>

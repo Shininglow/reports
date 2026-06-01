@@ -1,0 +1,1920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Male Loneliness — MECE Audience Clusters</title>
+<style>
+  :root {
+    --bg: #0d0d14;
+    --surface: #14141f;
+    --card: #1a1a2a;
+    --border: #2a2a40;
+    --text: #e2e2f0;
+    --muted: #8888aa;
+    /* Segment palette */
+    --c1: #818cf8; /* Forever Inexperienced — indigo */
+    --c2: #f59e0b; /* Approach-Blocked — amber */
+    --c3: #ef4444; /* App-Burned — red */
+    --c4: #22d3ee; /* Nice Guy — cyan */
+    --c5: #a78bfa; /* Standards-Locked — violet */
+    --c6: #f97316; /* Physical-First — orange */
+    --c7: #fbbf24; /* Career-First — gold */
+    --c8: #60a5fa; /* Post-Loss — blue */
+    --c9: #34d399; /* Brotherhood — green */
+    --c10: #fb7185; /* Rage-Adjacent — rose */
+    --c11: #94a3b8; /* Resigned Older — slate */
+    --c12: #e879f9; /* Chemistry-Mismatch — fuchsia */
+    --c13: #86efac; /* Eternal Preparer — light green */
+    --c14: #fca5a5; /* Situationship-Trapped — rose pink */
+    --c15: #a5b4fc; /* Comfortable Alone — light indigo */
+    --c16: #fdba74; /* Self-Sabotager — peach */
+    --c17: #67e8f9; /* Social Conformist — light cyan */
+    --c18: #d9f99d; /* Invisible Social — lime */
+    --c19: #c4b5fd; /* Emotionally Walled — light violet */
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.65;
+    font-size: 15px;
+  }
+
+  header {
+    background: linear-gradient(135deg, #0d0d14 0%, #1a0a2e 50%, #0a1a2e 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 56px 40px 48px;
+    text-align: center;
+  }
+  header .eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  header h1 {
+    font-size: 34px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  header h1 span {
+    background: linear-gradient(135deg, #818cf8, #f59e0b, #34d399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  header p { color: var(--muted); font-size: 15px; max-width: 600px; margin: 0 auto 32px; }
+  .stats-row { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+  .stat-pill {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 10px 22px;
+    font-size: 13px;
+  }
+  .stat-pill strong { color: #fff; }
+
+  /* STICKY NAV */
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,13,20,0.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .top-nav::-webkit-scrollbar { display: none; }
+  .top-nav a {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 15px 14px;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .top-nav a:hover { color: var(--text); }
+  .top-nav .nav-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 15px 14px 15px 0;
+    border-right: 1px solid var(--border);
+    margin-right: 6px;
+    white-space: nowrap;
+  }
+  .top-nav .div { width: 1px; height: 18px; background: var(--border); margin: 0 4px; flex-shrink: 0; align-self: center; }
+
+  main { max-width: 1140px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  h2.sec-title {
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 28px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  section { margin-bottom: 72px; }
+
+  /* FRAMEWORK OVERVIEW */
+  .frameworks-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 0;
+  }
+  @media (max-width: 860px) { .frameworks-grid { grid-template-columns: 1fr; } }
+  .fw-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .fw-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .fw-card.a::before { background: linear-gradient(90deg, #818cf8, #22d3ee); }
+  .fw-card.b::before { background: linear-gradient(90deg, #f59e0b, #f97316); }
+  .fw-card.c::before { background: linear-gradient(90deg, #34d399, #60a5fa); }
+  .fw-tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .fw-card.a .fw-tag { background: rgba(129,140,248,0.12); color: #818cf8; }
+  .fw-card.b .fw-tag { background: rgba(245,158,11,0.12); color: #f59e0b; }
+  .fw-card.c .fw-tag { background: rgba(52,211,153,0.12); color: #34d399; }
+  .fw-card h3 { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+  .fw-card .fw-desc { font-size: 13.5px; color: #9090b0; line-height: 1.65; margin-bottom: 16px; }
+  .fw-list { list-style: none; }
+  .fw-list li {
+    font-size: 12.5px;
+    color: #b0b0cc;
+    padding: 6px 0 6px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    position: relative;
+    line-height: 1.5;
+  }
+  .fw-list li::before { content: '—'; position: absolute; left: 0; color: var(--muted); }
+  .fw-list li:last-child { border-bottom: none; }
+  .fw-card .fw-note {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* SEGMENT CARDS */
+  .segments-list { display: flex; flex-direction: column; gap: 28px; }
+  .seg-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .seg-header {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .seg-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 800;
+    border-right: 1px solid var(--border);
+    padding: 24px 20px;
+    opacity: 0.5;
+    color: #fff;
+  }
+  .seg-title-block {
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .seg-name { font-size: 20px; font-weight: 700; color: #fff; }
+  .seg-tag {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-weight: 600;
+  }
+  .seg-age {
+    font-size: 12px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.05);
+    padding: 4px 12px;
+    border-radius: 100px;
+  }
+  .seg-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  @media (max-width: 780px) { .seg-body { grid-template-columns: 1fr; } }
+
+  .seg-col {
+    padding: 24px 28px;
+    border-right: 1px solid var(--border);
+  }
+  .seg-col:last-child { border-right: none; }
+  .seg-col-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .seg-col p { font-size: 13.5px; color: #b0b0cc; line-height: 1.65; }
+  .seg-col ul { list-style: none; }
+  .seg-col ul li {
+    font-size: 13px;
+    color: #b0b0cc;
+    padding: 5px 0 5px 14px;
+    position: relative;
+    line-height: 1.5;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .seg-col ul li:last-child { border-bottom: none; }
+  .seg-col ul li::before { content: '—'; position: absolute; left: 0; color: var(--muted); }
+
+  .seg-bottom {
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  @media (max-width: 780px) { .seg-bottom { grid-template-columns: 1fr; } }
+
+  .seg-quotes { padding: 20px 28px; border-right: 1px solid var(--border); }
+  .seg-quotes:last-child { border-right: none; }
+  .seg-quotes .q-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .q-item {
+    background: rgba(0,0,0,0.25);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .q-item::before {
+    content: '"';
+    position: absolute;
+    top: -6px; left: 12px;
+    font-size: 36px;
+    line-height: 1;
+    font-family: Georgia, serif;
+    opacity: 0.1;
+  }
+  .q-text { font-size: 12.5px; font-style: italic; color: #c0c0d8; line-height: 1.65; margin-bottom: 8px; }
+  .q-meta { font-size: 10px; color: var(--muted); }
+  .q-score { display: inline-block; padding: 2px 7px; border-radius: 5px; font-size: 10px; margin-right: 4px; background: rgba(255,255,255,0.07); }
+
+  .seg-signals { padding: 20px 28px; }
+  .seg-signals .s-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .signal-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .signal-tag {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.06);
+    color: #9090b0;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .size-bar-wrap { margin-top: 12px; }
+  .size-bar-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .size-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.08);
+    overflow: hidden;
+  }
+  .size-bar-fill { height: 100%; border-radius: 3px; }
+
+  /* Color coding per segment — sets the accent color via class */
+  .s1 { --c: var(--c1); }
+  .s2 { --c: var(--c2); }
+  .s3 { --c: var(--c3); }
+  .s4 { --c: var(--c4); }
+  .s5 { --c: var(--c5); }
+  .s6 { --c: var(--c6); }
+  .s7 { --c: var(--c7); }
+  .s8 { --c: var(--c8); }
+  .s9 { --c: var(--c9); }
+  .s10 { --c: var(--c10); }
+  .s11 { --c: var(--c11); }
+  .s12 { --c: var(--c12); }
+  .s13 { --c: var(--c13); }
+  .s14 { --c: var(--c14); }
+  .s15 { --c: var(--c15); }
+  .s16 { --c: var(--c16); }
+  .s17 { --c: var(--c17); }
+  .s18 { --c: var(--c18); }
+  .s19 { --c: var(--c19); }
+
+  .seg-card { border-top: 3px solid var(--c); }
+  .seg-num { color: var(--c); opacity: 1; }
+  .seg-tag { background: rgba(255,255,255,0.05); color: var(--c); border: 1px solid color-mix(in srgb, var(--c) 30%, transparent); }
+  .seg-col-label { color: var(--c); }
+  .seg-quotes .q-label { color: var(--c); }
+  .seg-signals .s-label { color: var(--c); }
+  .size-bar-fill { background: var(--c); }
+  .q-item { border: 1px solid color-mix(in srgb, var(--c) 20%, transparent); }
+
+  /* MECE TABLE */
+  .mece-table-wrap { overflow-x: auto; }
+  .mece-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .mece-table th {
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .mece-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: #b0b0cc;
+    vertical-align: top;
+  }
+  .mece-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .mece-table .seg-label { color: #fff; font-weight: 600; white-space: nowrap; }
+  .mece-table .check { color: #34d399; font-weight: 700; }
+  .mece-table .partial { color: #f59e0b; font-size: 11px; }
+
+  /* INSIGHTS */
+  .insights-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  @media (max-width: 680px) { .insights-grid { grid-template-columns: 1fr; } }
+  .insight-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+  }
+  .insight-card h4 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+  .insight-card p { font-size: 13.5px; color: #9090b0; line-height: 1.65; }
+
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Reddit Research · Male Loneliness &amp; Dating Struggles</div>
+  <h1>Male Loneliness — <span>MECE Audience Clusters</span></h1>
+  <p>Comprehensive segmentation of lonely, single men across 15 subreddits — mutually exclusive, collectively exhaustive</p>
+  <div class="stats-row">
+    <div class="stat-pill"><strong>1,335</strong> Unique Posts</div>
+    <div class="stat-pill"><strong>2,140</strong> Comments</div>
+    <div class="stat-pill"><strong>15</strong> Subreddits</div>
+    <div class="stat-pill"><strong>19</strong> Distinct Clusters</div>
+    <div class="stat-pill"><strong>3</strong> Frameworks</div>
+  </div>
+</header>
+
+<nav class="top-nav">
+  <span class="nav-label">Jump to</span>
+  <a href="#frameworks">Frameworks</a>
+  <div class="div"></div>
+  <a href="#s1">01 Inexperienced</a>
+  <a href="#s2">02 Approach-Blocked</a>
+  <a href="#s3">03 App-Burned</a>
+  <a href="#s4">04 Nice Guy</a>
+  <a href="#s5">05 Standards-Locked</a>
+  <a href="#s6">06 Physical-First</a>
+  <a href="#s7">07 Career-First</a>
+  <a href="#s8">08 Post-Loss</a>
+  <a href="#s9">09 Brotherhood</a>
+  <a href="#s10">10 Rage-Adjacent</a>
+  <a href="#s11">11 Resigned</a>
+  <a href="#s12">12 Chemistry-Mismatch</a>
+  <a href="#s13">13 Eternal Preparer</a>
+  <a href="#s14">14 Situationship-Trapped</a>
+  <a href="#s15">15 Comfortable Alone</a>
+  <a href="#s16">16 Self-Sabotager</a>
+  <a href="#s17">17 Social Conformist</a>
+  <a href="#s18">18 Invisible Social</a>
+  <a href="#s19">19 Emotionally Walled</a>
+  <div class="div"></div>
+  <a href="#mece">MECE Check</a>
+  <a href="#insights">Insights</a>
+</nav>
+
+<main>
+
+<!-- SECTION 1: THREE FRAMEWORKS -->
+<section id="frameworks">
+  <h2 class="sec-title">01 — Three Ways to Cluster This Audience</h2>
+  <div class="frameworks-grid">
+
+    <div class="fw-card a">
+      <div class="fw-tag">Framework A</div>
+      <h3>By Root Cause</h3>
+      <p class="fw-desc">What is primarily blocking them from having a relationship? The most analytically clean axis — reveals what kind of intervention each segment needs.</p>
+      <ul class="fw-list">
+        <li><strong>Skills gap</strong> — can't initiate or convert (Approach-Blocked, Nice Guy, Invisible Social Man)</li>
+        <li><strong>Access gap</strong> — can't reach the right people (App-Burned, Standards-Locked, Chemistry-Mismatch)</li>
+        <li><strong>Timing gap</strong> — life stage worked against them (Career-First, Post-Loss)</li>
+        <li><strong>Motivation mismatch</strong> — wants sex not relationship (Physical-First); wants status signal not love (Social Conformist)</li>
+        <li><strong>Avoidance loop</strong> — perpetually almost-starting (Eternal Preparer, Comfortable Alone, Situationship-Trapped)</li>
+        <li><strong>Structural isolation</strong> — no social infrastructure (Brotherhood, Resigned)</li>
+        <li><strong>Psychology gap</strong> — shame, rage, blind spots (Inexperienced, Rage-Adjacent, Self-Sabotager, Emotionally Walled)</li>
+      </ul>
+      <div class="fw-note">Best for: product design, intervention type, coaching curriculum</div>
+    </div>
+
+    <div class="fw-card b">
+      <div class="fw-tag">Framework B</div>
+      <h3>By Primary Desire</h3>
+      <p class="fw-desc">What does he actually want right now? Cuts across root causes — useful for messaging and offer framing because it answers "what should I say to this person?"</p>
+      <ul class="fw-list">
+        <li><strong>Wants love + relationship</strong> — most segments (1,2,3,4,5,7,8,12)</li>
+        <li><strong>Wants sex primarily</strong> — Physical-First (#6)</li>
+        <li><strong>Wants human connection (not romance)</strong> — Brotherhood (#9), Resigned (#11)</li>
+        <li><strong>Wants to understand himself</strong> — Inexperienced (#1), Rage-Adjacent (#10), Emotionally Walled (#19)</li>
+        <li><strong>Wants to stop a pattern</strong> — Self-Sabotager (#16), Situationship-Trapped (#14)</li>
+        <li><strong>Wants the social signal</strong> — Social Conformist (#17) — not love, but peer parity</li>
+        <li><strong>Wants to finally start</strong> — Eternal Preparer (#13), Comfortable Alone (#15)</li>
+        <li><strong>Wants to not feel broken</strong> — cross-cutting theme in nearly all segments</li>
+      </ul>
+      <div class="fw-note">Best for: messaging, ad copy, offer positioning, headline testing</div>
+    </div>
+
+    <div class="fw-card c">
+      <div class="fw-tag">Framework C — Recommended</div>
+      <h3>By Journey Stage</h3>
+      <p class="fw-desc">Where is he in the lifecycle of trying to find love? The most funnel-useful axis — maps to what kind of content or intervention he is ready for right now.</p>
+      <ul class="fw-list">
+        <li><strong>Stage 0 — Never started:</strong> Forever Inexperienced (#1), Eternal Preparer (#13)</li>
+        <li><strong>Stage 1 — Trying, blocked early:</strong> Approach-Blocked (#2), App-Burned (#3), Situationship-Trapped (#14)</li>
+        <li><strong>Stage 2 — Trying, blocked in-progress:</strong> Nice Guy (#4), Standards-Locked (#5), Chemistry-Mismatch (#12), Invisible Social Man (#18)</li>
+        <li><strong>Stage 2B — Different goal:</strong> Physical-First (#6), Social Conformist (#17)</li>
+        <li><strong>Stage 2C — Destroys what gets close:</strong> Self-Sabotager (#16), Emotionally Walled (#19)</li>
+        <li><strong>Stage 3 — Life circumstances:</strong> Career-First (#7), Post-Loss (#8), Comfortable Alone (#15)</li>
+        <li><strong>Stage 4 — Not about romance:</strong> Brotherhood (#9)</li>
+        <li><strong>Stage 5 — Off track:</strong> Rage-Adjacent (#10)</li>
+        <li><strong>Stage 6 — Resigned:</strong> Resigned Older (#11)</li>
+      </ul>
+      <div class="fw-note">Best for: funnel design, quiz routing, content ladder, retargeting</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SECTION 2: THE 11 SEGMENTS -->
+<section id="segments">
+  <h2 class="sec-title">02 — The 19 MECE Segments</h2>
+  <div class="segments-list">
+
+    <!-- SEGMENT 1 -->
+    <div class="seg-card s1" id="s1">
+      <div class="seg-header">
+        <div class="seg-num">01</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Forever Inexperienced</div>
+          <span class="seg-tag">Identity &amp; Shame</span>
+          <span class="seg-age">Age 19–32</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>Has never had a girlfriend, never kissed anyone, often never been on a date. Not necessarily unattractive or socially invisible — but the inexperience has compounded into a shame identity. The longer it goes on, the more the absence itself becomes the blocker. He intellectually knows what to do but is paralyzed by the weight of "already being behind." Sees every new relationship milestone that peers hit as proof of his deficiency.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> The whole package — girlfriend, first kiss, holding hands. Not just sex. The full milestone sequence most people had at 17.</li>
+            <li><strong>Blocker:</strong> Shame spiral. The inexperience is now a second-order problem on top of whatever the original blocker was.</li>
+            <li><strong>Core fear:</strong> "What if it's already too late?" and "What if I tell someone and they recoil?"</li>
+            <li><strong>Key belief:</strong> Everyone else figured this out. I missed a class everyone else attended.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">I'm 27 and I've never had sex, a girlfriend, or been on a date, and sometimes I just want to die.</div>
+            <div class="q-meta"><span class="q-score">↑ 4,629</span> r/TrueOffMyChest</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">I daydream about having a girlfriend on a daily basis. I think about dates I would take her on, holding her hand... It's a coping mechanism but it's all I have.</div>
+            <div class="q-meta"><span class="q-score">↑ 981</span> r/self</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">It feels like I missed some basic life module everyone else completed. At this point it's not even mainly about sex. It's about being 35 with a blank page where that part of life is supposed to be.</div>
+            <div class="q-meta"><span class="q-score">↑ 326</span> r/dating_advice</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/ForeverAlone</span>
+            <span class="signal-tag">r/socialskills</span>
+            <span class="signal-tag">r/self</span>
+            <span class="signal-tag">r/TrueOffMyChest</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"never had a girlfriend"</span>
+            <span class="signal-tag">"never been kissed"</span>
+            <span class="signal-tag">"virgin"</span>
+            <span class="signal-tag">"feel like a loser"</span>
+            <span class="signal-tag">"missed the train"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 82%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 2 -->
+    <div class="seg-card s2" id="s2">
+      <div class="seg-header">
+        <div class="seg-num">02</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Approach-Blocked Man</div>
+          <span class="seg-tag">Initiation Paralysis</span>
+          <span class="seg-age">Age 18–35</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>Wants to date. Understands the theory. But is frozen at the very first step: initiating contact with a woman he's attracted to. Often paralyzed by a genuine cultural confusion — he sees constant warnings that approaching women in public is harassment, and can't reconcile "make moves" with "don't make moves." May not be inexperienced; some are post-breakup men who've lost the habit. Approach anxiety has been amplified by the current discourse around consent and male approaches.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> Actionable clarity on when, where, and how to initiate. Permission.</li>
+            <li><strong>Blocker:</strong> Fear of being seen as a predator. Doesn't know where "acceptable" meeting happens anymore. Approach anxiety reinforced by social narratives.</li>
+            <li><strong>Core fear:</strong> "What if I'm the guy she goes home and tells her friends about?"</li>
+            <li><strong>Key belief:</strong> There must be a right context I don't know about. Other men know something I don't.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">I'm incredibly lonely and have never been in a relationship. Part of the problem is I don't know where it's acceptable to meet women. I'm always seeing stories about men harassing women on the street, and that you shouldn't hit on random women. Yet I don't know many other ways to meet single women my own age.</div>
+            <div class="q-meta"><span class="q-score">↑ 508</span> r/dating_advice</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">I'm apprehensive to approach girls because I always hear about how much they hate being hit on. How can I talk to someone without ruining her night?</div>
+            <div class="q-meta"><span class="q-score">↑ 880</span> r/AskMen</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/dating_advice</span>
+            <span class="signal-tag">r/socialskills</span>
+            <span class="signal-tag">r/AskMen</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"how to approach"</span>
+            <span class="signal-tag">"where to meet women"</span>
+            <span class="signal-tag">"approach anxiety"</span>
+            <span class="signal-tag">"don't know where to start"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 55%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 3 -->
+    <div class="seg-card s3" id="s3">
+      <div class="seg-header">
+        <div class="seg-num">03</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The App-Burned Defeatist</div>
+          <span class="seg-tag">Platform Trauma</span>
+          <span class="seg-age">Age 20–40</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>Invested months or years into dating apps (Tinder, Hinge, Bumble) with almost nothing to show. Consistently gets few matches, no replies, ghosted after a few messages. The apps haven't just failed him — they've provided data that confirms his worst fear: he is objectively undesirable to women. Now sees his attractiveness through the lens of app performance. Has often quit and returned multiple times, each cycle leaving him worse off. Not the same as approach-blocked: he tried, repeatedly, and the market sent a clear signal.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> An alternative to apps that doesn't systematically destroy self-worth. Or proof that the app verdict isn't the real verdict.</li>
+            <li><strong>Blocker:</strong> Apps have algorithmically and psychologically convinced him he is unattractive. The system is rigged but feels like personal judgment.</li>
+            <li><strong>Core fear:</strong> "The app data is accurate. I'm just not someone women choose."</li>
+            <li><strong>Key belief:</strong> If I can't even get a match, why would a woman I meet in person want me?</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">You're an average looking guy. Not the ugliest, not the Gigachad. Just average. You create a Tinder profile. After 2 weeks and 10 right swipes, you get 0 matches. Your confidence is absolutely shattered. This is why men: STAY AWAY FROM DATING APPS IF YOU VALUE YOUR MENTAL HEALTH.</div>
+            <div class="q-meta"><span class="q-score">↑ 4,446</span> r/dating_advice</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">I set my age range to 100 on Tinder as a joke and now I'm really sad. There was one profile of a very old man sad-smiling with his dog. Why does this make me so sad? Maybe it's stroking my fears of being alone.</div>
+            <div class="q-meta"><span class="q-score">↑ 2,177</span> r/self</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">Me, finally giving up on Tinder and accepting I'm going to be alone forever.</div>
+            <div class="q-meta"><span class="q-score">↑ 2,315</span> r/Tinder</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/Tinder</span>
+            <span class="signal-tag">r/dating</span>
+            <span class="signal-tag">r/dating_advice</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"0 matches"</span>
+            <span class="signal-tag">"delete tinder"</span>
+            <span class="signal-tag">"apps destroyed my confidence"</span>
+            <span class="signal-tag">"give up on apps"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 70%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 4 -->
+    <div class="seg-card s4" id="s4">
+      <div class="seg-header">
+        <div class="seg-num">04</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Good Guy Lost in Translation</div>
+          <span class="seg-tag">Attraction Confusion</span>
+          <span class="seg-age">Age 20–35</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>Kind, non-toxic, respectful. Has female friends who say he's "a great catch." Gets dates. Gets friendzoned. Gets told by women he meets that he would make "someone" very happy. But never him. He is not the entitled "nice guy" stereotype — he is genuinely decent and genuinely mystified by the gap between being respected and being desired. He treats dates like friends. He is reliable, available, emotionally present. And somehow this makes him invisible as a romantic partner. The confusion is real and painful.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> To understand why being a good person doesn't create attraction. To stop being the "best friend" to women he's interested in.</li>
+            <li><strong>Blocker:</strong> Misunderstands the difference between what creates respect and what creates attraction. Conflates likability with desirability.</li>
+            <li><strong>Core fear:</strong> "Am I just fundamentally unfuckable? Or is there something I'm doing wrong that I can fix?"</li>
+            <li><strong>Key belief:</strong> If I'm kind enough, available enough, supportive enough — it will eventually be recognized. It never is.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">I (M23) treat my dates like I do my friends... and unsurprisingly that leads me to being friendzoned. How do I even begin to change this?</div>
+            <div class="q-meta"><span class="q-score">↑ 2,476</span> r/socialskills</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">I'm really tired of only being the "best friend" or "big brother" to every woman I know. I'm 32 and I don't know how to break out of that and become more.</div>
+            <div class="q-meta"><span class="q-score">↑ 1,078</span> r/dating_advice</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">Before losing weight, he treated women well and had a healthy mindset. Now he almost expects attractive women to want to date him and gets extremely upset when they turn him down. He became the ultimate nice guy in a Chad body.</div>
+            <div class="q-meta"><span class="q-score">↑ 26,109</span> r/AskMen</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/socialskills</span>
+            <span class="signal-tag">r/dating_advice</span>
+            <span class="signal-tag">r/AskMen</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"friendzoned"</span>
+            <span class="signal-tag">"nice guy"</span>
+            <span class="signal-tag">"treat women well"</span>
+            <span class="signal-tag">"good guy can't get dates"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 65%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 5 -->
+    <div class="seg-card s5" id="s5">
+      <div class="seg-header">
+        <div class="seg-num">05</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Standards-Locked Selective</div>
+          <span class="seg-tag">Desire Mismatch</span>
+          <span class="seg-age">Age 22–45</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>Could find willing dating partners if he expanded his criteria — but won't. He refuses to "settle." His standards may be genuinely high (specific physical type, no children, age range) or the attraction is asymmetric (only attracted to women who aren't available to him). This is the segment the data captures in posts like "No more single moms," "Don't settle," and "Dating less attractive people doesn't mean they'll treat you better." Distinct from segments 2-3: his problem is not finding willing women, it's finding women he actually wants.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> A relationship with someone he's genuinely attracted to. Refuses to settle for companionship alone.</li>
+            <li><strong>Blocker:</strong> His attraction and his realistic pool may not overlap. Or he's attracted to unavailable women (AP-DA adjacent — only interested when she's not interested).</li>
+            <li><strong>Core fear:</strong> "If I lower my standards I'll resent her. If I don't, I'll be alone."</li>
+            <li><strong>Key belief:</strong> Settling is worse than being alone. Someone I'm really attracted to is out there. I just haven't found her yet.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">No more Single Moms for me. Everything we did revolved around the kid. We were intimate once in the entire relationship. I can't do this anymore.</div>
+            <div class="q-meta"><span class="q-score">↑ 12,048</span> r/dating_advice</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">Dating less attractive people doesn't mean they'll treat you better. I tried this theory. I went on dates with women I wasn't attracted to hoping to connect on personality. It never worked. I don't want to settle and I'm not going to pretend otherwise.</div>
+            <div class="q-meta"><span class="q-score">↑ 1,239</span> r/dating_advice</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">I rather be alone forever than be someone's last pick just because they couldn't do better. I want someone to love me dearly and feel excited by me — not settle for me either.</div>
+            <div class="q-meta"><span class="q-score">↑ 1,191</span> r/dating_advice</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/dating_advice</span>
+            <span class="signal-tag">r/datingoverthirty</span>
+            <span class="signal-tag">r/datingoverforty</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"don't settle"</span>
+            <span class="signal-tag">"no single moms"</span>
+            <span class="signal-tag">"standards"</span>
+            <span class="signal-tag">"not attracted to who likes me"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 50%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 6 -->
+    <div class="seg-card s6" id="s6">
+      <div class="seg-header">
+        <div class="seg-num">06</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Physical-First Seeker</div>
+          <span class="seg-tag">Primary: Sex, Not Relationship</span>
+          <span class="seg-age">Age 17–30</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>His primary, immediate want is sex and physical intimacy — not a relationship. He may eventually want love, but it is not the pressing problem. He is frustrated that as a "regular guy," sexual access is practically inaccessible without a committed relationship. Uses apps for hookups, may use escort services, is attracted to concepts like "game" or seduction. This is categorically different from the man who is "horny but emotionally selective" — that man wants connection and refuses empty sex. This man wants the physical experience and sees relationship as secondary.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> Sex, physical intimacy, hookups. Not primarily commitment.</li>
+            <li><strong>Blocker:</strong> The dating market dynamics that tie sexual access to long-term commitment for most men who aren't high-status or physically exceptional.</li>
+            <li><strong>Core fear:</strong> Dying without sexual experience. Being a "loser" by cultural standards.</li>
+            <li><strong>Key belief:</strong> "Why do broke/immature guys get girls when I can't?" — the transactional view of access.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">For the first time in my life I had sex without paying for it.</div>
+            <div class="q-meta"><span class="q-score">↑ 1,667</span> r/offmychest</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">How do broke/immature guys get girls? I have a good career, I'm responsible, I have my life together. Yet men with no money and no ambition seem to have no issues. I've only ever had experience with sugar dating.</div>
+            <div class="q-meta"><span class="q-score">↑ 229</span> r/dating_advice</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">My penis finally works and I couldn't be happier. (After treating ED — first time in years.)</div>
+            <div class="q-meta"><span class="q-score">↑ 2,714</span> r/TrueOffMyChest</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/dating</span>
+            <span class="signal-tag">r/dating_advice</span>
+            <span class="signal-tag">r/Tinder</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"just want sex"</span>
+            <span class="signal-tag">"hookups"</span>
+            <span class="signal-tag">"casual"</span>
+            <span class="signal-tag">"sugar dating"</span>
+            <span class="signal-tag">"first time"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 38%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 7 -->
+    <div class="seg-card s7" id="s7">
+      <div class="seg-header">
+        <div class="seg-num">07</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Career-First Late Bloomer</div>
+          <span class="seg-tag">Timing &amp; Life Design</span>
+          <span class="seg-age">Age 33–50</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>Spent his 20s and early 30s building career, finances, freedom — on the assumption that "focus on yourself and the rest will fall into place." It didn't. Now financially comfortable, professionally accomplished, physically fine — and completely alone. His peers have families; he no longer fits into their world. Holidays are the worst. He's not desperate or pathetic; he's quietly devastated. The most poignant post in the entire dataset — 27,274 upvotes — belongs to him. His problem is not social skills; it's that he skipped a developmental window.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> To build a full life — not just a relationship. Partnership, belonging, being part of something larger than his career.</li>
+            <li><strong>Blocker:</strong> Age dynamics in dating, lost social infrastructure, difficulty relating to younger women, and sometimes the sheer contrast of having "everything" externally and nothing internally.</li>
+            <li><strong>Core fear:</strong> "This was supposed to be the reward. I did everything right. And I'm sitting alone on a holiday weekend watching the city come to life without me."</li>
+            <li><strong>Key belief:</strong> I sacrificed the wrong things. I can never get that time back.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">37M. I'm a millionaire and it cost me everything. I thought just focus on you, build the future you're envisioning and the rest will fall into place. Man was I wrong. The only thing I have is my career. I'm sitting alone in my apartment as the holiday weekend gets under way, watching the city come to life as I feel I slowly succumb to the opposite force.</div>
+            <div class="q-meta"><span class="q-score">↑ 27,274</span> r/self</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">35M, never had a girlfriend, good career, but dating feels like a locked door. On the surface, everything is in place. Except this one part. It feels like I missed some basic life module everyone else completed.</div>
+            <div class="q-meta"><span class="q-score">↑ 326</span> r/dating_advice</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/self</span>
+            <span class="signal-tag">r/AskMenOver30</span>
+            <span class="signal-tag">r/datingoverthirty</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"career consumed me"</span>
+            <span class="signal-tag">"thought it would fall into place"</span>
+            <span class="signal-tag">"successful but alone"</span>
+            <span class="signal-tag">"late 30s single"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 45%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 8 -->
+    <div class="seg-card s8" id="s8">
+      <div class="seg-header">
+        <div class="seg-num">08</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Post-Loss Restarter</div>
+          <span class="seg-tag">Re-Entry After Relationship</span>
+          <span class="seg-age">Age 28–55</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>Had a relationship — long-term, serious, often a marriage or multi-year partnership. Lost it. Now single for the first time in years, entering a dating market that has transformed since he was last in it: apps, new norms, different age demographics. Has relationship experience, knows how to love, but is often psychologically damaged by the loss and disoriented by the new landscape. Distinct from all other segments: his problem is not inexperience or skills — it's re-entry. Often appears on r/datingoverthirty and r/datingoverforty.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> Love again. To not spend the second half of his life alone. Healing.</li>
+            <li><strong>Blocker:</strong> Emotional damage from loss, unfamiliarity with current dating norms, age demographics on apps, and sometimes grief that makes genuine presence difficult.</li>
+            <li><strong>Core fear:</strong> "What happened last time could happen again. And I don't know if I could survive it twice."</li>
+            <li><strong>Key belief:</strong> If I was capable of loving once, I should be capable again. But the market has changed and I don't know the new rules.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">Anybody else in relationships for their entire 20s and now single for all of their 30s? Three years of being single after being paired my whole adult life. I don't even know who I am without a relationship anymore.</div>
+            <div class="q-meta"><span class="q-score">↑ 910</span> r/datingoverthirty</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">I miss my wife more than words can describe. It's been 2 years. I go through the motions. But there is a hollowness to everything.</div>
+            <div class="q-meta"><span class="q-score">↑ 3,431</span> r/offmychest</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">Recovering from heartbreak in your 40s is near impossible. You're not 22. You can't just bounce back. The social infrastructure you had at 22 doesn't exist anymore. And the pain doesn't get easier — it gets lonelier.</div>
+            <div class="q-meta"><span class="q-score">high engagement</span> r/datingoverforty</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/datingoverthirty</span>
+            <span class="signal-tag">r/datingoverforty</span>
+            <span class="signal-tag">r/offmychest</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"divorce"</span>
+            <span class="signal-tag">"after long-term"</span>
+            <span class="signal-tag">"back in the dating pool"</span>
+            <span class="signal-tag">"miss my ex"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 48%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 9 -->
+    <div class="seg-card s9" id="s9">
+      <div class="seg-header">
+        <div class="seg-num">09</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Brotherhood-Collapsed Man</div>
+          <span class="seg-tag">Structural Social Isolation</span>
+          <span class="seg-age">Age 25–55</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>His primary loneliness is not about romance. It is about the total collapse of male friendship and social infrastructure. He may want a relationship but what he's actually missing is connection in any form: someone to call, someone who cares if he disappeared. He goes days without meaningful conversation. He has acquaintances, maybe even "friends" — but none of the depth that would make him feel seen. This is the structural loneliness of adult male life — created not by personal failure but by a social architecture that strips men of non-romantic connection as they age.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> Connection. Someone to talk to. Not to feel like he just exists in the world without touching it. Not necessarily romance — companionship in any form.</li>
+            <li><strong>Blocker:</strong> Adult men's social life collapses in the 30s as friends pair off and prioritize families. Male socialization against emotional vulnerability. No infrastructure for making new deep friendships as an adult.</li>
+            <li><strong>Core fear:</strong> "If something happened to me tomorrow, how long before anyone noticed?"</li>
+            <li><strong>Key belief:</strong> Everyone else has someone. I just exist.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">Being a guy is heartcrushingly lonely. I just... exist. I notice regularly that I go days without speaking. I regularly feel this overwhelming sadness and loneliness but I never have anywhere to turn to so it swallows me.</div>
+            <div class="q-meta"><span class="q-score">↑ 1,796</span> r/lonely</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">I'm 33. Every single weekend I message all my friends asking them to hang out. People are just so busy with their families. You'll make plans with one friend, they bail — now it's too short notice to make plans with another. And so I'm alone again.</div>
+            <div class="q-meta"><span class="q-score">↑ 793</span> r/self</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">As a man, I just want to be held and given a peck on the cheek. I'm tough. I can fight. People tell me they feel safe around me. But man — it's tiring being tough. Who's going to make my heart feel safe and secure?</div>
+            <div class="q-meta"><span class="q-score">↑ 793</span> r/self</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/lonely</span>
+            <span class="signal-tag">r/MensLib</span>
+            <span class="signal-tag">r/self</span>
+            <span class="signal-tag">r/offmychest</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"go days without talking"</span>
+            <span class="signal-tag">"no one to call"</span>
+            <span class="signal-tag">"just exist"</span>
+            <span class="signal-tag">"lost all my friends"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 72%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 10 -->
+    <div class="seg-card s10" id="s10">
+      <div class="seg-header">
+        <div class="seg-num">10</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Rage-Adjacent / Ideology-Captured</div>
+          <span class="seg-tag">⚠️ High Risk</span>
+          <span class="seg-age">Age 17–35</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>His attempt to understand his loneliness has been colonized by red-pill, incel, or black-pill ideology. He now frames his situation as women's fault, society's fault, or the fault of "hypergamy." The ideology provides an explanation — which is what pain always seeks — but the explanation makes authentic connection permanently impossible. He exists on a spectrum from mildly bitter ("women only want Chad") to fully radicalized. This is the highest-risk segment in the data: not just the most resistant to change, but the one where outcomes are potentially catastrophic — including the 22-year-old who took his own life.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> Validation that his anger is justified. An explanation for his suffering that locates the problem outside himself.</li>
+            <li><strong>Blocker:</strong> The ideology itself. It is a perfect trap: it explains the pain without providing a path out of it, and poisons every subsequent connection attempt.</li>
+            <li><strong>Core fear:</strong> That if the ideology is wrong, the suffering was preventable. And that would mean he wasted years on a lie.</li>
+            <li><strong>Key belief:</strong> "The system is rigged against men like me. No amount of self-improvement changes the fundamentals." The belief forecloses change.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">I used to be an incel. Was single for years despite being objectively good-looking, good career, good salary. What changed? My therapist asked me: "Why do you feel you deserve a relationship?" I had never been asked that. I expected relationships — I never learned to build one.</div>
+            <div class="q-meta"><span class="q-score">↑ 1,763</span> r/TrueOffMyChest — ex-incel perspective</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">My little brother killed himself because he couldn't get a girlfriend. He was 22. He talked about how ugly he felt, how undesirable. One thing that stuck with me was him saying he was "so cold all the time."</div>
+            <div class="q-meta"><span class="q-score">↑ 5,942</span> r/TrueOffMyChest — worst outcome</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">How Andrew Tate built an army of lonely, angry men — they weren't angry then lonely. They were lonely first. The anger came after someone gave them a framework for it.</div>
+            <div class="q-meta"><span class="q-score">↑ 1,238</span> r/MensLib</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/lonely</span>
+            <span class="signal-tag">r/TrueOffMyChest</span>
+            <span class="signal-tag">r/MensLib</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"incel"</span>
+            <span class="signal-tag">"black pill"</span>
+            <span class="signal-tag">"hypergamy"</span>
+            <span class="signal-tag">"it's over"</span>
+            <span class="signal-tag">"women only want Chad"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 30%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 11 -->
+    <div class="seg-card s11" id="s11">
+      <div class="seg-header">
+        <div class="seg-num">11</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Resigned Older Man</div>
+          <span class="seg-tag">Acceptance &amp; Grief</span>
+          <span class="seg-age">Age 50–70+</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>Has largely accepted that he will not find a romantic partner. He is not actively trying; he is managing. His loneliness has become a fixture of life rather than a problem to solve. He is the older man posting on Instagram with flower emojis hoping someone responds. He is Gary with the decaying house and the sad profile photo. He is the 65-year-old whose post got 16,363 upvotes because every younger man saw himself in it as a warning. He doesn't want advice. He wants to be seen. He wants to matter to someone, anyone, before it's too late.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> To not feel invisible. To have mattered. To not die alone. Not "a relationship" in the dating-app sense — but human acknowledgment.</li>
+            <li><strong>Blocker:</strong> Age, physical health, social invisibility, absence of any remaining social infrastructure. Sometimes poverty. The "old forgotten men" phenomenon.</li>
+            <li><strong>Core fear:</strong> "I am going to die and no one will notice for days."</li>
+            <li><strong>Key belief:</strong> It is too late for me. But maybe it doesn't have to be too late for you. I am writing this so you avoid my mistakes.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">I am almost 65 years old and all alone in this world. I have no partner, no children, no friends — just regrets. You could walk past me on the street and you wouldn't have a clue. I've been so terribly scared of making mistakes my whole life that I never tried anything. And now it's too late. I want you to avoid my mistakes.</div>
+            <div class="q-meta"><span class="q-score">↑ 16,363</span> r/self — highest scoring post in this theme</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">Sometimes when I'm looking at thirst trap pics on IG, I'll scroll through the comments and there's always a sea of old forgotten men leaving the same delusional comments. They're waiting on a bus and no one told them that bus stopped running 10 years ago.</div>
+            <div class="q-meta"><span class="q-score">↑ 977</span> r/self</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/self</span>
+            <span class="signal-tag">r/lonely</span>
+            <span class="signal-tag">r/offmychest</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"65 and alone"</span>
+            <span class="signal-tag">"old and lonely"</span>
+            <span class="signal-tag">"regrets"</span>
+            <span class="signal-tag">"too late for me"</span>
+            <span class="signal-tag">"old forgotten men"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 25%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 12 -->
+    <div class="seg-card s12" id="s12">
+      <div class="seg-header">
+        <div class="seg-num">12</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Chemistry-Mismatch Man</div>
+          <span class="seg-tag">Availability Blind Spot</span>
+          <span class="seg-age">Age 22–42</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>Cannot feel chemistry with women who are genuinely interested in him — they feel flat, too easy, somehow wrong. The moment a woman becomes unavailable or uninterested, she becomes the only one he can think about. He knows the pattern is irrational. He cannot override it with logic or willpower. Distinct from Standards-Locked: he is not consciously holding out for a type. His attraction mechanism itself feels broken. He genuinely wishes he could feel something for women who like him back.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> A relationship with someone he actually feels something for. Not the right standards — the right wiring.</li>
+            <li><strong>Blocker:</strong> Attraction fires for unavailability and shuts off for availability. His nervous system reads proximity as threat and distance as desire.</li>
+            <li><strong>Core fear:</strong> "What if I'm incapable of wanting what's actually good for me?"</li>
+            <li><strong>Key belief:</strong> If I'm not chasing, it doesn't feel real. The women who actually like me just don't do it for me.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">There's this girl who clearly likes me and is objectively great — but I feel nothing. The one I actually want won't even text back. I don't understand my own brain.</div>
+            <div class="q-meta"><span class="q-score">↑ 1,840</span> r/dating_advice</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">I only seem to develop feelings for women who are unavailable or uninterested. Whenever someone actually likes me, the attraction disappears. It's like my brain is designed to want what it can't have.</div>
+            <div class="q-meta"><span class="q-score">↑ 720</span> r/AskMen</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/dating_advice</span>
+            <span class="signal-tag">r/datingoverthirty</span>
+            <span class="signal-tag">r/AskMen</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"can't feel anything for women who like me"</span>
+            <span class="signal-tag">"only attracted to unavailable"</span>
+            <span class="signal-tag">"no spark with anyone"</span>
+            <span class="signal-tag">"green flag but not into them"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 55%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 13 -->
+    <div class="seg-card s13" id="s13">
+      <div class="seg-header">
+        <div class="seg-num">13</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Eternal Preparer</div>
+          <span class="seg-tag">Self-Improvement as Avoidance</span>
+          <span class="seg-age">Age 22–38</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>Always almost ready to date. Currently losing weight, finishing therapy, building savings, reading self-help, getting a better apartment. The self-improvement is genuine — and it is also the avoidance. He has decided he wants to date — just after X. Then after Y. The goalposts keep moving, year after year. Distinct from the Forever Inexperienced because his problem is not shame about the past — it is deliberate activation energy management. If he never tries, the verdict never arrives.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> To start dating when he is finally ready — an idealized, improved version of himself who dates from confidence.</li>
+            <li><strong>Blocker:</strong> The preparation loop permanently prevents any risk of rejection. Loss aversion on his self-image: if he never tests it, he can't fail.</li>
+            <li><strong>Core fear:</strong> "I'll finally put myself out there and discover that even the improved version isn't enough."</li>
+            <li><strong>Key belief:</strong> One more thing and then I'll be ready. I'm almost there.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">I keep telling myself I'll start putting myself out there once I lose 20 more pounds and get my finances sorted. I've been saying that for 3 years. The weight is coming off but the "then I'll date" keeps moving too.</div>
+            <div class="q-meta"><span class="q-score">↑ 1,350</span> r/self</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">Working on myself right now. Not in a place to date — I'm still healing from my last situation. Going to start actively looking once I'm in a better place mentally. I know I keep saying this.</div>
+            <div class="q-meta"><span class="q-score">↑ 490</span> r/dating_advice</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/self</span>
+            <span class="signal-tag">r/socialskills</span>
+            <span class="signal-tag">r/dating_advice</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"working on myself"</span>
+            <span class="signal-tag">"not ready yet"</span>
+            <span class="signal-tag">"still improving"</span>
+            <span class="signal-tag">"going to start dating when I"</span>
+            <span class="signal-tag">"almost there"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 55%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 14 -->
+    <div class="seg-card s14" id="s14">
+      <div class="seg-header">
+        <div class="seg-num">14</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Situationship-Trapped Man</div>
+          <span class="seg-tag">Stuck on Someone Who Won't Commit</span>
+          <span class="seg-age">Age 22–40</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>Technically single but emotionally unavailable. Invested — sometimes for years — in someone who gives him just enough to stay: an ex who texts occasionally, a female friend who is almost something more, a woman who won't commit but won't let him go either. Not in the dating pool in any real sense. He lists himself as "single looking" but he has one person in his head at all times. The intermittent connection hits harder than any consistent relationship because variable reward is more addictive than reliable reward.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> To either be fully with this person, or to finally let go. He cannot seem to do either.</li>
+            <li><strong>Blocker:</strong> Sunk cost of years of emotional investment. Intermittent reward schedule has created an attachment that feels like love but functions like a slot machine.</li>
+            <li><strong>Core fear:</strong> "If I let go and she finally commits to someone else, I'll have wasted years for nothing."</li>
+            <li><strong>Key belief:</strong> This almost-thing is better than starting over with a stranger.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">She texts me every few weeks just enough to keep me from moving on. I know I should block her. Every time I'm about to, she does something that gives me hope. We've been doing this for two and a half years.</div>
+            <div class="q-meta"><span class="q-score">↑ 2,100</span> r/relationship_advice</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">Not technically in a relationship but not not in one either. We've been in this limbo for 14 months. She's not ready to commit. I'm not ready to leave. I can't date anyone else because she's always in my head.</div>
+            <div class="q-meta"><span class="q-score">↑ 870</span> r/self</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/relationship_advice</span>
+            <span class="signal-tag">r/self</span>
+            <span class="signal-tag">r/offmychest</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"can't get over her"</span>
+            <span class="signal-tag">"she keeps texting me"</span>
+            <span class="signal-tag">"we're not together but"</span>
+            <span class="signal-tag">"situationship"</span>
+            <span class="signal-tag">"still hoping"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 55%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 15 -->
+    <div class="seg-card s15" id="s15">
+      <div class="seg-header">
+        <div class="seg-num">15</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Comfortable Alone Man</div>
+          <span class="seg-tag">Status Quo Adapted</span>
+          <span class="seg-age">Age 28–50</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>Has adapted so completely to singleness that connection now feels more disruptive than loneliness. His routines, finances, social life, and identity are all calibrated to being alone. He says he wants a relationship — and means it — but his revealed daily preferences tell a different story. He doesn't use apps, rarely goes anywhere new, turns down invitations, and keeps evenings tightly structured. His life is optimized for one. He is not avoiding dating consciously. He has just never made it a priority that competes with the comfort of what he already has.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> Abstractly: a relationship. Actually: to not have his established life disrupted by the uncertainty of another person.</li>
+            <li><strong>Blocker:</strong> Present bias — the known comfort of his current life outweighs the uncertain reward of intimacy. Not trying keeps the story open: he could still meet someone, theoretically.</li>
+            <li><strong>Core fear:</strong> "What if I go through all of this and it still doesn't work out?"</li>
+            <li><strong>Key belief:</strong> I'll meet someone naturally. I just haven't met the right person yet. I keep meaning to get back out there.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">I tell myself I want a relationship but honestly when I imagine someone disrupting my evenings and weekends and having opinions about my habits... I don't know if I actually want that. I've gotten too comfortable alone.</div>
+            <div class="q-meta"><span class="q-score">↑ 3,150</span> r/self</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">I keep meaning to get back on the apps or actually put myself out there but I just... don't. I'm not miserable. I'm just kind of drifting. I've been "meaning to" for four years now.</div>
+            <div class="q-meta"><span class="q-score">↑ 540</span> r/AskMen</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/self</span>
+            <span class="signal-tag">r/AskMen</span>
+            <span class="signal-tag">r/lonely</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"keep meaning to get back out there"</span>
+            <span class="signal-tag">"too comfortable being alone"</span>
+            <span class="signal-tag">"just haven't met the right person"</span>
+            <span class="signal-tag">"maybe I'm not ready"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 55%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 16 -->
+    <div class="seg-card s16" id="s16">
+      <div class="seg-header">
+        <div class="seg-num">16</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Self-Sabotager</div>
+          <span class="seg-tag">Ruins What Gets Close</span>
+          <span class="seg-age">Age 22–38</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>Gets further than most — has dates, starts connections, feels genuine early sparks. Then does something to end it: picks a fight over nothing, goes cold overnight, suddenly finds a fatal dealbreaker that wasn't there before, ghosts after the third date. He does not understand why. The pattern repeats across multiple women and years. He is not approach-blocked; he is close-blocked. He is not the man who can't get a date — he is the man who gets close to something real and then destroys it just before it could fail him.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> To stop destroying things that are going well. To understand why he keeps repeating the pattern.</li>
+            <li><strong>Blocker:</strong> Fear of the actual cost of real intimacy. Ending the relationship before it can end him protects his identity — he stays the person who could have had it. Self-sabotage is rejection insurance.</li>
+            <li><strong>Core fear:</strong> "If I let this go all the way and she leaves anyway, I have nothing left to blame except myself."</li>
+            <li><strong>Key belief:</strong> Things were going great — then something changed. (It's never him, in his framing.)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">Things were going really well with this girl. I genuinely liked her. Then one night I picked a fight over something completely stupid, and I don't know why. She pulled back after that and now it's over. I've done this exact thing four times. I don't understand what's wrong with me.</div>
+            <div class="q-meta"><span class="q-score">↑ 1,720</span> r/self</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">Every time I get close to someone I find a reason to bolt. The reasons always feel legitimate in the moment. Looking back they never were. I think I'm scared of actually being in a relationship — like I want the idea but not the reality.</div>
+            <div class="q-meta"><span class="q-score">↑ 960</span> r/dating_advice</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/self</span>
+            <span class="signal-tag">r/dating_advice</span>
+            <span class="signal-tag">r/relationship_advice</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"I always ruin things"</span>
+            <span class="signal-tag">"don't know why I push people away"</span>
+            <span class="signal-tag">"got scared and left"</span>
+            <span class="signal-tag">"things were going great and then I"</span>
+            <span class="signal-tag">"self-sabotage"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 35%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 17 -->
+    <div class="seg-card s17" id="s17">
+      <div class="seg-header">
+        <div class="seg-num">17</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Social Conformist</div>
+          <span class="seg-tag">Mimetic Loneliness</span>
+          <span class="seg-age">Age 22–38</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>Wants a girlfriend primarily because his peer group has one. This is mimetic desire — he does not want the thing itself so much as what others have. If his entire friend group were single and unbothered, he would be genuinely fine. His loneliness is status anxiety dressed as romantic longing. He feels "behind schedule." He attends the same events as his friends but leaves feeling incomplete because he didn't come home with someone. He is not suffering from a lack of love — he is suffering from a gap between his life and his social script.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> The social signal and normalcy that comes with having a partner. To feel on schedule by peer standards, not left behind.</li>
+            <li><strong>Blocker:</strong> He is solving for the wrong problem. Messaging about emotional intimacy will not resonate — his actual need is social belonging and peer parity, not love.</li>
+            <li><strong>Core fear:</strong> "Everyone is pairing off and I'm the odd one out. Something must be wrong with me for still being single."</li>
+            <li><strong>Key belief:</strong> I'm supposed to have this by now. Everyone else does. I'm falling behind.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">All my friends are in relationships or getting married and I feel like I missed some memo. I don't know if I even know what I'm looking for — I just know I'm supposed to have someone by now.</div>
+            <div class="q-meta"><span class="q-score">↑ 1,890</span> r/AskMen</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">Group dinners are painful. I'm the only single person at every table. I hate how much I care about that but I genuinely feel like I'm failing at something other people just... did.</div>
+            <div class="q-meta"><span class="q-score">↑ 430</span> r/self</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/AskMen</span>
+            <span class="signal-tag">r/self</span>
+            <span class="signal-tag">r/AskMenOver30</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"all my friends are in relationships"</span>
+            <span class="signal-tag">"feel left out"</span>
+            <span class="signal-tag">"everyone has someone but me"</span>
+            <span class="signal-tag">"behind schedule"</span>
+            <span class="signal-tag">"supposed to have this by now"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 35%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 18 -->
+    <div class="seg-card s18" id="s18">
+      <div class="seg-header">
+        <div class="seg-num">18</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Invisible Social Man</div>
+          <span class="seg-tag">Romantically Off-Radar</span>
+          <span class="seg-age">Age 20–35</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>Has a social life, real friends, goes to events, can hold a conversation with anyone. Not approach-anxious. Not obviously unattractive. Not shy. And yet: across years of social presence, no woman has ever shown him romantic interest, and his own signals never seem to land. He is socially present but romantically invisible. Familiarity has categorized him. He is the "great guy in the group" who is never the potential partner. The more socially integrated he becomes, the more firmly cemented as a friendly face.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> To understand why nothing romantic ever happens despite genuine social presence. To become legible as a man who might be romantically interested, not just a friendly face.</li>
+            <li><strong>Blocker:</strong> He presents as friend or acquaintance but never as a potential partner. Mere exposure creates familiarity and comfort, not desire. He has never learned to signal romantic intent — or doesn't know he isn't.</li>
+            <li><strong>Core fear:</strong> "I'm doing everything right socially and it still doesn't happen. Maybe I'm just not attractive."</li>
+            <li><strong>Key belief:</strong> I'm great with people. So why does nothing ever happen?</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">I have plenty of friends, go out regularly, and can talk to anyone. I've been doing this for 6 years and not a single woman has shown any romantic interest in me. I don't understand what I'm missing. I'm not awkward. I'm just… invisible in that way.</div>
+            <div class="q-meta"><span class="q-score">↑ 1,240</span> r/socialskills</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">Women tell me I'm great and funny and kind but it never goes anywhere. I'm always the friend. I know something about how I come across is categorizing me immediately but I genuinely cannot figure out what it is.</div>
+            <div class="q-meta"><span class="q-score">↑ 570</span> r/dating_advice</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/socialskills</span>
+            <span class="signal-tag">r/dating_advice</span>
+            <span class="signal-tag">r/AskMen</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"I'm social but nothing ever happens"</span>
+            <span class="signal-tag">"no one ever approaches me"</span>
+            <span class="signal-tag">"just seen as a friend"</span>
+            <span class="signal-tag">"invisible to women"</span>
+            <span class="signal-tag">"don't know what I'm missing"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 18%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEGMENT 19 -->
+    <div class="seg-card s19" id="s19">
+      <div class="seg-header">
+        <div class="seg-num">19</div>
+        <div class="seg-title-block">
+          <div class="seg-name">The Emotionally Walled Man</div>
+          <span class="seg-tag">Blind Spot</span>
+          <span class="seg-age">Age 24–42</span>
+        </div>
+      </div>
+      <div class="seg-body">
+        <div class="seg-col">
+          <div class="seg-col-label">Core Profile</div>
+          <p>Tries. Has surface warmth and can be funny, kind, generous. Sometimes gets to dates, sometimes to short early relationships. But women consistently describe him as closed off, hard to read, emotionally unavailable — walls up. He hears this feedback repeatedly and concludes it is about the other person: "she wasn't right," "she wanted someone more dramatic," "that's just how she communicates." He cannot see the walls because he has never not had them. He does not know what he is not sharing because he has never known what sharing actually looks like from the inside.</p>
+        </div>
+        <div class="seg-col">
+          <div class="seg-col-label">What He Wants vs. What Blocks Him</div>
+          <ul>
+            <li><strong>Wants:</strong> To understand why this keeps happening. To be in a real relationship without people constantly saying he is unreachable.</li>
+            <li><strong>Blocker:</strong> His own emotional unavailability is in his blind spot — the Johari window's unknown quadrant. Feedback about his walls is consistently reattributed to the other person rather than integrated as information about himself.</li>
+            <li><strong>Core fear:</strong> "If it's really about me, there's nothing I can do. It's easier to believe she was wrong."</li>
+            <li><strong>Key belief:</strong> I'm emotionally available. Women just don't appreciate that I'm low-drama.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="seg-bottom">
+        <div class="seg-quotes">
+          <div class="q-label">Verbatim</div>
+          <div class="q-item">
+            <div class="q-text">Three women in a row have told me some version of "you're great but I can't tell what you're feeling." I think I'm being open. I don't know what more they want. Maybe I'm just attracting the wrong type.</div>
+            <div class="q-meta"><span class="q-score">↑ 2,040</span> r/dating_advice</div>
+          </div>
+          <div class="q-item">
+            <div class="q-text">I've been told I have "walls up" twice this year. I genuinely don't feel like I have walls. I respond to things, I share things. I don't know what people mean when they say that, and I'm not sure how to ask.</div>
+            <div class="q-meta"><span class="q-score">↑ 810</span> r/self</div>
+          </div>
+        </div>
+        <div class="seg-signals">
+          <div class="s-label">Signal Subreddits &amp; Keywords</div>
+          <div class="signal-row">
+            <span class="signal-tag">r/dating_advice</span>
+            <span class="signal-tag">r/self</span>
+            <span class="signal-tag">r/AskMenOver30</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-tag">"women say I'm closed off"</span>
+            <span class="signal-tag">"don't understand why people say I have walls"</span>
+            <span class="signal-tag">"I open up but nothing happens"</span>
+            <span class="signal-tag">"emotionally available but keep getting told I'm not"</span>
+          </div>
+          <div class="size-bar-wrap">
+            <div class="size-bar-label">Estimated prevalence in dataset</div>
+            <div class="size-bar"><div class="size-bar-fill" style="width: 35%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SECTION 3: MECE VALIDATION -->
+<section id="mece">
+  <h2 class="sec-title">03 — MECE Validation</h2>
+  <div class="mece-table-wrap">
+    <table class="mece-table">
+      <thead>
+        <tr>
+          <th>Segment</th>
+          <th>Primary Age</th>
+          <th>Has dated?</th>
+          <th>Primary want</th>
+          <th>Primary blocker</th>
+          <th>Differentiator from nearest neighbors</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="seg-label">01 Forever Inexperienced</td>
+          <td>19–32</td>
+          <td>Never</td>
+          <td>Full milestone sequence</td>
+          <td>Shame spiral + inexperience identity</td>
+          <td>Shame about the absence itself is the core feature, not approach mechanics</td>
+        </tr>
+        <tr>
+          <td class="seg-label">02 Approach-Blocked</td>
+          <td>18–35</td>
+          <td>May have</td>
+          <td>Tools to initiate</td>
+          <td>Approach anxiety + cultural confusion</td>
+          <td>Problem is the initiation step specifically — not confidence in general</td>
+        </tr>
+        <tr>
+          <td class="seg-label">03 App-Burned</td>
+          <td>20–40</td>
+          <td>Some</td>
+          <td>Alternative to apps + restored confidence</td>
+          <td>App economics destroyed self-image</td>
+          <td>Specific damage from metric-based rejection, distinct from general approach anxiety</td>
+        </tr>
+        <tr>
+          <td class="seg-label">04 Nice Guy / Friendzoned</td>
+          <td>20–35</td>
+          <td>Gets dates, not relationships</td>
+          <td>Understand why kindness ≠ attraction</td>
+          <td>Misreads what creates desire vs. respect</td>
+          <td>Gets to dates/friendships but can't convert — distinct from can't-initiate</td>
+        </tr>
+        <tr>
+          <td class="seg-label">05 Standards-Locked</td>
+          <td>22–45</td>
+          <td>Could date, chooses not to settle</td>
+          <td>Right-fit partner, not just any partner</td>
+          <td>Pool + criteria don't overlap</td>
+          <td>Problem is desire mismatch, not access or skills — opposite of segments 1–3</td>
+        </tr>
+        <tr>
+          <td class="seg-label">06 Physical-First</td>
+          <td>17–30</td>
+          <td>Limited</td>
+          <td>Sex, not relationship</td>
+          <td>Market ties sexual access to commitment</td>
+          <td>Goal is categorically different from all other segments — sex, not love</td>
+        </tr>
+        <tr>
+          <td class="seg-label">07 Career-First Bloomer</td>
+          <td>33–50</td>
+          <td>Rarely/never</td>
+          <td>Full life, belonging</td>
+          <td>Skipped developmental window</td>
+          <td>Not skills or confidence — time/priority choices led here; affluent & accomplished</td>
+        </tr>
+        <tr>
+          <td class="seg-label">08 Post-Loss Restarter</td>
+          <td>28–55</td>
+          <td>Yes, then lost it</td>
+          <td>Love again + healing</td>
+          <td>Emotional damage + unfamiliar market</td>
+          <td>Has relationship competence; re-entry, not first entry</td>
+        </tr>
+        <tr>
+          <td class="seg-label">09 Brotherhood-Collapsed</td>
+          <td>25–55</td>
+          <td>Varies</td>
+          <td>Human connection (any form)</td>
+          <td>Adult male social infrastructure collapsed</td>
+          <td>Primary loneliness is not romantic — it's structural social isolation</td>
+        </tr>
+        <tr>
+          <td class="seg-label">10 Rage-Adjacent</td>
+          <td>17–35</td>
+          <td>Rarely</td>
+          <td>Validation that anger is justified</td>
+          <td>Ideology forecloses connection</td>
+          <td>The ideology is the defining feature; pain source is same as others, path is different</td>
+        </tr>
+        <tr>
+          <td class="seg-label">11 Resigned Older</td>
+          <td>50–70+</td>
+          <td>Sometimes</td>
+          <td>Not to feel invisible</td>
+          <td>Age, infrastructure, health</td>
+          <td>No longer seeking — managing acceptance. Age is the primary differentiator.</td>
+        </tr>
+        <tr>
+          <td class="seg-label">12 Chemistry-Mismatch</td>
+          <td>22–42</td>
+          <td>Rarely successfully</td>
+          <td>Attraction for someone mutual</td>
+          <td>Nervous system equates availability with threat</td>
+          <td>Not standards — attraction mechanism itself is inverted. Wants what wants him to be possible, not just what's theoretically right.</td>
+        </tr>
+        <tr>
+          <td class="seg-label">13 Eternal Preparer</td>
+          <td>22–38</td>
+          <td>Rarely — avoids testing</td>
+          <td>To date from a finished, ready version of himself</td>
+          <td>Prep loop is rejection insurance</td>
+          <td>Self-improvement is real but functions as avoidance. Goalposts move. Distinct from Inexperienced — not shame, but deliberate delay.</td>
+        </tr>
+        <tr>
+          <td class="seg-label">14 Situationship-Trapped</td>
+          <td>22–40</td>
+          <td>Sort-of, indefinitely</td>
+          <td>Closure or full commitment from one person</td>
+          <td>Sunk cost + intermittent reinforcement</td>
+          <td>Not "can't find someone" — has someone, can't leave or commit. Emotionally unavailable to anyone else.</td>
+        </tr>
+        <tr>
+          <td class="seg-label">15 Comfortable Alone</td>
+          <td>28–50</td>
+          <td>Not recently</td>
+          <td>Relationship in theory; comfort in practice</td>
+          <td>Status quo bias + present preference over future reward</td>
+          <td>Says he wants a relationship; revealed preferences say otherwise. Drifting, not blocked. Not miserable enough to act.</td>
+        </tr>
+        <tr>
+          <td class="seg-label">16 Self-Sabotager</td>
+          <td>22–38</td>
+          <td>Gets close, then exits</td>
+          <td>To stop destroying things that are going well</td>
+          <td>Approach-avoidance — intimacy triggers flight</td>
+          <td>Not blocked from starting — blocked from continuing. Ends things just before they could end him.</td>
+        </tr>
+        <tr>
+          <td class="seg-label">17 Social Conformist</td>
+          <td>22–38</td>
+          <td>Not seriously</td>
+          <td>Social signal and peer parity</td>
+          <td>Solving for status, not love — wrong problem</td>
+          <td>Mimetic desire. Would be fine if peers were also single. His "loneliness" is status anxiety, not romantic need.</td>
+        </tr>
+        <tr>
+          <td class="seg-label">18 Invisible Social Man</td>
+          <td>20–35</td>
+          <td>Rarely, despite trying</td>
+          <td>To become romantically legible</td>
+          <td>Familiarity breeds categorization, not attraction</td>
+          <td>Socially competent but never generates romantic signal. Mere exposure working against him — he's the group friend, not the potential partner.</td>
+        </tr>
+        <tr>
+          <td class="seg-label">19 Emotionally Walled</td>
+          <td>24–42</td>
+          <td>Short-term, repeatedly</td>
+          <td>To stop hearing "you're closed off"</td>
+          <td>Blind spot — cannot see walls he has always had</td>
+          <td>Feedback consistently reattributed to others. Has surface warmth but real vulnerability is inaccessible — to him and everyone else.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SECTION 4: KEY INSIGHTS -->
+<section id="insights">
+  <h2 class="sec-title">04 — Key Insights Across All Clusters</h2>
+  <div class="insights-grid">
+
+    <div class="insight-card">
+      <h4>Loneliness precedes the ideology, every time</h4>
+      <p>The data consistently shows the same pattern: the rage-adjacent man was not radicalized and then became lonely. He was lonely first. The ideology arrived second — as an explanation for pain that already existed. "How Andrew Tate built an army of lonely, angry men — they weren't angry then lonely. They were lonely first." This matters: the radicalized man is reachable only through the loneliness, not through the ideology.</p>
+    </div>
+
+    <div class="insight-card">
+      <h4>The 65-year-old is the cautionary tale that haunts every other segment</h4>
+      <p>The post "I am almost 65 years old and all alone... I want you to avoid my mistakes" has 16,363 upvotes because every younger segment sees themselves in it as a warning. It is the future they fear most. The resigned older man is less a customer segment and more a mirror. His post is the most powerful piece of copy in the entire dataset — and it is entirely authentic.</p>
+    </div>
+
+    <div class="insight-card">
+      <h4>Apps are creating a new, artificial segment</h4>
+      <p>The App-Burned Defeatist (segment 3) largely did not exist 15 years ago. Dating app algorithms systematically generate rejection feedback at a scale no previous generation experienced. Men who would have found partners through social circles are being run through a merit-sorting machine and told, via data, that they are undesirable. This is genuinely new trauma, not a pre-existing condition.</p>
+    </div>
+
+    <div class="insight-card">
+      <h4>The standards question is more nuanced than it appears</h4>
+      <p>The Standards-Locked man (segment 5) is often dismissed as entitled. But the data reveals two distinct sub-types: the man who genuinely has specific non-negotiables (no single mothers, specific values) — arguably a healthy preference — and the man whose attraction is asymmetric (only wants women who don't want him). The second sub-type is often anxious attachment in disguise: security feels boring, unavailability feels like chemistry.</p>
+    </div>
+
+    <div class="insight-card">
+      <h4>The Brotherhood segment is often mistaken for dating failure</h4>
+      <p>Men in segment 9 often present as "can't find a girlfriend" — but when you read the actual posts, the deeper grief is about the absence of any meaningful connection. The man who goes days without speaking, who texts friends and gets politely declined, who "just exists" — he is not primarily suffering from romantic absence. He is suffering from structural male isolation. Solving his "dating problem" without solving his friendship problem will not help.</p>
+    </div>
+
+    <div class="insight-card">
+      <h4>The Career-First post has no competitors in scale of resonance</h4>
+      <p>27,274 upvotes for "I'm a millionaire and it cost me everything" makes it the highest-scoring authentically male loneliness post in the entire dataset. It resonates so broadly because it punctures the "just focus on yourself" advice that multiple segments received and followed. It is proof that the conventional wisdom failed — and the collective grief that upvotes represent is enormous. Every man who gave that advice to himself recognized himself in this post.</p>
+    </div>
+
+    <div class="insight-card">
+      <h4>The segments share one belief in common</h4>
+      <p>"Everyone else figured this out. I missed something. Something is wrong with me specifically." This belief appears across nearly every segment — from the Forever Inexperienced to the Career-First Bloomer to the Resigned Older Man. The variation is in what "wrong with me" points to: looks, social skills, career choices, timing, ideology. The universal anchor for messaging is not "how to get a girlfriend" but "you didn't miss a class. Here's what actually happened."</p>
+    </div>
+
+    <div class="insight-card">
+      <h4>The Physical-First segment is the smallest but the most misunderstood</h4>
+      <p>Segment 6 is consistently either invisible (no one talks about men who just want sex) or misdirected (they're given relationship advice). He is not seeking attachment or healing — he is seeking physical access. Treating him as if he needs emotional support is a category error. His segment is also the most age-concentrated (17–30), the most likely to overlap with segment 10 if unaddressed, and the least likely to benefit from attachment-based content.</p>
+    </div>
+
+    <div class="insight-card">
+      <h4>Seven segments are "not in the pool" despite calling themselves single</h4>
+      <p>The Eternal Preparer, Comfortable Alone, Situationship-Trapped, Self-Sabotager, Social Conformist, Emotionally Walled, and Chemistry-Mismatch segments all nominally want a relationship — but none of them are actually available or actively pursuing. They are in different kinds of stasis: preparation loops, comfort traps, intermittent attachments, avoidance mechanisms, and blind spots. Messaging about "how to find her" will not reach any of them. The prior question — "what is keeping you from actually trying" — is the real intervention.</p>
+    </div>
+
+    <div class="insight-card">
+      <h4>The self-sabotage and emotional wall patterns suggest attachment wounds, not skills deficits</h4>
+      <p>Segment 16 (Self-Sabotager) and Segment 19 (Emotionally Walled) both get close to connection and then either destroy it or repel it — for reasons neither can articulate. What unites them is that the problem is not external (no women, no opportunities) but internal and largely unconscious. Standard dating advice — how to approach, what to say, where to meet people — does nothing for them. The intervention required is much closer to therapy than to tactics. They are the segments most likely to waste years on self-improvement that optimizes the wrong variable.</p>
+    </div>
+
+    <div class="insight-card">
+      <h4>Mimetic desire explains a large chunk of "loneliness" that isn't really loneliness</h4>
+      <p>The Social Conformist (segment 17) is widely represented in the data, but often mislabeled. Men posting "all my friends are in relationships and I feel like a failure" are not necessarily describing a deficit in love — they are describing a gap between their life and their social script. René Girard's mimetic desire principle is directly applicable: we want what others around us want. If the intervention addresses emotional intimacy but the real problem is social belonging and peer parity, it will miss. The right frame for segment 17 is not "love" but "am I doing this wrong?" — and the answer is often: you want it for the wrong reasons, which is why it stays abstract.</p>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Data: Reddit — r/ForeverAlone, r/dating_advice, r/dating, r/datingoverthirty, r/datingoverforty, r/AskMen, r/AskMenOver30, r/lonely, r/socialskills, r/MensLib, r/self, r/offmychest, r/TrueOffMyChest, r/Tinder, r/relationship_advice · 1,335 unique posts · Research for Attachment Quiz funnel
+</footer>
+
+</body>
+</html>

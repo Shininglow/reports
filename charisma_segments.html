@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Charisma Mastery — Audience Segments</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      background:#0d0d12;
+      color:#dddde8;
+      line-height:1.65;
+      display:flex;
+    }
+
+    /* ── SIDEBAR NAV ── */
+    .sidebar{
+      width:230px;
+      min-height:100vh;
+      background:#0a0a10;
+      border-right:1px solid #1a1a28;
+      position:fixed;
+      top:0;left:0;
+      overflow-y:auto;
+      padding:24px 0 60px;
+      z-index:100;
+      flex-shrink:0;
+    }
+    .sidebar-logo{
+      padding:0 18px 20px;
+      border-bottom:1px solid #1a1a28;
+      margin-bottom:16px;
+    }
+    .sidebar-logo h2{font-size:.82rem;font-weight:700;color:#fff;line-height:1.4}
+    .sidebar-logo p{font-size:.7rem;color:#444466;margin-top:3px}
+
+    .nav-section{margin-bottom:4px}
+    .nav-cat{
+      display:flex;align-items:center;gap:8px;
+      padding:9px 18px;
+      font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;
+      cursor:pointer;
+      transition:background .15s;
+    }
+    .nav-cat:hover{background:rgba(255,255,255,.04)}
+    .nav-cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .nav-sub{
+      display:block;
+      padding:6px 18px 6px 34px;
+      font-size:.77rem;color:#555577;
+      text-decoration:none;
+      transition:color .15s,background .15s;
+      border-left:2px solid transparent;
+      margin-left:18px;
+    }
+    .nav-sub:hover{color:#aaaacc;background:rgba(255,255,255,.03)}
+    .nav-sub.active{color:#aaaaee;border-left-color:#4444aa}
+
+    .nav-divider{height:1px;background:#1a1a28;margin:12px 0}
+
+    /* ── MAIN CONTENT ── */
+    .main{
+      margin-left:230px;
+      flex:1;
+      min-width:0;
+      padding-bottom:100px;
+    }
+
+    /* ── HERO ── */
+    .hero{
+      background:linear-gradient(135deg,#141424 0%,#0e1830 60%,#0a2040 100%);
+      padding:48px 40px 40px;
+      border-bottom:1px solid #1a1a30;
+    }
+    .hero h1{font-size:1.7rem;font-weight:700;color:#fff;letter-spacing:-.4px;margin-bottom:6px}
+    .hero p{color:#6666aa;font-size:.88rem;max-width:600px}
+    .hero .stats{display:flex;gap:14px;margin-top:20px;flex-wrap:wrap}
+    .stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:9px 16px}
+    .stat-num{font-size:1.3rem;font-weight:700;color:#fff}
+    .stat-label{font-size:.68rem;color:#6666aa;text-transform:uppercase;letter-spacing:.5px}
+
+    /* ── FIT ANALYSIS ── */
+    .fit-section{padding:36px 40px;border-bottom:1px solid #1a1a28}
+    .fit-section h2{font-size:1rem;font-weight:700;color:#fff;margin-bottom:16px}
+    .fit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    @media(max-width:800px){.fit-grid{grid-template-columns:1fr}}
+    .fit-card{border-radius:12px;padding:16px 18px}
+    .fit-card.c1{background:#1a0c0c;border:1px solid #3a1414}
+    .fit-card.c2{background:#0b1520;border:1px solid #143050}
+    .fit-card.c3{background:#141000;border:1px solid #383000}
+    .fit-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+    .fit-card.c1 .fit-label{color:#cc4444}
+    .fit-card.c2 .fit-label{color:#4488cc}
+    .fit-card.c3 .fit-label{color:#cc9922}
+    .fit-card p{font-size:.82rem;color:#8888aa;line-height:1.55}
+    .fit-badge{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:4px;margin-bottom:8px}
+    .fit-card.c1 .fit-badge{background:#3a1010;color:#ff7070}
+    .fit-card.c2 .fit-badge{background:#102040;color:#55aaff}
+    .fit-card.c3 .fit-badge{background:#302000;color:#ffcc44}
+
+    /* ── CATEGORY HEADER ── */
+    .cat-header{
+      padding:28px 40px 0;
+      margin-bottom:0;
+      position:sticky;top:0;z-index:10;
+    }
+    .cat-header-inner{
+      display:flex;align-items:center;gap:14px;
+      padding:14px 20px;
+      border-radius:12px 12px 0 0;
+    }
+    .cat-num{
+      width:34px;height:34px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:.95rem;font-weight:800;flex-shrink:0;
+    }
+    .cat-name{font-size:1.05rem;font-weight:700;color:#fff}
+    .cat-tagline{font-size:.8rem;opacity:.7;margin-left:auto;max-width:360px;text-align:right}
+
+    .cat-1 .cat-header-inner{background:#1c0a0a;border:1px solid #3a1212}
+    .cat-1 .cat-num{background:#c23030;color:#fff}
+    .cat-1 .cat-tagline{color:#aa6666}
+    .cat-2 .cat-header-inner{background:#080f1c;border:1px solid #103050}
+    .cat-2 .cat-num{background:#2570c8;color:#fff}
+    .cat-2 .cat-tagline{color:#5588bb}
+    .cat-3 .cat-header-inner{background:#141000;border:1px solid #3a2c00}
+    .cat-3 .cat-num{background:#c08a10;color:#111}
+    .cat-3 .cat-tagline{color:#aa8833}
+
+    /* ── SEGMENT SECTION ── */
+    .seg-section{
+      padding:0 40px 48px;
+      margin-top:0;
+    }
+    .seg-card{
+      background:#101015;
+      border:1px solid #1e1e2a;
+      border-radius:0 0 14px 14px;
+      overflow:hidden;
+      margin-bottom:2px;
+    }
+    .seg-card+.seg-card{border-radius:14px;margin-top:14px}
+
+    .seg-title-bar{
+      display:flex;align-items:center;gap:10px;
+      padding:14px 22px;
+      border-bottom:1px solid #1a1a24;
+    }
+    .seg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .seg-title{font-size:.95rem;font-weight:600;color:#ddd}
+
+    /* 3-column layout */
+    .seg-grid{
+      display:grid;
+      grid-template-columns:1.1fr 1.3fr 1fr;
+    }
+    @media(max-width:860px){.seg-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:560px){.seg-grid{grid-template-columns:1fr}}
+
+    .seg-col{
+      padding:18px 20px;
+      border-right:1px solid #1a1a24;
+    }
+    .seg-col:last-child{border-right:none}
+
+    .col-label{
+      font-size:.64rem;font-weight:700;text-transform:uppercase;
+      letter-spacing:1.1px;margin-bottom:10px;
+    }
+    .seg-desc{font-size:.82rem;color:#8888aa;line-height:1.6}
+
+    /* thread proof cards */
+    .thread-list{display:flex;flex-direction:column;gap:8px}
+    .thread{
+      background:rgba(255,255,255,.025);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:7px;
+      padding:9px 12px;
+    }
+    .thread-title{font-size:.79rem;color:#bbbbdd;font-weight:500;line-height:1.4;margin-bottom:4px}
+    .thread-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .thread-sub{font-size:.68rem;color:#444466}
+    .thread-pts{font-size:.68rem;color:#336699;font-weight:600}
+    .thread-quote{
+      font-size:.76rem;color:#7777aa;font-style:italic;
+      margin-top:6px;padding-top:6px;
+      border-top:1px solid rgba(255,255,255,.05);
+      line-height:1.5;
+    }
+    .thread a{color:inherit;text-decoration:none}
+    .thread a:hover .thread-title{color:#aaaaff;text-decoration:underline}
+
+    /* jtbd + blockers */
+    .list-items{list-style:none;display:flex;flex-direction:column;gap:6px}
+    .list-items li{font-size:.79rem;color:#9999bb;padding-left:16px;position:relative;line-height:1.5}
+    .list-items.jtbd li::before{content:'→';position:absolute;left:0;opacity:.45;font-size:.72rem}
+    .list-items.blk li::before{content:'✕';position:absolute;left:0;opacity:.35;font-size:.7rem}
+    .blk-tag{
+      display:inline-block;font-size:.6rem;font-weight:700;text-transform:uppercase;
+      letter-spacing:.4px;padding:1px 5px;border-radius:3px;
+      margin-left:5px;vertical-align:middle;opacity:.8;
+    }
+
+    /* insight bar */
+    .insight-bar{
+      padding:11px 22px;
+      background:rgba(255,255,255,.02);
+      border-top:1px solid #1a1a24;
+      font-size:.81rem;color:#8888aa;
+      border-left:3px solid;
+    }
+    .insight-bar strong{color:#ddd}
+
+    /* color accents per category */
+    .cat-1 .seg-dot{background:#c23030}
+    .cat-1 .col-label{color:#ff6666}
+    .cat-1 .blk-tag{background:#2e0e0e;color:#ff7070}
+    .cat-1 .insight-bar{border-left-color:#c23030}
+    .cat-1 .thread-pts{color:#cc6655}
+    .cat-1 .seg-card{border-color:#1e1010}
+
+    .cat-2 .seg-dot{background:#2570c8}
+    .cat-2 .col-label{color:#55aaff}
+    .cat-2 .blk-tag{background:#0e1e30;color:#55aaff}
+    .cat-2 .insight-bar{border-left-color:#2570c8}
+    .cat-2 .thread-pts{color:#4488cc}
+    .cat-2 .seg-card{border-color:#101828}
+
+    .cat-3 .seg-dot{background:#c08a10}
+    .cat-3 .col-label{color:#ffcc44}
+    .cat-3 .blk-tag{background:#2a1e00;color:#ffcc44}
+    .cat-3 .insight-bar{border-left-color:#c08a10}
+    .cat-3 .thread-pts{color:#cc9922}
+    .cat-3 .seg-card{border-color:#1e1800}
+
+    /* nav color dots */
+    .dot-red{background:#c23030}
+    .dot-blue{background:#2570c8}
+    .dot-gold{background:#c08a10}
+
+    /* active section highlight */
+    .cat-section{padding-top:8px}
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ SIDEBAR NAV ═══════════════════ -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <h2>Charisma Mastery</h2>
+    <p>Audience segments · Reddit proof</p>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-cat" onclick="location.href='#fit'">
+      <span style="font-size:.65rem;color:#333366">▸</span>
+      <span style="color:#444466;font-size:.72rem">Fit Analysis</span>
+    </div>
+  </div>
+
+  <div class="nav-divider"></div>
+
+  <div class="nav-section">
+    <div class="nav-cat" onclick="location.href='#cat1'">
+      <div class="nav-cat-dot dot-red"></div>
+      <span style="color:#cc5555">1 · Disillusioned</span>
+    </div>
+    <a class="nav-sub" href="#s1a">Chronically Rejected</a>
+    <a class="nav-sub" href="#s1b">Running Out of Time</a>
+    <a class="nav-sub" href="#s1c">Negative Self-Image</a>
+    <a class="nav-sub" href="#s1d">Gave Up</a>
+  </div>
+
+  <div class="nav-divider"></div>
+
+  <div class="nav-section">
+    <div class="nav-cat" onclick="location.href='#cat2'">
+      <div class="nav-cat-dot dot-blue"></div>
+      <span style="color:#4488cc">2 · Serial Self-Improver</span>
+    </div>
+    <a class="nav-sub" href="#s2a">New Love Interest</a>
+    <a class="nav-sub" href="#s2b">Major Life Change</a>
+    <a class="nav-sub" href="#s2c">Chronic Improver</a>
+  </div>
+
+  <div class="nav-divider"></div>
+
+  <div class="nav-section">
+    <div class="nav-cat" onclick="location.href='#cat3'">
+      <div class="nav-cat-dot dot-gold"></div>
+      <span style="color:#cc9922">3 · Ambitious Top Dog</span>
+    </div>
+    <a class="nav-sub" href="#s3a">Efficiency Seeker</a>
+    <a class="nav-sub" href="#s3b">Top One in Everything</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<div class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Charisma Mastery — Audience Segments</h1>
+    <p>All three audience categories apply directly to a charisma product — reframed from dating struggle to presence, magnetism, and social impact. Reddit threads below prove each segment exists at scale.</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">18,082</div><div class="stat-label">Posts analyzed</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Categories</div></div>
+      <div class="stat"><div class="stat-num">9</div><div class="stat-label">Subcategories</div></div>
+      <div class="stat"><div class="stat-num">✓</div><div class="stat-label">Segmentation fit</div></div>
+    </div>
+  </div>
+
+  <!-- FIT ANALYSIS -->
+  <div class="fit-section" id="fit">
+    <h2>Does the segmentation fit a Charisma Mastery product?</h2>
+    <div class="fit-grid">
+      <div class="fit-card c1">
+        <div class="fit-badge">Strong fit</div>
+        <div class="fit-label">1 · Disillusioned</div>
+        <p>Their pain — rejection, invisibility, feeling forgettable — is <em>directly caused</em> by lacking charisma. Charisma mastery is the root-cause solution, not just a dating tip. This is your largest and most urgent buyer segment. Shift the framing from "dating advice" to "why you have no pull — and how to build it."</p>
+      </div>
+      <div class="fit-card c2">
+        <div class="fit-badge">Natural fit</div>
+        <div class="fit-label">2 · Serial Self-Improver</div>
+        <p>These men already buy self-development products. Charisma is the natural next domain after fitness, career, and mindset. "Charisma is a learnable skill" is already how they think. They need proof of method — not conviction that the problem is real. Position the product as the system they've been looking for.</p>
+      </div>
+      <div class="fit-card c3">
+        <div class="fit-badge">Perfect fit</div>
+        <div class="fit-label">3 · Ambitious Top Dog</div>
+        <p>Charisma mastery is their ideal product framing. They want the invisible edge — the last high-leverage variable they haven't optimized. Premium programs like Charisma University, Art of Charm, and corporate leadership coaching all target this segment. Position as mastery, not self-help.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════ -->
+  <!-- CAT 1: DISILLUSIONED               -->
+  <!-- ══════════════════════════════════ -->
+  <div class="cat-section cat-1" id="cat1">
+    <div class="cat-header">
+      <div class="cat-header-inner">
+        <div class="cat-num">1</div>
+        <div class="cat-name">Disillusioned</div>
+        <div class="cat-tagline">Pain-motivated. Their lack of charisma is the source of rejection and invisibility. Need belief restored before a method lands.</div>
+      </div>
+    </div>
+    <div class="seg-section">
+
+      <!-- S1a -->
+      <div class="seg-card" id="s1a">
+        <div class="seg-title-bar">
+          <div class="seg-dot"></div>
+          <div class="seg-title">Chronically Rejected — the man who gets liked but never chosen</div>
+        </div>
+        <div class="seg-grid">
+          <div class="seg-col">
+            <div class="col-label">Who They Are + Charisma Gap</div>
+            <p class="seg-desc">He does everything right on paper — kind, shows up, makes effort — and still can't generate attraction. The missing variable is charisma: the ability to create <em>pull</em>, not just connection. He's building friendships when he needs to build magnetism. He doesn't know what's missing and that unknowing is the deepest frustration.</p>
+            <br/>
+            <div class="col-label" style="margin-top:4px">JTBDs</div>
+            <ul class="list-items jtbd">
+              <li>Understand why rapport doesn't convert to attraction — get the mechanism</li>
+              <li>Learn to generate the "spark" — presence and expressed desire working together</li>
+              <li>Stop being forgettable the moment she walks away from the conversation</li>
+              <li>Build charisma that works passively — she thinks about him after he's gone</li>
+              <li>Know exactly what charismatic men do differently in the moments that count</li>
+            </ul>
+            <br/>
+            <div class="col-label" style="margin-top:4px">Blockers</div>
+            <ul class="list-items blk">
+              <li>"It's just not there between us" — attributes lack of spark to compatibility, not skill <span class="blk-tag">Attribution error</span></li>
+              <li>Changing feels like becoming fake — fears losing his identity as the "genuine" one <span class="blk-tag">Identity threat</span></li>
+              <li>Conflicting advice drowns out signal — "be yourself" vs "be more assertive" <span class="blk-tag">Info noise</span></li>
+              <li>Shame about the pattern — admitting it keeps happening is humiliating <span class="blk-tag">Shame suppressor</span></li>
+            </ul>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Reddit Proof Threads</div>
+            <div class="thread-list">
+              <div class="thread">
+                <a href="https://reddit.com/r/socialskills/comments/4c5qrf/how_to_be_socially_skilled_pt8_charisma/" target="_blank">
+                  <div class="thread-title">How To Be Socially Skilled Pt8: Charisma</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/socialskills</span>
+                  <span class="thread-pts">301 pts · 26 comments</span>
+                </div>
+                <div class="thread-quote">"Charisma isn't the guy you 'click' with. It's the guy you become viciously interested in. Charismatic people suck you into their world to have a party instead of meeting you halfway."</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/dating_advice/comments/dcbx2o/5_keys_to_meeting_women_all_of_them_are_learned/" target="_blank">
+                  <div class="thread-title">5 Keys to Meeting Women — ALL of them are learned behaviors, not looks!</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/dating_advice</span>
+                  <span class="thread-pts">1,323 pts · 170 comments</span>
+                </div>
+                <div class="thread-quote">"I'm 40, divorced. Not overly attractive. I'd rate myself 6–8/10. I'm not tall, not built. I have good success meeting women IRL. Here's what actually works — all of it is learned."</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/selfimprovement/comments/1jvrom0/stopped_trying_to_be_liked_and_started_trying_to/" target="_blank">
+                  <div class="thread-title">Stopped trying to be liked and started trying to be interesting... kind of changed everything</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/selfimprovement</span>
+                  <span class="thread-pts">957 pts · 71 comments</span>
+                </div>
+                <div class="thread-quote">"I was softening everything — opinions, personality, how much space I took up. People seemed comfortable around me but I was so forgettable. I could feel it happening in real time."</div>
+              </div>
+            </div>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Messaging Unlock</div>
+            <p class="seg-desc">Lead with the diagnosis, not the solution. <strong>"Here's why rapport doesn't become attraction — and it's one learnable thing."</strong> He needs the mechanism, not motivation. The word "spark" is his language — use it.</p>
+          </div>
+        </div>
+        <div class="insight-bar"><strong>Core charisma gap:</strong> He creates connection but no magnetism. Charisma mastery teaches him the missing piece — presence, polarity, and expressive intent — that turns "great guy" into someone she can't stop thinking about.</div>
+      </div>
+
+      <!-- S1b -->
+      <div class="seg-card" id="s1b">
+        <div class="seg-title-bar">
+          <div class="seg-dot"></div>
+          <div class="seg-title">Running Out of Time / Midlife — urgency meets charisma gap</div>
+        </div>
+        <div class="seg-grid">
+          <div class="seg-col">
+            <div class="col-label">Who They Are + Charisma Gap</div>
+            <p class="seg-desc">A life event — divorce, 40th birthday, watching peers — made time real and finite. He's re-entering social and romantic life after years away and finds that confidence doesn't auto-restore. His charisma — once present, once casual — needs deliberate rebuilding. He needs a system that works now, not in 2 years of trial and error.</p>
+            <br/>
+            <div class="col-label" style="margin-top:4px">JTBDs</div>
+            <ul class="list-items jtbd">
+              <li>Rebuild presence fast — not from scratch, but from a collapsed foundation</li>
+              <li>Project depth and confidence that reads as earned, not desperate</li>
+              <li>Navigate modern dating (apps, norms) with charisma suited to his age</li>
+              <li>Develop the kind of magnetism that gets better with age, not worse</li>
+              <li>Prove to himself it's not too late — the first win matters more than anything</li>
+            </ul>
+            <br/>
+            <div class="col-label" style="margin-top:4px">Blockers</div>
+            <ul class="list-items blk">
+              <li>Believes charisma peaks young — that the window has already closed <span class="blk-tag">Fixed mindset</span></li>
+              <li>Age shame: embarrassed to be working on this at his age — feels juvenile <span class="blk-tag">Social comparison</span></li>
+              <li>Unfamiliar landscape — social norms and apps have changed, increases overwhelm <span class="blk-tag">Novelty aversion</span></li>
+              <li>Old wounds make him guarded — authentic presence feels risky now <span class="blk-tag">Risk aversion</span></li>
+            </ul>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Reddit Proof Threads</div>
+            <div class="thread-list">
+              <div class="thread">
+                <a href="https://reddit.com/r/AskMenOver30/comments/" target="_blank">
+                  <div class="thread-title">Turning 40 Changes the Game, But Here's How to Win It</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/AskMenOver30</span>
+                  <span class="thread-pts">8,668 pts · 1,200+ comments</span>
+                </div>
+                <div class="thread-quote">"It's like life sends you an email marked 'URGENT.' Suddenly you're questioning your health, career, relationships. The 30s and 40s aren't a crisis — they're an upgrade. Here's how I approached it."</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/AskMenOver30/comments/" target="_blank">
+                  <div class="thread-title">Was told I had "Zaddy energy"...</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/AskMenOver30</span>
+                  <span class="thread-pts">4,183 pts · 235 comments</span>
+                </div>
+                <div class="thread-quote">"I'm a divorced guy in my late forties. I've lost a lot of weight the past few years and am in the best shape of my life — which has given me a whole lot more confidence than I've ever had."</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/socialskills/comments/" target="_blank">
+                  <div class="thread-title">I'm over it — years of social anxiety and being afraid to connect</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/socialskills</span>
+                  <span class="thread-pts">1,739 pts · 125 comments</span>
+                </div>
+                <div class="thread-quote">"I'm fucking tired of waiting around to do shit with people. I'm over the years of social anxiety, being afraid of talking to people, afraid I might never connect with anyone."</div>
+              </div>
+            </div>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Messaging Unlock</div>
+            <p class="seg-desc">Age-specific validation first. <strong>"Charisma built after 35 is different — it has weight."</strong> Show men who rebuilt at 40+. Depth, presence, and confidence earned through life experience is a real advantage — position the product as the accelerator for that, not a youth-recapture attempt.</p>
+          </div>
+        </div>
+        <div class="insight-bar"><strong>Core charisma gap:</strong> His natural charisma eroded through years of a relationship, routine, or isolation. It wasn't lost — it needs a system to rebuild it. Deliberately, faster than it would happen on its own.</div>
+      </div>
+
+      <!-- S1c -->
+      <div class="seg-card" id="s1c">
+        <div class="seg-title-bar">
+          <div class="seg-dot"></div>
+          <div class="seg-title">Negative Self-Image — he thinks his flaws disqualify him before he starts</div>
+        </div>
+        <div class="seg-grid">
+          <div class="seg-col">
+            <div class="col-label">Who They Are + Charisma Gap</div>
+            <p class="seg-desc">He's built a case for why he can't be charismatic: too short, not good-looking enough, too quiet, too awkward. He believes charisma belongs to naturally confident men — not him. The key reframe: charisma is independent of physical appearance. Presence, warmth, and conviction are available to him right now.</p>
+            <br/>
+            <div class="col-label" style="margin-top:4px">JTBDs</div>
+            <ul class="list-items jtbd">
+              <li>Understand that charisma is orthogonal to looks — see the evidence clearly</li>
+              <li>Build presence that compensates for and transcends physical self-doubt</li>
+              <li>Get one experience that cracks the "I'm disqualified" belief open</li>
+              <li>Develop the specific elements of charisma that don't require any physical advantage</li>
+              <li>Stop pre-rejecting himself — enter situations instead of avoiding them</li>
+            </ul>
+            <br/>
+            <div class="col-label" style="margin-top:4px">Blockers</div>
+            <ul class="list-items blk">
+              <li>"You either have it or you don't" — charisma still feels like a natural gift to him <span class="blk-tag">Fixed mindset</span></li>
+              <li>Confirmation bias: one rejection confirms the story; successes are dismissed as luck <span class="blk-tag">Confirmation bias</span></li>
+              <li>Pre-rejection reflex: disqualifies himself before others can — safer to never try <span class="blk-tag">Defensive pessimism</span></li>
+              <li>Social media comparison: constantly benchmarks against idealized men <span class="blk-tag">Upward comparison</span></li>
+            </ul>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Reddit Proof Threads</div>
+            <div class="thread-list">
+              <div class="thread">
+                <a href="https://reddit.com/r/seduction/comments/lwnced/book_summary_the_charisma_myth_by_olivia_fox/" target="_blank">
+                  <div class="thread-title">Book Summary: The Charisma Myth — Charisma is not innate</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/seduction</span>
+                  <span class="thread-pts">90 pts · 11 comments</span>
+                </div>
+                <div class="thread-quote">"Charisma is not innate but a set of learned behaviors. When you meet a charismatic person you get the impression they have power AND they like you a lot. Power and warmth are the two primary components."</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/dating_advice/comments/" target="_blank">
+                  <div class="thread-title">Even if you don't think you are attractive, that doesn't mean you aren't in other people's eyes</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/dating_advice</span>
+                  <span class="thread-pts">5,810 pts · 320 comments</span>
+                </div>
+                <div class="thread-quote">"Someone needs to hear this. I definitely did. My friend told me a group of girls from my former high school came in, and they asked about me. They thought I was attractive. I had no idea."</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/socialskills/comments/" target="_blank">
+                  <div class="thread-title">I feel like I'm facing the consequences of a sheltered childhood</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/socialskills</span>
+                  <span class="thread-pts">469 pts · 36 comments</span>
+                </div>
+                <div class="thread-quote">"I feel like people see me as less of a man — boring, awkward, and immature. Even the few friends I have don't introduce me to their other friends. I wish I had the natural charisma some guys here do."</div>
+              </div>
+            </div>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Messaging Unlock</div>
+            <p class="seg-desc">Lead with the disqualifier removal. <strong>"Charisma has nothing to do with how tall you are."</strong> Specific counter-examples from average-looking men with magnetic presence beat any inspiration. Address the physical belief directly — then teach the skill.</p>
+          </div>
+        </div>
+        <div class="insight-bar"><strong>Core charisma gap:</strong> He confuses physical attractiveness with charismatic presence. The "you either have it or you don't" belief is the first thing to dismantle — and it's the first thing charisma education does.</div>
+      </div>
+
+      <!-- S1d -->
+      <div class="seg-card" id="s1d">
+        <div class="seg-title-bar">
+          <div class="seg-dot"></div>
+          <div class="seg-title">Gave Up — resigned, quiet, waiting to be proven wrong</div>
+        </div>
+        <div class="seg-grid">
+          <div class="seg-col">
+            <div class="col-label">Who They Are + Charisma Gap</div>
+            <p class="seg-desc">He's stopped trying. He's past frustration and into a resigned quiet. He's built a narrative: "charisma is for certain people, not me." But underneath the resignation is a man who still posts at 3am about feeling alone. The flame isn't out — it's just covered. One undeniable proof that change is possible cracks the protection open.</p>
+            <br/>
+            <div class="col-label" style="margin-top:4px">JTBDs</div>
+            <ul class="list-items jtbd">
+              <li>Find one reason to try again that doesn't feel naive or set him up for more failure</li>
+              <li>Reconnect with the version of himself that still believed he could be compelling</li>
+              <li>Take one low-stakes action that breaks the inaction pattern safely</li>
+              <li>See rock-bottom-to-charisma transformation stories from men further gone than him</li>
+              <li>Feel less alone — knowing others were exactly here and came back</li>
+            </ul>
+            <br/>
+            <div class="col-label" style="margin-top:4px">Blockers</div>
+            <ul class="list-items blk">
+              <li>Cynicism as armor: "it won't work" is safer than trying and accumulating more evidence of failure <span class="blk-tag">Defensive pessimism</span></li>
+              <li>Reframed resignation: "I've accepted it" sounds mature but is a coping identity <span class="blk-tag">Rationalization</span></li>
+              <li>Social withdrawal removes the stimuli that would trigger motivation <span class="blk-tag">Avoidance loop</span></li>
+              <li>Energy depletion: past attempts drained him — no fuel left to try again <span class="blk-tag">Resource depletion</span></li>
+            </ul>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Reddit Proof Threads</div>
+            <div class="thread-list">
+              <div class="thread">
+                <a href="https://reddit.com/r/seduction/comments/" target="_blank">
+                  <div class="thread-title">I'm afraid I'm going to be alone forever</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/seduction</span>
+                  <span class="thread-pts">495 pts · 3am post</span>
+                </div>
+                <div class="thread-quote">"3:04 am. This is the hour your mind processes years of rejection. Never fitting in growing up. Low self-esteem at the lunch table. You analyze how you could have texted that girl differently. The day hasn't even begun and you're already exhausted."</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/socialskills/comments/nlezjz/" target="_blank">
+                  <div class="thread-title">Anyone else lost their personality?</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/socialskills</span>
+                  <span class="thread-pts">4,358 pts · 235 comments</span>
+                </div>
+                <div class="thread-quote">"Two years ago I had an amazing friend group. I was fun, bold, charismatic, daring. Then depression led me to isolate. Now I am essentially friendless. I had a very distinct personality — and I lost it."</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/seduction/comments/" target="_blank">
+                  <div class="thread-title">Acceptance of yourself will be your most powerful asset — I went from no friends to...</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/seduction</span>
+                  <span class="thread-pts">1,017 pts · 56 comments</span>
+                </div>
+                <div class="thread-quote">"In ~two and a half years I went from a socially-deprived, uninteresting college student to, as my friend described me, 'by far the most interesting person she's ever met.' The road was incredibly difficult."</div>
+              </div>
+            </div>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Messaging Unlock</div>
+            <p class="seg-desc">Don't lead with the program — lead with the re-entry point. <strong>"If you are in a dark place right now."</strong> He needs permission to try again more than a method. Rock-bottom transformation stories from men further gone are the only thing that reaches him.</p>
+          </div>
+        </div>
+        <div class="insight-bar"><strong>Core charisma gap:</strong> His charisma wasn't destroyed — it was buried under depression, isolation, and repeated failure. The insight that it still exists inside him is more powerful than any technique. Start there.</div>
+      </div>
+
+    </div>
+  </div><!-- /cat1 -->
+
+
+  <!-- ══════════════════════════════════ -->
+  <!-- CAT 2: SERIAL SELF-IMPROVER        -->
+  <!-- ══════════════════════════════════ -->
+  <div class="cat-section cat-2" id="cat2">
+    <div class="cat-header">
+      <div class="cat-header-inner">
+        <div class="cat-num">2</div>
+        <div class="cat-name">Serial Self-Improver</div>
+        <div class="cat-tagline">Growth-motivated, already in motion. Sees charisma as the next domain to master. Needs method, not reason.</div>
+      </div>
+    </div>
+    <div class="seg-section">
+
+      <!-- S2a -->
+      <div class="seg-card" id="s2a">
+        <div class="seg-title-bar">
+          <div class="seg-dot"></div>
+          <div class="seg-title">New Love Interest — specific person exposed the charisma gap</div>
+        </div>
+        <div class="seg-grid">
+          <div class="seg-col">
+            <div class="col-label">Who They Are + Charisma Gap</div>
+            <p class="seg-desc">There's a specific woman. She appeared and everything felt possible — then he froze, overthought, or did nothing. The charisma gap showed up in the exact moment that mattered. He needs practical presence and expressive confidence fast — not a 6-week course. The window matters more than the system.</p>
+            <br/>
+            <div class="col-label" style="margin-top:4px">JTBDs</div>
+            <ul class="list-items jtbd">
+              <li>Create a compelling, memorable impression in the specific window he has</li>
+              <li>Express genuine interest with confidence — without seeming rehearsed</li>
+              <li>Generate the tension and pull that moves from friendly to romantic</li>
+              <li>Not freeze or retreat when the moment arrives — act in the moment, not after</li>
+              <li>Know what charismatic men do differently in these exact situations</li>
+            </ul>
+            <br/>
+            <div class="col-label" style="margin-top:4px">Blockers</div>
+            <ul class="list-items blk">
+              <li>This person carries too much weight — the stakes create paralysis <span class="blk-tag">High-stakes freeze</span></li>
+              <li>Planning the perfect move instead of making any move <span class="blk-tag">Analysis paralysis</span></li>
+              <li>Fears ruining the friendship or working relationship <span class="blk-tag">Loss aversion</span></li>
+              <li>Urgency itself causes the delay — the closing window is what freezes him <span class="blk-tag">Urgency paradox</span></li>
+            </ul>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Reddit Proof Threads</div>
+            <div class="thread-list">
+              <div class="thread">
+                <a href="https://reddit.com/r/dating_advice/comments/" target="_blank">
+                  <div class="thread-title">Reddit, I'm going to do it! Fuck it to my fear of rejection</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/dating_advice</span>
+                  <span class="thread-pts">2,826 pts · 190 comments</span>
+                </div>
+                <div class="thread-quote">"Fuck it to the fact that coworkers will find out. Fuck it to my fear of rejection. Fuck it because life's way too short not to ask her out. I'm saying fuck it to everything and just going for it."</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/dating_advice/comments/" target="_blank">
+                  <div class="thread-title">Today is the last day of my cooking course — I've got to make the move</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/dating_advice</span>
+                  <span class="thread-pts">2,559 pts · 254 comments</span>
+                </div>
+                <div class="thread-quote">"I may never see her again so I've gotta make the move. When the crucial time came to ask her, I always made up an excuse. Today though I may never see her again."</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/dating_advice/comments/" target="_blank">
+                  <div class="thread-title">Kissed my high school crush after 20+ years</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/dating_advice</span>
+                  <span class="thread-pts">2,070 pts · 146 comments</span>
+                </div>
+                <div class="thread-quote">"I was a clueless, socially awkward virgin who never had the guts to make a move. She was always one of the big 'what ifs?' in my life. Fast forward 20+ years — I finally did it."</div>
+              </div>
+            </div>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Messaging Unlock</div>
+            <p class="seg-desc">His urgency is already present. <strong>"Don't let this one be the what-if you carry for 20 years."</strong> Give him a quick win — one specific charismatic move for this week. The full system can come after he's taken action and tasted success.</p>
+          </div>
+        </div>
+        <div class="insight-bar"><strong>Core charisma gap:</strong> He can connect but can't create tension and pull in the critical moment. One charisma skill — expressive confidence under pressure — changes the outcome. Fast, specific, actionable.</div>
+      </div>
+
+      <!-- S2b -->
+      <div class="seg-card" id="s2b">
+        <div class="seg-title-bar">
+          <div class="seg-dot"></div>
+          <div class="seg-title">Major Life Change — using disruption as a charisma reset</div>
+        </div>
+        <div class="seg-grid">
+          <div class="seg-col">
+            <div class="col-label">Who They Are + Charisma Gap</div>
+            <p class="seg-desc">A divorce, breakup, career shift, or relocation cracked the old identity open. He lost himself in a relationship — gave up his personality, stopped growing, became invisible. Now he's rebuilding, and charisma is at the center of that rebuild: he wants to be someone new who is also unmistakably himself.</p>
+            <br/>
+            <div class="col-label" style="margin-top:4px">JTBDs</div>
+            <ul class="list-items jtbd">
+              <li>Rebuild the social identity he gave up — become compelling again from the ground up</li>
+              <li>Walk into new environments and create instant presence, not blend in</li>
+              <li>Develop charisma suited to who he is now, not who he was at 25</li>
+              <li>Get the momentum of early wins that confirm the transformation is real</li>
+              <li>Feel like himself again — the version of himself that had pull and energy</li>
+            </ul>
+            <br/>
+            <div class="col-label" style="margin-top:4px">Blockers</div>
+            <ul class="list-items blk">
+              <li>Identity void: the old life defined him — crisis removed the scaffolding of self <span class="blk-tag">Identity vacuum</span></li>
+              <li>Compares current self to his pre-crisis peak — unfair baseline creates discouragement <span class="blk-tag">Unfair baseline</span></li>
+              <li>Shame of starting over feels like failure, not a real beginning <span class="blk-tag">Shame reframe</span></li>
+              <li>Unfamiliar social landscape — norms and contexts have changed during his absence <span class="blk-tag">Novelty overwhelm</span></li>
+            </ul>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Reddit Proof Threads</div>
+            <div class="thread-list">
+              <div class="thread">
+                <a href="https://reddit.com/r/AskMen/comments/" target="_blank">
+                  <div class="thread-title">Well, I'm officially divorcing. It feels like a life redo button — now what?</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/AskMen</span>
+                  <span class="thread-pts">4,369 pts · 430 comments</span>
+                </div>
+                <div class="thread-quote">"After a very hard 1.5 years trying to work through things, we're finally divorcing. I'm 29, great job, good health. I feel a pretty large weight lifting off me. It feels like a life redo button. Now what?"</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/DecidingToBeBetter/comments/" target="_blank">
+                  <div class="thread-title">In the last year I lost my job, my relationships, my friends, my hobbies — and worst of all, myself</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/DecidingToBeBetter</span>
+                  <span class="thread-pts">1,220 pts · 36 comments</span>
+                </div>
+                <div class="thread-quote">"A toxic relationship made me lose my self-respect and sense of self. I talked less to friends, took no care of my wellbeing, ceased anything I personally enjoyed. Each time a piece of me died."</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/seduction/comments/" target="_blank">
+                  <div class="thread-title">I've been working on my inner game for the last few years — today I received the greatest compliment</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/seduction</span>
+                  <span class="thread-pts">366 pts · 32 comments</span>
+                </div>
+                <div class="thread-quote">"In ~two and a half years I went from a socially-deprived, uninteresting college student to 'by far the most interesting person she's ever met.' The road to changing myself was incredibly difficult."</div>
+              </div>
+            </div>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Messaging Unlock</div>
+            <p class="seg-desc"><strong>"The crisis was the starting line, not the ending."</strong> Frame charisma mastery as the vehicle for the rebuild — not a repair job but an upgrade. He already has the motivation; give him the system that converts disruption into transformation.</p>
+          </div>
+        </div>
+        <div class="insight-bar"><strong>Core charisma gap:</strong> Charisma eroded gradually inside a relationship that didn't require it. Now it needs active rebuilding — deliberately and faster than it would happen through life alone.</div>
+      </div>
+
+      <!-- S2c -->
+      <div class="seg-card" id="s2c">
+        <div class="seg-title-bar">
+          <div class="seg-dot"></div>
+          <div class="seg-title">Chronic Improver — charisma is simply the next domain to master</div>
+        </div>
+        <div class="seg-grid">
+          <div class="seg-col">
+            <div class="col-label">Who They Are + Charisma Gap</div>
+            <p class="seg-desc">Always in improvement mode — routines, books, systems. He's applied mastery thinking to fitness and career. Now it's charisma's turn. No crisis brought him here — growth is just his default operating mode. He's a sophisticated buyer: skeptical of generic content, comparison-shopping methods, needs a credible framework.</p>
+            <br/>
+            <div class="col-label" style="margin-top:4px">JTBDs</div>
+            <ul class="list-items jtbd">
+              <li>Find the charisma framework that actually produces results — after trying several that didn't</li>
+              <li>Understand the mechanism deeply enough to apply it without a coach</li>
+              <li>Get consistent, replicable results — not just occasional good days</li>
+              <li>Bridge the knowing-doing gap — convert theory into permanent behavior change</li>
+              <li>Apply the same deliberate practice model that worked in fitness and career</li>
+            </ul>
+            <br/>
+            <div class="col-label" style="margin-top:4px">Blockers</div>
+            <ul class="list-items blk">
+              <li>Comparisonitis: consuming content without applying it — mistakes understanding for progress <span class="blk-tag">Consumption trap</span></li>
+              <li>Perfectionist paralysis: waits for the right conditions to practice instead of practicing <span class="blk-tag">Readiness trap</span></li>
+              <li>Info overload: too many frameworks conflict — decision fatigue blocks commitment <span class="blk-tag">Decision fatigue</span></li>
+              <li>Context mismatch: charisma resists the clean metrics he's used to — frustrates him <span class="blk-tag">Unmeasurability</span></li>
+            </ul>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Reddit Proof Threads</div>
+            <div class="thread-list">
+              <div class="thread">
+                <a href="https://reddit.com/r/socialskills/comments/1sdq0e1/" target="_blank">
+                  <div class="thread-title">The #1 tip that will change your entire life — charisma obsession started at 13</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/socialskills</span>
+                  <span class="thread-pts">655 pts · 62 comments</span>
+                </div>
+                <div class="thread-quote">"At 13, I witnessed a man give a talk that had everyone eating from the palms of his hands. It was electric. I'd never seen someone command attention like that. It kickstarted an obsession with charisma. I've since tried to learn everything I can."</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/selfimprovement/comments/" target="_blank">
+                  <div class="thread-title">How I literally psyop'd myself into becoming successful — and you can too</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/selfimprovement</span>
+                  <span class="thread-pts">3,652 pts · 280 comments</span>
+                </div>
+                <div class="thread-quote">"2 years ago: typical underachieving student. 2.3 GPA, zero discipline. I tried all the usual stuff — nothing stuck because I was operating from the wrong identity. Then I found the concept that changed everything."</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/socialskills/comments/9hzwdu/" target="_blank">
+                  <div class="thread-title">Charisma and how to train it</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/socialskills</span>
+                  <span class="thread-pts">504 pts · 27 comments</span>
+                </div>
+                <div class="thread-quote">"I feel like not a lot of scientifically founded advice on charisma is posted here. Charisma can absolutely be trained — here's the research-backed breakdown of exactly what it is and how."</div>
+              </div>
+            </div>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Messaging Unlock</div>
+            <p class="seg-desc">He's already sold on the concept — he's choosing between vehicles. <strong>Don't pitch charisma. Prove the system.</strong> Named frameworks, before/after with specific metrics, "here's the mechanism" storytelling. This buyer won't tolerate vague promises.</p>
+          </div>
+        </div>
+        <div class="insight-bar"><strong>Core charisma gap:</strong> He understands charisma intellectually but can't make it behavioral and consistent. The knowing-doing gap is his specific problem — the product needs to solve that, not just add more theory.</div>
+      </div>
+
+    </div>
+  </div><!-- /cat2 -->
+
+
+  <!-- ══════════════════════════════════ -->
+  <!-- CAT 3: AMBITIOUS TOP DOG           -->
+  <!-- ══════════════════════════════════ -->
+  <div class="cat-section cat-3" id="cat3">
+    <div class="cat-header">
+      <div class="cat-header-inner">
+        <div class="cat-num">3</div>
+        <div class="cat-name">Ambitious Top Dog</div>
+        <div class="cat-tagline">High-achiever treating charisma as the last unoptimized variable. Buys outcomes and systems. Won't tolerate soft content.</div>
+      </div>
+    </div>
+    <div class="seg-section">
+
+      <!-- S3a -->
+      <div class="seg-card" id="s3a">
+        <div class="seg-title-bar">
+          <div class="seg-dot"></div>
+          <div class="seg-title">Efficiency Seeker — wants charisma broken down as a precision system</div>
+        </div>
+        <div class="seg-grid">
+          <div class="seg-col">
+            <div class="col-label">Who They Are + Charisma Gap</div>
+            <p class="seg-desc">Engineer or operator mindset. Applied precision to every domain — now it's charisma's turn. He doesn't want to feel his way through this. He wants the framework, deliberate reps, and measurable output. Generic "be yourself" content insults his intelligence. Specifics, evidence, and named components earn his immediate trust.</p>
+            <br/>
+            <div class="col-label" style="margin-top:4px">JTBDs</div>
+            <ul class="list-items jtbd">
+              <li>Get charisma broken into specific, learnable components he can practice deliberately</li>
+              <li>Understand which specific behaviors drive which specific outcomes</li>
+              <li>Compress the learning curve — get results without years of social trial and error</li>
+              <li>Cut through the noise of generic self-help to find what actually moves the needle</li>
+              <li>Apply the same deliberate practice model that worked in other skill domains</li>
+            </ul>
+            <br/>
+            <div class="col-label" style="margin-top:4px">Blockers</div>
+            <ul class="list-items blk">
+              <li>Researches far more than he practices — information becomes procrastination <span class="blk-tag">Research loop</span></li>
+              <li>Can't measure social progress the way he measures technical outcomes — frustrating <span class="blk-tag">Metrics gap</span></li>
+              <li>Quality gate blocks entry: won't engage unless the content clears a high credibility bar <span class="blk-tag">Perfectionist gatekeeping</span></li>
+              <li>Tries to optimize connection the way he'd optimize a system — misses the organic dimension <span class="blk-tag">Domain mismatch</span></li>
+            </ul>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Reddit Proof Threads</div>
+            <div class="thread-list">
+              <div class="thread">
+                <a href="https://reddit.com/r/socialskills/comments/1mc8jp6/" target="_blank">
+                  <div class="thread-title">What do socially skilled people do differently the second they walk into a room?</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/socialskills</span>
+                  <span class="thread-pts">1,349 pts · 122 comments</span>
+                </div>
+                <div class="thread-quote">"There's something about the way certain people carry themselves. They don't say much — somehow people notice them without them trying. They're reading the room while most people are still figuring out where to sit. It's not just confidence. It's something else."</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/selfimprovement/comments/" target="_blank">
+                  <div class="thread-title">It takes me 10 years to learn charisma — here's how to be charismatic in 10 steps</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/selfimprovement</span>
+                  <span class="thread-pts">20 pts — small but highly specific intent</span>
+                </div>
+                <div class="thread-quote">"Being charismatic involves a combination of good communication, positive energetics, and genuine interest in others. Here are the specific, actionable components — broken down one by one."</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/DecidingToBeBetter/comments/3r2jf0/" target="_blank">
+                  <div class="thread-title">How to be Magnetic</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/DecidingToBeBetter</span>
+                  <span class="thread-pts">91 pts · 23 comments</span>
+                </div>
+                <div class="thread-quote">"I've been observing social interactions — watching what consistently makes people magnetic. I've been in hostels, forced to interact with strangers daily. I started breaking down the exact patterns that make certain people pull others in."</div>
+              </div>
+            </div>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Messaging Unlock</div>
+            <p class="seg-desc">Speak his language. <strong>Systems, specifics, component-level breakdown.</strong> "22 matches day one," "promoted because of charisma," "3 dates in 3 days" — numeric outcomes land. Soft language ("feel more confident") loses him immediately and permanently.</p>
+          </div>
+        </div>
+        <div class="insight-bar"><strong>Core charisma gap:</strong> He understands charisma analytically but hasn't bridged to behavioral fluency. The product needs to give him the breakdown he can execute — presence, vocal tonality, eye contact, expressiveness — as distinct, trainable modules.</div>
+      </div>
+
+      <!-- S3b -->
+      <div class="seg-card" id="s3b">
+        <div class="seg-title-bar">
+          <div class="seg-dot"></div>
+          <div class="seg-title">Top One in Everything — charisma is the last unchecked box</div>
+        </div>
+        <div class="seg-grid">
+          <div class="seg-col">
+            <div class="col-label">Who They Are + Charisma Gap</div>
+            <p class="seg-desc">Gym strong, career strong, financially disciplined — and charisma is the last gap between his current self and the complete version. He's not broken; he's incomplete. He delivers results but doesn't command rooms. He's respected but not magnetic. He wants the invisible multiplier that makes everything else he's built land harder.</p>
+            <br/>
+            <div class="col-label" style="margin-top:4px">JTBDs</div>
+            <ul class="list-items jtbd">
+              <li>Close the gap between competent and magnetic — be the person people want in the room</li>
+              <li>Command attention when he walks in, not just when he speaks</li>
+              <li>Make charisma work in boardrooms, social settings, and 1:1 relationships simultaneously</li>
+              <li>Lead with presence, not just performance — be known, not just respected</li>
+              <li>Have social impact that multiplies everything else he's already built</li>
+            </ul>
+            <br/>
+            <div class="col-label" style="margin-top:4px">Blockers</div>
+            <ul class="list-items blk">
+              <li>Pride blocks admission: can't acknowledge this as a weak spot publicly or to himself <span class="blk-tag">Status protection</span></li>
+              <li>Gets by on competence alone — status reduces urgency, delays real investment <span class="blk-tag">Complacency drift</span></li>
+              <li>"If I'm learning this, is it really me?" — authenticity concern blocks entry <span class="blk-tag">Authenticity paradox</span></li>
+              <li>Underestimates the gap — slightly overconfident about his current social impact <span class="blk-tag">Dunning-Kruger edge</span></li>
+            </ul>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Reddit Proof Threads</div>
+            <div class="thread-list">
+              <div class="thread">
+                <a href="https://reddit.com/r/selfimprovement/comments/rr915h/" target="_blank">
+                  <div class="thread-title">The concept of alpha/beta/sigma males is bullshit — here's what actually commands a room</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/selfimprovement</span>
+                  <span class="thread-pts">1,351 pts · 165 comments</span>
+                </div>
+                <div class="thread-quote">"Think of all the truly impressive men you've encountered. The ones who command attention of a room, who can navigate social situations with ease, who give off a vibe that they're not to be fucked with without saying a word. They wouldn't call themselves alphas."</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/seduction/comments/e8i5hq/" target="_blank">
+                  <div class="thread-title">Apparently, my dad was a legend</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/seduction</span>
+                  <span class="thread-pts">2,618 pts · 132 comments</span>
+                </div>
+                <div class="thread-quote">"I always wondered how he magnetically pulled people in. Everyone he met liked him and he was not really doing anything special. I was intrigued by him. My barber still talks about him — 'if you are like your dad you won't be bad.'"</div>
+              </div>
+              <div class="thread">
+                <a href="https://reddit.com/r/selfimprovement/comments/" target="_blank">
+                  <div class="thread-title">How do you become magnetic and captivating just in your presence?</div>
+                </a>
+                <div class="thread-meta">
+                  <span class="thread-sub">r/selfimprovement</span>
+                  <span class="thread-pts">423 pts · high engagement</span>
+                </div>
+                <div class="thread-quote">"There are people who walk into a room and without saying a single word, every eye is already on them. Magnetic, captivating, full of aura. You don't know them but you want to. What gives these types of people this power? Is it learnable?"</div>
+              </div>
+            </div>
+          </div>
+          <div class="seg-col">
+            <div class="col-label">Messaging Unlock</div>
+            <p class="seg-desc"><strong>"Charisma is the last high-leverage variable you haven't optimized."</strong> Sell mastery, not recovery. Elite positioning, scarcity, and outcome metrics close this segment. Vulnerability or healing language will permanently lose him.</p>
+          </div>
+        </div>
+        <div class="insight-bar"><strong>Core charisma gap:</strong> He delivers results but doesn't generate pull. The gap between "respected" and "magnetic" is exactly what charisma mastery addresses — and it's the gap he feels most acutely once everything else is built.</div>
+      </div>
+
+    </div>
+  </div><!-- /cat3 -->
+
+</div><!-- /main -->
+
+<script>
+  // Active nav link highlighting on scroll
+  const subs = document.querySelectorAll('.nav-sub');
+  const sections = [...document.querySelectorAll('[id^="s"]')];
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        subs.forEach(s => s.classList.remove('active'));
+        const match = document.querySelector('.nav-sub[href="#' + e.target.id + '"]');
+        if(match) match.classList.add('active');
+      }
+    });
+  }, {threshold: 0.3});
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

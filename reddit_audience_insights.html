@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audience Insights from Reddit · 7 Clusters · Posts & Comments</title>
+<style>
+  :root {
+    --bg:      #0d0d14;
+    --surface: #161623;
+    --card:    #1e1e2e;
+    --border:  #2a2a3d;
+    --text:    #e2e2f0;
+    --muted:   #7c7c9a;
+
+    --fa-color:    #6c63ff;
+    --da-color:    #ff6b9d;
+    --dot-color:   #43e8c2;
+    --dof-color:   #f59e0b;
+    --anx-color:   #f472b6;
+    --avo-color:   #34d399;
+    --dis-color:   #a78bfa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 1.65; }
+
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(13,13,20,.96); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; flex-wrap: wrap; gap: 0; }
+  nav a { color: var(--muted); text-decoration: none; padding: .65rem .9rem; font-size: .75rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; border-bottom: 2px solid transparent; transition: all .2s; white-space: nowrap; }
+  nav a:hover { color: var(--text); }
+  nav a.s-fa  { border-color: var(--fa-color);  color: var(--fa-color);  }
+  nav a.s-da  { border-color: var(--da-color);  color: var(--da-color);  }
+  nav a.s-dot { border-color: var(--dot-color); color: var(--dot-color); }
+  nav a.s-dof { border-color: var(--dof-color); color: var(--dof-color); }
+  nav a.s-anx { border-color: var(--anx-color); color: var(--anx-color); }
+  nav a.s-avo { border-color: var(--avo-color); color: var(--avo-color); }
+  nav a.s-dis { border-color: var(--dis-color); color: var(--dis-color); }
+
+  .hero { padding: 4rem 2rem 2.5rem; max-width: 1100px; margin: 0 auto; }
+  .hero h1 { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, #6c63ff, #f472b6, #43e8c2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: .5rem; }
+  .hero p  { color: var(--muted); max-width: 680px; font-size: .95rem; }
+  .stat-row { display: flex; gap: 1.2rem; margin-top: 1.8rem; flex-wrap: wrap; }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.4rem; }
+  .stat .num { font-size: 1.8rem; font-weight: 800; line-height: 1; }
+  .stat .lbl { color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; margin-top: .25rem; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 0 2rem 5rem; }
+  section { margin-bottom: 4rem; scroll-margin-top: 56px; }
+  h2 { font-size: 1.45rem; font-weight: 700; margin-bottom: 1.4rem; padding-bottom: .55rem; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1rem; font-weight: 700; margin-bottom: .7rem; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
+  @media (max-width: 760px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.3rem 1.4rem; }
+
+  /* cluster accent tops */
+  .c-fa  { border-top: 3px solid var(--fa-color);  }
+  .c-da  { border-top: 3px solid var(--da-color);  }
+  .c-dot { border-top: 3px solid var(--dot-color); }
+  .c-dof { border-top: 3px solid var(--dof-color); }
+  .c-anx { border-top: 3px solid var(--anx-color); }
+  .c-avo { border-top: 3px solid var(--avo-color); }
+  .c-dis { border-top: 3px solid var(--dis-color); }
+
+  .badge { display: inline-block; font-size: .68rem; font-weight: 700; padding: .18rem .65rem; border-radius: 20px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .7rem; }
+  .b-fa  { background: rgba(108,99,255,.15);  color: var(--fa-color);  }
+  .b-da  { background: rgba(255,107,157,.15); color: var(--da-color);  }
+  .b-dot { background: rgba(67,232,194,.15);  color: var(--dot-color); }
+  .b-dof { background: rgba(245,158,11,.15);  color: var(--dof-color); }
+  .b-anx { background: rgba(244,114,182,.15); color: var(--anx-color); }
+  .b-avo { background: rgba(52,211,153,.15);  color: var(--avo-color); }
+  .b-dis { background: rgba(167,139,250,.15); color: var(--dis-color); }
+
+  .cluster-title { font-size: 1.05rem; font-weight: 800; margin-bottom: .3rem; }
+  .cluster-sub   { font-size: .78rem; color: var(--muted); margin-bottom: 1rem; }
+
+  .row-item { display: flex; justify-content: space-between; align-items: flex-start; padding: .5rem 0; border-bottom: 1px solid var(--border); font-size: .85rem; gap: 1rem; }
+  .row-item:last-child { border-bottom: none; }
+  .row-item .tag { font-size: .72rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: .1rem .45rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+
+  .pill-row { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .6rem; }
+  .pill { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: .22rem .75rem; font-size: .76rem; color: var(--muted); }
+
+  .quote-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.3rem; margin-bottom: .85rem; }
+  .quote-card blockquote { font-size: .88rem; font-style: italic; color: #c4c4e0; line-height: 1.7; margin-bottom: .5rem; }
+  .quote-meta { font-size: .73rem; color: var(--muted); }
+
+  .jtbd-card { background: var(--card); border: 1px solid var(--border); border-left: 4px solid; border-radius: 0 14px 14px 0; padding: 1.2rem 1.4rem; margin-bottom: .95rem; }
+  .jtbd-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: .35rem; }
+  .jtbd-text  { font-size: .93rem; line-height: 1.65; }
+  .jtbd-text em { font-style: normal; font-weight: 700; }
+
+  .callout { background: rgba(108,99,255,.07); border: 1px solid rgba(108,99,255,.22); border-radius: 12px; padding: 1.1rem 1.3rem; margin-top: 1.1rem; font-size: .88rem; color: #d0d0f0; }
+  .callout strong { color: #a78bfa; }
+
+  .partner-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem; }
+  .partner-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: .4rem; }
+  .partner-name  { font-size: 1rem; font-weight: 800; margin-bottom: .5rem; }
+  .partner-desc  { font-size: .83rem; color: var(--muted); line-height: 1.6; margin-bottom: .7rem; }
+
+  .outcome-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  @media (max-width: 760px) { .outcome-grid { grid-template-columns: 1fr; } }
+  .outcome-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem; }
+  .outcome-icon  { font-size: 1.3rem; margin-bottom: .4rem; }
+  .outcome-title { font-weight: 700; font-size: .9rem; margin-bottom: .25rem; }
+  .outcome-desc  { font-size: .8rem; color: var(--muted); line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#overview">Overview</a>
+  <a href="#clusters">Clusters</a>
+  <a href="#partners">Partner Archetypes</a>
+  <a href="#pain">Pain Points</a>
+  <a href="#outcomes">Desired Outcomes</a>
+  <a href="#jtbd">JTBDs</a>
+  <a href="#voices">Voices</a>
+</nav>
+
+<div class="hero">
+  <h1>Audience Insights from Reddit</h1>
+  <p>Pain points, partner descriptions, and jobs-to-be-done extracted from posts and comments across 7 Reddit clusters — 4 male dating communities and 3 attachment style communities.</p>
+  <div class="stat-row">
+    <div class="stat"><div class="num" style="color:#6c63ff">1,205</div><div class="lbl">Posts Analyzed</div></div>
+    <div class="stat"><div class="num" style="color:#f472b6">17,751</div><div class="lbl">Comments Analyzed</div></div>
+    <div class="stat"><div class="num" style="color:#43e8c2">7</div><div class="lbl">Clusters</div></div>
+    <div class="stat"><div class="num" style="color:#f59e0b">4</div><div class="lbl">Dating Communities</div></div>
+    <div class="stat"><div class="num" style="color:#a78bfa">3</div><div class="lbl">Attachment Style Communities</div></div>
+  </div>
+</div>
+
+<main>
+
+<!-- ═══ OVERVIEW ═══ -->
+<section id="overview">
+  <h2>Who Is This Audience?</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Shared Traits Across All Clusters</h3>
+      <div class="row-item">Aware something is broken in how they relate to others <span class="tag">Universal</span></div>
+      <div class="row-item">Self-reflect openly and in detail about their own patterns <span class="tag">Universal</span></div>
+      <div class="row-item">Have tried the standard advice ("just communicate") and it didn't work <span class="tag">Universal</span></div>
+      <div class="row-item">Use Reddit as a confessional, therapy substitute, and reality-check <span class="tag">Universal</span></div>
+      <div class="row-item">Experience profound shame or confusion about why they can't "just be normal" <span class="tag">Universal</span></div>
+      <div class="row-item">Want to understand the root cause, not just manage symptoms <span class="tag">Universal</span></div>
+      <div class="row-item">Deep fear of dying alone / permanent unlovability <span class="tag">Universal</span></div>
+    </div>
+    <div class="card">
+      <h3>Key Differences Between Dating & Attachment Clusters</h3>
+      <div class="row-item">Dating clusters: problem-focused, searching for external solutions <span class="tag">r/dating*</span></div>
+      <div class="row-item">Attachment clusters: internally-focused, already doing the inner work <span class="tag">r/anxious*</span></div>
+      <div class="row-item">Dating clusters: partner is "the problem" they're trying to decode <span class="tag">r/dating*</span></div>
+      <div class="row-item">Attachment clusters: self is "the problem" they're trying to fix <span class="tag">r/attach*</span></div>
+      <div class="row-item">ForeverAlone: no partner at all — the wound is identity-level <span class="tag">r/FA</span></div>
+      <div class="row-item">Over-30/40 clusters: urgency + grief layer ("it's too late") <span class="tag">r/dot/dof</span></div>
+      <div class="row-item">Disorganized: most complex internal conflict, least served by content <span class="tag">r/FA</span></div>
+    </div>
+  </div>
+  <div class="callout">
+    <strong>The through-line:</strong> Every cluster shares a version of the same core wound — the gap between how much they want genuine connection and how unable they feel to create or keep it. The dating clusters blame external circumstances or partners. The attachment clusters have turned that gaze inward. Both are in pain; the attachment clusters are further along in understanding why.
+  </div>
+</section>
+
+<!-- ═══ CLUSTERS ═══ -->
+<section id="clusters">
+  <h2>The 7 Clusters</h2>
+
+  <!-- ROW 1: Dating clusters -->
+  <div class="grid-2" style="margin-bottom:1.1rem;">
+
+    <div class="card c-fa" id="c-fa">
+      <span class="badge b-fa">ForeverAlone · 120 posts · 510 comments</span>
+      <div class="cluster-title" style="color:var(--fa-color)">The Isolated Non-Starter</div>
+      <div class="cluster-sub">Young men (18–28) who have never been in a relationship. Loneliness as an identity, not just a circumstance.</div>
+      <div class="row-item">Age <span class="tag">18–28 peak</span></div>
+      <div class="row-item">Gender <span class="tag">Overwhelmingly male</span></div>
+      <div class="row-item">Relationship history <span class="tag">None — often first kiss / date too</span></div>
+      <div class="row-item">Often neurodivergent / socially anxious <span class="tag">High signal</span></div>
+      <div class="row-item">Self-image <span class="tag">Fundamentally undesirable</span></div>
+      <div class="row-item">Hiding relationship inexperience from peers <span class="tag">Major theme</span></div>
+      <div class="row-item">Shame spiral when revealed to others <span class="tag">Very high</span></div>
+    </div>
+
+    <div class="card c-da" id="c-da">
+      <span class="badge b-da">dating_advice · 102 posts · 708 comments</span>
+      <div class="cluster-title" style="color:var(--da-color)">The Young Active Dater</div>
+      <div class="cluster-sub">Young men (18–30) actively in the dating pool. Hopeful but navigating confusing norms, apps, and first-date anxiety.</div>
+      <div class="row-item">Age <span class="tag">18–30 peak</span></div>
+      <div class="row-item">Gender <span class="tag">Mostly male, some female</span></div>
+      <div class="row-item">Relationship history <span class="tag">Limited, early stage</span></div>
+      <div class="row-item">Dating app frustration (match inequality) <span class="tag">Very high</span></div>
+      <div class="row-item">Fear of misreading signals / escalation anxiety <span class="tag">High</span></div>
+      <div class="row-item">Seeking validation that they are attractive <span class="tag">High</span></div>
+      <div class="row-item">Looking for tactical / practical advice <span class="tag">Primary mode</span></div>
+    </div>
+
+  </div>
+
+  <div class="grid-2" style="margin-bottom:1.1rem;">
+
+    <div class="card c-dot" id="c-dot">
+      <span class="badge b-dot">datingoverthirty · 125 posts · 998 comments</span>
+      <div class="cluster-title" style="color:var(--dot-color)">The Experienced, Burned Re-Entrant</div>
+      <div class="cluster-sub">30–45, often out of a long relationship or marriage. Wiser but more guarded, frustrated by unavailable partners, pressed for time.</div>
+      <div class="row-item">Age <span class="tag">30–45</span></div>
+      <div class="row-item">Gender <span class="tag">Mixed — slightly female-leaning</span></div>
+      <div class="row-item">Relationship history <span class="tag">Long-term relationship / marriage ended</span></div>
+      <div class="row-item">Ghosting / disappearing partners <span class="tag">Major grievance</span></div>
+      <div class="row-item">Wasted time on emotionally unavailable people <span class="tag">Very high</span></div>
+      <div class="row-item">Want to vet quickly for commitment readiness <span class="tag">Primary need</span></div>
+      <div class="row-item">Fear of repeating the same relationship mistake <span class="tag">High</span></div>
+    </div>
+
+    <div class="card c-dof" id="c-dof">
+      <span class="badge b-dof">datingoverforty · 107 posts · 905 comments</span>
+      <div class="cluster-title" style="color:var(--dof-color)">The Second-Chapter Seeker</div>
+      <div class="cluster-sub">40–55, often divorced / widowed with kids. Acutely aware of time. Wants a companion who adds to an already-built life, not someone to "fix."</div>
+      <div class="row-item">Age <span class="tag">40–55</span></div>
+      <div class="row-item">Gender <span class="tag">Mixed — clear female voice present</span></div>
+      <div class="row-item">Relationship history <span class="tag">Marriage(s) ended, often with children</span></div>
+      <div class="row-item">Heartbreak hits existentially — "it's too late" <span class="tag">Defining emotion</span></div>
+      <div class="row-item">High selectivity — no time for games <span class="tag">Strong signal</span></div>
+      <div class="row-item">Partner must fit existing life, not replace it <span class="tag">Key criterion</span></div>
+      <div class="row-item">Scam / safety awareness higher than other clusters <span class="tag">Notable</span></div>
+    </div>
+
+  </div>
+
+  <div class="grid-3">
+
+    <div class="card c-anx" id="c-anx">
+      <span class="badge b-anx">r/AnxiousAttachment · 275 posts · 6,643 comments</span>
+      <div class="cluster-title" style="color:var(--anx-color)">The Preoccupied Lover</div>
+      <div class="cluster-sub">Self-identified anxiously attached. In or recently out of a relationship with an avoidant. Doing the inner work but struggling to stop protest behaviors.</div>
+      <div class="row-item">Gender <span class="tag">Skews female</span></div>
+      <div class="row-item">Typical partner <span class="tag">Dismissive avoidant</span></div>
+      <div class="row-item">Core wound <span class="tag">Fear of abandonment</span></div>
+      <div class="row-item">Self-aware about patterns <span class="tag">Very high</span></div>
+      <div class="row-item">In or adjacent to therapy <span class="tag">High</span></div>
+      <div class="row-item">Goal: heal, not just understand <span class="tag">Primary</span></div>
+    </div>
+
+    <div class="card c-avo" id="c-avo">
+      <span class="badge b-avo">r/AvoidantAttachment · 282 posts · 4,456 comments</span>
+      <div class="cluster-title" style="color:var(--avo-color)">The Defensive Distancer</div>
+      <div class="cluster-sub">Self-identified dismissive avoidants. Analytical, intellectually honest about their patterns, tired of being pathologized. Want understanding, not blame.</div>
+      <div class="row-item">Gender <span class="tag">Mixed</span></div>
+      <div class="row-item">Typical partner <span class="tag">Anxious / preoccupied</span></div>
+      <div class="row-item">Core wound <span class="tag">Fear of engulfment / loss of self</span></div>
+      <div class="row-item">Pushback against villainization <span class="tag">Dominant theme</span></div>
+      <div class="row-item">Lose attraction when partner becomes "possessive" <span class="tag">Very high</span></div>
+      <div class="row-item">Want compassionate framework for their patterns <span class="tag">Primary need</span></div>
+    </div>
+
+    <div class="card c-dis" id="c-dis">
+      <span class="badge b-dis">r/fearfulavoidant · 174 posts · 4,531 comments</span>
+      <div class="cluster-title" style="color:var(--dis-color)">The Hot-Cold Torn One</div>
+      <div class="cluster-sub">Fearful-avoidant / disorganized. Experience contradictory needs simultaneously — desperate for closeness, terrified by it. The most complex and underserved cluster.</div>
+      <div class="row-item">Gender <span class="tag">Mixed, clear female voice</span></div>
+      <div class="row-item">Typical partner <span class="tag">Avoidant (chosen for safety) or secure (run from)</span></div>
+      <div class="row-item">Core wound <span class="tag">Intimacy = danger</span></div>
+      <div class="row-item">Self-sabotage when things go well <span class="tag">Defining pattern</span></div>
+      <div class="row-item">Off-on cycling with the same person <span class="tag">Very common</span></div>
+      <div class="row-item">Most self-aware cluster, least sure how to change <span class="tag">Key tension</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ PARTNER ARCHETYPES ═══ -->
+<section id="partners">
+  <h2>How Each Cluster Describes Their Partner</h2>
+  <p style="color:var(--muted);font-size:.88rem;margin-bottom:1.4rem;">The language people use to describe who they're attracted to — or stuck with — reveals the relational dynamic driving their pain.</p>
+
+  <div class="grid-2" style="margin-bottom:1.1rem;">
+
+    <div class="partner-card c-fa">
+      <div class="partner-label" style="color:var(--fa-color)">ForeverAlone</div>
+      <div class="partner-name">The Unattainable / The Phantom</div>
+      <div class="partner-desc">FA members don't describe a real partner — they describe an absence. Women are discussed as a category: distant, unattainable, part of a world that doesn't include them. The "partner" is an idealized concept that feels permanently out of reach.</div>
+      <div class="pill-row">
+        <span class="pill">"Women don't even look at me"</span>
+        <span class="pill">"She found out and disappeared"</span>
+        <span class="pill">"All I want is someone who chooses me"</span>
+        <span class="pill">"Nothing I do is enough"</span>
+      </div>
+    </div>
+
+    <div class="partner-card c-da">
+      <div class="partner-label" style="color:var(--da-color)">dating_advice</div>
+      <div class="partner-name">The Signal-Sender / The Match</div>
+      <div class="partner-desc">Partner is mostly unknown — a date, a Tinder match, a coworker. The mystery of "what does she think of me?" dominates. Women are described in terms of their behavior (mixed signals, texting patterns, body language) that men desperately want to decode.</div>
+      <div class="pill-row">
+        <span class="pill">"She has 5000 matches, I have 2"</span>
+        <span class="pill">"I don't know how to read her"</span>
+        <span class="pill">"She seemed into me then went cold"</span>
+        <span class="pill">"Should I have kissed her?"</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="grid-2" style="margin-bottom:1.1rem;">
+
+    <div class="partner-card c-dot">
+      <div class="partner-label" style="color:var(--dot-color)">datingoverthirty</div>
+      <div class="partner-name">The Emotionally Unavailable One / The Ghoster</div>
+      <div class="partner-desc">Partners are described as people who seemed promising then disappeared, pulled back after intimacy, refused to commit, or were secretly still hung up on an ex. The defining betrayal is wasted time and withheld availability.</div>
+      <div class="pill-row">
+        <span class="pill">"He loved bombed me then vanished"</span>
+        <span class="pill">"She doesn't know what she wants"</span>
+        <span class="pill">"42, never married — not a coincidence"</span>
+        <span class="pill">"Ghosted after 3 months"</span>
+        <span class="pill">"He wants the benefits without committing"</span>
+      </div>
+    </div>
+
+    <div class="partner-card c-dof">
+      <div class="partner-label" style="color:var(--dof-color)">datingoverforty</div>
+      <div class="partner-name">The Emotionally Immature Adult / The Game-Player</div>
+      <div class="partner-desc">People who, despite their age, still act like they're 25 — non-committal, unavailable, or emotionally stunted. Also describes the ideal: someone secure, independent, who adds to rather than complicates a full life already built.</div>
+      <div class="pill-row">
+        <span class="pill">"At 50 he's still playing games?"</span>
+        <span class="pill">"He doesn't want to be married again"</span>
+        <span class="pill">"She's already built her happy life"</span>
+        <span class="pill">"Widower who travels — classic scammer profile"</span>
+        <span class="pill">"I want someone who adds to my life"</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="grid-3">
+
+    <div class="partner-card c-anx">
+      <div class="partner-label" style="color:var(--anx-color)">Anxious Attachment</div>
+      <div class="partner-name">The Dismissive Avoidant</div>
+      <div class="partner-desc">The avoidant partner is described with exhausting intimacy — their deactivation, their silences, their hot-and-cold cycles. Anxious people understand their partner more deeply than themselves. The DA is both the source of pain and the object of obsessive analysis.</div>
+      <div class="pill-row">
+        <span class="pill">"Deactivated out of nowhere"</span>
+        <span class="pill">"Gone for 10 days, acted like nothing happened"</span>
+        <span class="pill">"It's always push and pull with them"</span>
+        <span class="pill">"Makes me feel too much"</span>
+        <span class="pill">"The insanity felt like love"</span>
+      </div>
+    </div>
+
+    <div class="partner-card c-avo">
+      <div class="partner-label" style="color:var(--avo-color)">Dismissive Avoidant</div>
+      <div class="partner-name">The Suffocating Anxious / The Clinger</div>
+      <div class="partner-desc">Avoidant people describe anxious partners as needy, possessive, emotionally overwhelming. The moment a partner becomes too emotionally demanding, attraction disappears. But they also recognize their own role — and some describe the ideal secure partner who lets them breathe.</div>
+      <div class="pill-row">
+        <span class="pill">"The possessiveness kills my attraction"</span>
+        <span class="pill">"They can't give me space"</span>
+        <span class="pill">"'Ignoring me?' after one day — they're gone"</span>
+        <span class="pill">"It's not that I don't feel — I just feel it differently"</span>
+      </div>
+    </div>
+
+    <div class="partner-card c-dis">
+      <div class="partner-label" style="color:var(--dis-color)">Fearful-Avoidant</div>
+      <div class="partner-name">The Safe Avoidant (chosen) / The Secure One (run from)</div>
+      <div class="partner-desc">FA people consciously or unconsciously choose avoidant partners because true intimacy is never required. When someone secure and loving shows up — they run. They describe this pattern with devastating self-awareness: "I date unavailable men out of safety from my own anxiety."</div>
+      <div class="pill-row">
+        <span class="pill">"He ran every time I got close"</span>
+        <span class="pill">"Secure men scare me off"</span>
+        <span class="pill">"I date avoidants so I never have to be truly intimate"</span>
+        <span class="pill">"We've broken up 3 times and he keeps coming back"</span>
+        <span class="pill">"I called it 'weird' when they were actually into me"</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ PAIN POINTS ═══ -->
+<section id="pain">
+  <h2>Core Pain Points by Cluster</h2>
+
+  <div class="grid-2" style="margin-bottom:1.1rem;">
+    <div class="card c-fa">
+      <span class="badge b-fa">ForeverAlone</span>
+      <div class="row-item">Shame about inexperience — hiding it from everyone <span class="tag">Defining</span></div>
+      <div class="row-item">Family pressure / pity — parents who worry out loud <span class="tag">Very high</span></div>
+      <div class="row-item">Feeling fundamentally broken or unlovable <span class="tag">Core wound</span></div>
+      <div class="row-item">Being "found out" by coworkers / friends <span class="tag">Feared event</span></div>
+      <div class="row-item">Self-improvement didn't result in love ("I did everything right") <span class="tag">High</span></div>
+      <div class="row-item">Autistic / neurodivergent — doesn't read signals <span class="tag">Present</span></div>
+      <div class="row-item">Depression and isolation as compounding cycles <span class="tag">High</span></div>
+    </div>
+    <div class="card c-da">
+      <span class="badge b-da">dating_advice</span>
+      <div class="row-item">App inequality — women get thousands of matches, men get few <span class="tag">Top complaint</span></div>
+      <div class="row-item">Not knowing when / how to escalate physically <span class="tag">High anxiety</span></div>
+      <div class="row-item">Dating feels like a job interview — pressure to perform <span class="tag">Common</span></div>
+      <div class="row-item">Reading mixed signals wrong and losing the connection <span class="tag">High</span></div>
+      <div class="row-item">No clear masculine script anymore — confusion about roles <span class="tag">Present</span></div>
+      <div class="row-item">Single moms / complicated situations — unsure how to navigate <span class="tag">Present</span></div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:1.1rem;">
+    <div class="card c-dot">
+      <span class="badge b-dot">datingoverthirty</span>
+      <div class="row-item">Emotionally unavailable partners — looked great, disappeared <span class="tag">Dominant</span></div>
+      <div class="row-item">Wasted months / years on someone who wasn't serious <span class="tag">Very high</span></div>
+      <div class="row-item">Ghosting after genuine connection <span class="tag">Very high</span></div>
+      <div class="row-item">Trust issues from previous long relationship <span class="tag">High</span></div>
+      <div class="row-item">Dating app fatigue — everyone seems non-committal <span class="tag">High</span></div>
+      <div class="row-item">Difficulty meeting people outside apps organically <span class="tag">High</span></div>
+      <div class="row-item">Fear of repeating previous relationship mistake <span class="tag">High</span></div>
+    </div>
+    <div class="card c-dof">
+      <span class="badge b-dof">datingoverforty</span>
+      <div class="row-item">Heartbreak hits existentially — grief of "it's too late" <span class="tag">Defining</span></div>
+      <div class="row-item">Age-related dating pool problems (different life stages) <span class="tag">High</span></div>
+      <div class="row-item">Emotionally immature partners despite their age <span class="tag">High</span></div>
+      <div class="row-item">Men not wanting to commit again after divorce <span class="tag">High</span></div>
+      <div class="row-item">Dating with kids — logistics and emotional complexity <span class="tag">High</span></div>
+      <div class="row-item">Loneliness + despair layer beyond just relationship loss <span class="tag">High</span></div>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card c-anx">
+      <span class="badge b-anx">Anxious</span>
+      <div class="row-item">Protest behaviors push partners further away <span class="tag">Core trap</span></div>
+      <div class="row-item">Hypervigilance — scanning constantly for rejection signals <span class="tag">High</span></div>
+      <div class="row-item">Abandoning own needs to avoid conflict <span class="tag">High</span></div>
+      <div class="row-item">Obsessive analysis of partner's actions <span class="tag">Very high</span></div>
+      <div class="row-item">Feeling "too much" — not being able to regulate emotions alone <span class="tag">High</span></div>
+      <div class="row-item">Keeping choosing avoidant partners despite knowing better <span class="tag">Very high</span></div>
+    </div>
+    <div class="card c-avo">
+      <span class="badge b-avo">Avoidant</span>
+      <div class="row-item">Being portrayed as cold, selfish, or abusive <span class="tag">Top grievance</span></div>
+      <div class="row-item">Intimacy triggers repulsion / loss of attraction <span class="tag">Core pattern</span></div>
+      <div class="row-item">Feeling suffocated by emotional demands <span class="tag">High</span></div>
+      <div class="row-item">Can't explain why they deactivate — it just happens <span class="tag">High</span></div>
+      <div class="row-item">Others weaponizing attachment theory against them <span class="tag">High</span></div>
+      <div class="row-item">Knowing they push people away but unable to stop <span class="tag">Present</span></div>
+    </div>
+    <div class="card c-dis">
+      <span class="badge b-dis">Disorganized / FA</span>
+      <div class="row-item">Wanting closeness and fleeing from it simultaneously <span class="tag">Defining</span></div>
+      <div class="row-item">Off-on cycling — leaving and coming back repeatedly <span class="tag">Very high</span></div>
+      <div class="row-item">Self-sabotage when relationship goes well <span class="tag">Defining</span></div>
+      <div class="row-item">Choosing emotionally unavailable people "for safety" <span class="tag">High</span></div>
+      <div class="row-item">Trauma responses confused for attraction or love <span class="tag">High</span></div>
+      <div class="row-item">Most self-aware, least able to change <span class="tag">Core tension</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DESIRED OUTCOMES ═══ -->
+<section id="outcomes">
+  <h2>Desired Outcomes</h2>
+  <div class="outcome-grid">
+
+    <div class="outcome-card">
+      <div class="outcome-icon">🧩</div>
+      <div class="outcome-title">Understand Why They Are Like This</div>
+      <div class="outcome-desc">Not just "what to do" but why they keep ending up here — the root cause behind the pattern. Present across all 7 clusters. Without this, advice feels hollow.</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">🔄</div>
+      <div class="outcome-title">Break the Pattern, Not Just Name It</div>
+      <div class="outcome-desc">Stop attracting the same kind of person. Stop the same fight. Stop leaving or clinging. Action, not just insight. The #1 unmet need in every cluster.</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">🛡️</div>
+      <div class="outcome-title">Feel Safe in a Relationship</div>
+      <div class="outcome-desc">To stop the hypervigilance, fear, or need to escape — and experience genuine security. Anxious and FA clusters name this explicitly. Others imply it through everything they describe.</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">🪞</div>
+      <div class="outcome-title">Stop Feeling Broken or "Too Much"</div>
+      <div class="outcome-desc">Validation that their attachment needs are normal, not defective. Especially critical for anxious and ForeverAlone clusters. "Am I the problem?" is the unspoken question in most posts.</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">🧭</div>
+      <div class="outcome-title">Recognize the Right Person Early</div>
+      <div class="outcome-desc">Stop investing in unavailable people. Identify commitment-readiness, emotional maturity, and compatibility before months are wasted. Urgent for the 30+ and 40+ clusters.</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">💬</div>
+      <div class="outcome-title">Communicate Needs Without Losing the Person</div>
+      <div class="outcome-desc">Ask for what they need without triggering partner's avoidance or their own shame. The communication gap is named repeatedly — but "just communicate better" is universally rejected as unhelpful advice.</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">⏳</div>
+      <div class="outcome-title">Not Run Out of Time (40+ Cluster)</div>
+      <div class="outcome-desc">A love life before it's "too late." The 40+ cluster frames heartbreak as existential — one commenter wrote "at 45, I feel like it's too late for me." Time pressure shapes every decision they make.</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">🤝</div>
+      <div class="outcome-title">Be Chosen — Fully, Finally</div>
+      <div class="outcome-desc">Not tolerated. Not settled for. Not someone's option. Chosen. ForeverAlone and the 40+ cluster name this explicitly. Anxious people feel it implicitly — their protest behaviors are really a desperate bid to be chosen.</div>
+    </div>
+    <div class="outcome-card">
+      <div class="outcome-icon">🏠</div>
+      <div class="outcome-title">Earn Security (Become Secure)</div>
+      <div class="outcome-desc">The ultimate goal for attachment style clusters — not just a better relationship, but becoming someone who can have one. "Earned security" is the holy grail that makes all other outcomes possible.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ JTBDs ═══ -->
+<section id="jtbd">
+  <h2>Jobs To Be Done</h2>
+  <p style="color:var(--muted);font-size:.87rem;margin-bottom:1.4rem;">Format: When [situation], I want to [action], so I can [outcome].</p>
+
+  <div class="jtbd-card" style="border-left-color:var(--fa-color)">
+    <div class="jtbd-label">JTBD 1 · ForeverAlone — The Shame Spiral</div>
+    <div class="jtbd-text">When I'm in my mid-20s and I've never been in a relationship and the shame of my inexperience has become a secret I protect at all costs, I want to <em>understand what's actually holding me back — not surface-level "just get out there" advice</em>, so I can <em>stop feeling fundamentally unlovable and actually believe I'm someone worth choosing</em>.</div>
+  </div>
+
+  <div class="jtbd-card" style="border-left-color:var(--da-color)">
+    <div class="jtbd-label">JTBD 2 · dating_advice — The Signal Decoder</div>
+    <div class="jtbd-text">When I'm dating and I can't tell if someone is interested, don't know how to escalate, and feel like every interaction is a test I might fail, I want to <em>understand the real dynamics underneath dating norms</em>, so I can <em>stop second-guessing every move and connect with someone without performing the whole time</em>.</div>
+  </div>
+
+  <div class="jtbd-card" style="border-left-color:var(--dot-color)">
+    <div class="jtbd-label">JTBD 3 · datingoverthirty — The Time-Waster</div>
+    <div class="jtbd-text">When I've already invested months in someone who turned out to be emotionally unavailable — again — I want to <em>learn to recognize the signs of avoidance, non-commitment, and false availability early</em>, so I can <em>stop giving my time and emotional energy to people who were never going to show up for me</em>.</div>
+  </div>
+
+  <div class="jtbd-card" style="border-left-color:var(--dof-color)">
+    <div class="jtbd-label">JTBD 4 · datingoverforty — The Last Chance</div>
+    <div class="jtbd-text">When I'm in my 40s and heartbreak feels existential because there might not be many more chances left, I want to <em>find a path to a real partnership with an emotionally mature person who wants genuine companionship</em>, so I can <em>stop feeling like I've failed at love and still have a relationship that makes the second half of my life meaningful</em>.</div>
+  </div>
+
+  <div class="jtbd-card" style="border-left-color:var(--anx-color)">
+    <div class="jtbd-label">JTBD 5 · Anxious — The Protest Behavior Trap</div>
+    <div class="jtbd-text">When I can feel myself clinging, texting too much, performing calm I don't feel, and doing everything except expressing what I actually need — while my partner pulls further away — I want to <em>understand how to regulate my attachment system so I can be honest about my needs without triggering the very outcome I fear</em>, so I can <em>stop being the person who "ruins it" and finally feel safe enough to just love someone</em>.</div>
+  </div>
+
+  <div class="jtbd-card" style="border-left-color:var(--avo-color)">
+    <div class="jtbd-label">JTBD 6 · Avoidant — The Villainized Loner</div>
+    <div class="jtbd-text">When I want a real relationship but the moment someone gets emotionally close, I lose attraction or feel suffocated — and everything I read tells me I'm the cold, abusive one — I want to <em>find a framework that explains my avoidance with compassion instead of pathologizing it</em>, so I can <em>understand my own walls and gradually lower them without losing myself in the process</em>.</div>
+  </div>
+
+  <div class="jtbd-card" style="border-left-color:var(--dis-color)">
+    <div class="jtbd-label">JTBD 7 · Disorganized / FA — The Self-Saboteur</div>
+    <div class="jtbd-text">When I desperately want love but I consistently run from people who are actually good for me — and stay with people who aren't — and I understand exactly why but cannot stop doing it, I want <em>a concrete path for interrupting my own defense mechanisms before I destroy another relationship that could have been real</em>, so I can <em>stop arriving at the same devastating outcome from every direction and actually let someone in</em>.</div>
+  </div>
+</section>
+
+<!-- ═══ VOICES ═══ -->
+<section id="voices">
+  <h2>Verbatim Voices</h2>
+  <p style="color:var(--muted);font-size:.87rem;margin-bottom:1.4rem;">High-scoring quotes that capture the emotional core of each cluster.</p>
+
+  <h3 style="color:var(--fa-color);margin-bottom:.8rem;">ForeverAlone</h3>
+  <div class="quote-card">
+    <blockquote>"There is nothing worse than women around your age finding out that you're a loser. Nothing. It's the most humiliating, degrading, emasculating feeling known to man."</blockquote>
+    <div class="quote-meta">— 125↑ comment · r/ForeverAlone</div>
+  </div>
+  <div class="quote-card">
+    <blockquote>"Does anyone else kinda cringe when your parents talk about your future with the assumption you'll have a wife and kids one day? I'm a 25-year-old NEET. Whilst a small part of me still has hope, it's probably unlikely to happen at this point."</blockquote>
+    <div class="quote-meta">— 671↑ post · r/ForeverAlone</div>
+  </div>
+
+  <h3 style="color:var(--da-color);margin-top:1.4rem;margin-bottom:.8rem;">dating_advice</h3>
+  <div class="quote-card">
+    <blockquote>"It literally feels like a job interview 90% of the time. I feel like I gotta be this perfect person with zero flaws — say all the right things, be funny, confident, initiate the romance. I don't know how to just be myself on a date."</blockquote>
+    <div class="quote-meta">— 526↑ comment · r/dating_advice</div>
+  </div>
+  <div class="quote-card">
+    <blockquote>"She had like 5000 matches. I get 2. I'm not saying this is reality but from where I'm sitting the dynamic is so different — we're not even playing the same game."</blockquote>
+    <div class="quote-meta">— 5,768↑ post · r/dating_advice</div>
+  </div>
+
+  <h3 style="color:var(--dot-color);margin-top:1.4rem;margin-bottom:.8rem;">datingoverthirty</h3>
+  <div class="quote-card">
+    <blockquote>"42, never married, without kids, dating someone so much younger... dude does not want to commit. He likes the perks of a relationship without the obligations. He knows he can't play this game with women his age."</blockquote>
+    <div class="quote-meta">— 386↑ comment · r/datingoverthirty</div>
+  </div>
+  <div class="quote-card">
+    <blockquote>"I have literally never been so turned off by a human before. The worst part is I'm about to publish a book and had to tear myself away from the last few edits for this."</blockquote>
+    <div class="quote-meta">— 234↑ comment · r/datingoverthirty (after a deeply disrespectful date)</div>
+  </div>
+
+  <h3 style="color:var(--dof-color);margin-top:1.4rem;margin-bottom:.8rem;">datingoverforty</h3>
+  <div class="quote-card">
+    <blockquote>"45M — I've had my fair share of break-ups in life. But this time I have this overwhelming feeling of loneliness and despair — like it's too late for me because of how old I am. I feel like I haven't been in real love many times and this might have been my last shot."</blockquote>
+    <div class="quote-meta">— 447↑ post · r/datingoverforty</div>
+  </div>
+  <div class="quote-card">
+    <blockquote>"I didn't think that at 45, I'd be alone. I always thought I'd still be married and have the happy home that I didn't have growing up. Instead I'm slowly turning into the bitter divorced single dad who focuses way too much on my 7-year-old."</blockquote>
+    <div class="quote-meta">— 371↑ post · r/datingoverforty</div>
+  </div>
+
+  <h3 style="color:var(--anx-color);margin-top:1.4rem;margin-bottom:.8rem;">Anxious Attachment</h3>
+  <div class="quote-card">
+    <blockquote>"This is absolutely the best advice. That's why it concerns me so much when I read post upon post here that boil down to: 'how do I completely abandon myself and my needs so I can keep clinging for dear life to this person who's an absolutely shitty partner?'"</blockquote>
+    <div class="quote-meta">— 147↑ comment · r/AnxiousAttachment</div>
+  </div>
+  <div class="quote-card">
+    <blockquote>"She texted me back saying she had returned but didn't contact me for 10 days. When she came back she tried to act like nothing happened — but I asked her if everything was okay and told her that it's a basic need of mine to have communication. She didn't like that and has been cold since."</blockquote>
+    <div class="quote-meta">— 142↑ comment · r/AnxiousAttachment</div>
+  </div>
+
+  <h3 style="color:var(--avo-color);margin-top:1.4rem;margin-bottom:.8rem;">Dismissive Avoidant</h3>
+  <div class="quote-card">
+    <blockquote>"I notice that I become more attracted to them as we get closer — but only as long as the vibe stays playful and exploratory. But I immediately start losing interest when the other person's energy becomes more possessive or emotionally vulnerable."</blockquote>
+    <div class="quote-meta">— 231↑ comment · r/AvoidantAttachment</div>
+  </div>
+  <div class="quote-card">
+    <blockquote>"Avoidants who treat other people badly — which ghosting generally is — are the ones who give other avoidants a bad reputation. It's possible to be avoidant and still treat people with respect."</blockquote>
+    <div class="quote-meta">— 326↑ comment · r/AvoidantAttachment</div>
+  </div>
+
+  <h3 style="color:var(--dis-color);margin-top:1.4rem;margin-bottom:.8rem;">Fearful-Avoidant / Disorganized</h3>
+  <div class="quote-card">
+    <blockquote>"I just realized the reason I've been single for almost two years is because I have fearful-avoidant attachment. I date avoidant men out of safety from my own anxiety. If I never date someone who provides security, I never have to truly be intimate. Any secure man who has ever liked me — I ran."</blockquote>
+    <div class="quote-meta">— 1,707↑ post · r/fearfulavoidant</div>
+  </div>
+  <div class="quote-card">
+    <blockquote>"Just message them back, it's not hard — at least not in theory. It would be the easiest thing in the world. But I'm good at being likeable from a distance, pretty in a blurry photo, funny in 280 characters. The moment someone wants more than that, I find a way to make them not want it."</blockquote>
+    <div class="quote-meta">— 693↑ post · r/fearfulavoidant (self-written before knowing about FA attachment)</div>
+  </div>
+  <div class="quote-card">
+    <blockquote>"To every anxious and secure partner who's ever loved someone like me — I am sorry. We've left behind a trail of people who gave us patience, effort, and love, while we offered silence, distance, or defensiveness in return."</blockquote>
+    <div class="quote-meta">— 752↑ post · r/fearfulavoidant (An Apology From an Avoidant)</div>
+  </div>
+
+</section>
+
+</main>
+</body>
+</html>

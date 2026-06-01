@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Male Dating Loneliness — Research Report</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #222535;
+    --border: #2e3248;
+    --accent: #6c63ff;
+    --accent2: #ff6b9d;
+    --accent3: #43e8c2;
+    --text: #e8eaf6;
+    --muted: #8b90b8;
+    --quote-bg: #1e2236;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  a { color: var(--accent3); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #1a1d27 0%, #0f1117 60%, #13111f 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 40px 50px;
+    text-align: center;
+  }
+  header .label {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  header h1 {
+    font-size: 2.6rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #6c63ff, #ff6b9d, #43e8c2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+  header p {
+    color: var(--muted);
+    max-width: 640px;
+    margin: 0 auto;
+    font-size: 1rem;
+  }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+  section { padding: 60px 0; border-bottom: 1px solid var(--border); }
+  section:last-child { border-bottom: none; }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .section-sub {
+    color: var(--muted);
+    margin-bottom: 36px;
+    max-width: 640px;
+  }
+
+  /* ── STATS GRID ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 0;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .stat-card .number {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #6c63ff, #43e8c2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+  }
+  .stat-card .label {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 6px;
+  }
+
+  /* ── SUBREDDIT BARS ── */
+  .sub-bars { display: flex; flex-direction: column; gap: 10px; margin-top: 28px; }
+  .sub-bar-row { display: flex; align-items: center; gap: 12px; }
+  .sub-bar-label { width: 150px; font-size: 13px; color: var(--muted); text-align: right; flex-shrink: 0; }
+  .sub-bar-track { flex: 1; background: var(--surface2); border-radius: 6px; height: 10px; }
+  .sub-bar-fill { height: 10px; border-radius: 6px; background: linear-gradient(90deg, #6c63ff, #43e8c2); }
+  .sub-bar-count { width: 36px; font-size: 13px; color: var(--text); font-weight: 600; }
+
+  /* ── PATTERN CARDS ── */
+  .patterns-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 720px) { .patterns-grid { grid-template-columns: 1fr; } }
+
+  .pattern-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .pattern-card:hover { border-color: var(--accent); }
+  .pattern-num {
+    position: absolute;
+    top: 20px; right: 20px;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--border);
+  }
+  .pattern-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+  .pattern-card p { font-size: 13.5px; color: var(--muted); margin-bottom: 14px; line-height: 1.6; }
+  .pattern-card .evidence {
+    background: var(--quote-bg);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text);
+    font-style: italic;
+  }
+  .pattern-card .evidence cite {
+    display: block;
+    margin-top: 6px;
+    font-style: normal;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    background: var(--surface2);
+    color: var(--accent3);
+    border-radius: 20px;
+    padding: 2px 10px;
+    margin-bottom: 10px;
+  }
+
+  /* ── THREADS ── */
+  .threads-list { display: flex; flex-direction: column; gap: 20px; }
+  .thread-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+  }
+  .thread-card .meta {
+    display: flex; gap: 14px; align-items: center;
+    margin-bottom: 10px; flex-wrap: wrap;
+  }
+  .thread-card .sub-tag {
+    font-size: 11px;
+    background: var(--surface2);
+    color: var(--accent);
+    border-radius: 20px;
+    padding: 3px 10px;
+  }
+  .thread-card .score-tag {
+    font-size: 12px;
+    color: var(--accent3);
+    font-weight: 700;
+  }
+  .thread-card .comment-tag {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .thread-card h3 {
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .thread-card h3 a { color: var(--text); }
+  .thread-card h3 a:hover { color: var(--accent3); }
+  .thread-card .theme-badge {
+    display: inline-block;
+    font-size: 11px;
+    background: rgba(108,99,255,0.15);
+    color: var(--accent);
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: 20px;
+    padding: 2px 10px;
+    margin-bottom: 14px;
+  }
+  .comments-block { display: flex; flex-direction: column; gap: 10px; }
+  .comment-item {
+    background: var(--quote-bg);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text);
+    font-style: italic;
+    line-height: 1.5;
+  }
+  .comment-item .comment-score {
+    font-style: normal;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  /* ── JTBD ── */
+  .jtbd-list { display: flex; flex-direction: column; gap: 16px; }
+  .jtbd-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 26px;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 20px;
+    align-items: start;
+    transition: border-color 0.2s;
+  }
+  .jtbd-item:hover { border-color: var(--accent); }
+  .jtbd-num {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, #6c63ff22, #43e8c222);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .jtbd-content h3 { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 8px; }
+  .jtbd-statement {
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  .jtbd-statement .when { color: #a78bfa; }
+  .jtbd-statement .want { color: #f472b6; }
+  .jtbd-statement .so  { color: var(--accent3); }
+  .jtbd-intensity {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  .intensity-high { background: rgba(255,107,157,0.15); color: #ff6b9d; border: 1px solid rgba(255,107,157,0.3); }
+  .intensity-med  { background: rgba(67,232,194,0.1);  color: #43e8c2; border: 1px solid rgba(67,232,194,0.3); }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="label">Reddit Research · Qualitative + Quantitative</div>
+  <h1>Male Dating Loneliness<br>Research Report</h1>
+  <p>A data-driven analysis of why men struggle to find relationships — based on real Reddit threads, upvoted experiences, and classified insights.</p>
+</header>
+
+<!-- ── METHODOLOGY ── -->
+<section>
+  <div class="container">
+    <div class="section-label">Methodology</div>
+    <h2>How this research was done</h2>
+    <p class="section-sub">Analysis based on 332 high-relevance posts and 2,140 comments across 12 communities, spanning 15+ years of data (2010–2026).</p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="number">5,730</span>
+        <span class="label">Posts scraped</span>
+      </div>
+      <div class="stat-card">
+        <span class="number">332</span>
+        <span class="label">High-relevance posts</span>
+      </div>
+      <div class="stat-card">
+        <span class="number">236K</span>
+        <span class="label">Total upvotes</span>
+      </div>
+      <div class="stat-card">
+        <span class="number">61,885</span>
+        <span class="label">Total comments</span>
+      </div>
+      <div class="stat-card">
+        <span class="number">2,140</span>
+        <span class="label">Comments analysed (5+ upvotes)</span>
+      </div>
+      <div class="stat-card">
+        <span class="number">12</span>
+        <span class="label">Subreddits covered</span>
+      </div>
+      <div class="stat-card">
+        <span class="number">15+</span>
+        <span class="label">Years of posts (2010–2026)</span>
+      </div>
+      <div class="stat-card">
+        <span class="number">712</span>
+        <span class="label">Avg upvotes per post</span>
+      </div>
+    </div>
+
+    <div class="sub-bars" style="margin-top:40px;">
+      <p class="section-label" style="margin-bottom:16px;">Posts by community</p>
+      <div class="sub-bar-row"><span class="sub-bar-label">r/ForeverAlone</span><div class="sub-bar-track"><div class="sub-bar-fill" style="width:100%"></div></div><span class="sub-bar-count">85</span></div>
+      <div class="sub-bar-row"><span class="sub-bar-label">r/dating_advice</span><div class="sub-bar-track"><div class="sub-bar-fill" style="width:56%"></div></div><span class="sub-bar-count">48</span></div>
+      <div class="sub-bar-row"><span class="sub-bar-label">r/AskMen</span><div class="sub-bar-track"><div class="sub-bar-fill" style="width:51%"></div></div><span class="sub-bar-count">43</span></div>
+      <div class="sub-bar-row"><span class="sub-bar-label">r/dating</span><div class="sub-bar-track"><div class="sub-bar-fill" style="width:49%"></div></div><span class="sub-bar-count">42</span></div>
+      <div class="sub-bar-row"><span class="sub-bar-label">r/lonely</span><div class="sub-bar-track"><div class="sub-bar-fill" style="width:49%"></div></div><span class="sub-bar-count">42</span></div>
+      <div class="sub-bar-row"><span class="sub-bar-label">r/socialskills</span><div class="sub-bar-track"><div class="sub-bar-fill" style="width:34%"></div></div><span class="sub-bar-count">29</span></div>
+      <div class="sub-bar-row"><span class="sub-bar-label">r/self</span><div class="sub-bar-track"><div class="sub-bar-fill" style="width:21%"></div></div><span class="sub-bar-count">18</span></div>
+      <div class="sub-bar-row"><span class="sub-bar-label">r/TrueOffMyChest</span><div class="sub-bar-track"><div class="sub-bar-fill" style="width:12%"></div></div><span class="sub-bar-count">10</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 10 PATTERNS ── -->
+<section>
+  <div class="container">
+    <div class="section-label">Core Findings</div>
+    <h2>10 Patterns That Cause Loneliness</h2>
+    <p class="section-sub">These patterns appeared repeatedly across hundreds of threads and thousands of upvoted comments. They are not independent — each one feeds the next, forming a single reinforcing loop.</p>
+
+    <div class="patterns-grid">
+
+      <div class="pattern-card">
+        <span class="pattern-num">01</span>
+        <span class="tag">Most universal</span>
+        <h3>Approach Paralysis</h3>
+        <p>Men see the window but their body acts against them. Years of avoidance wire a freeze reflex that scripts and willpower can't override. The anxiety is physical, not logical.</p>
+        <div class="evidence">
+          "I'm going to be alone forever because I'll never have the courage to ask a woman out. I have social anxiety and the thought of being judged will never go away."
+          <cite>— r/ForeverAlone, 23M · 763 upvotes on post</cite>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <span class="pattern-num">02</span>
+        <span class="tag">Self-sealing trap</span>
+        <h3>The Inexperience Catch-22</h3>
+        <p>No experience → low confidence → fewer attempts → still no experience. Worse: the inexperience <em>shows</em> (nervousness, not knowing how to escalate) and reads as a red flag, confirming the fear.</p>
+        <div class="evidence">
+          "Most women see the fact that I've never had a girlfriend as a red flag and avoid me. That and I've never had a big enough social circle to meet women organically."
+          <cite>— r/ForeverAlone, 27M · 602 upvotes on post</cite>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <span class="pattern-num">03</span>
+        <span class="tag">No feedback loop</span>
+        <h3>Zero External Validation</h3>
+        <p>Women receive daily signals about their attractiveness. These men receive none — no compliments, no approaches, no flirting. They can't tell if they're unattractive or just presenting themselves wrong, so they default to "I must be ugly."</p>
+        <div class="evidence">
+          "I don't think I'm ugly solely because I've never had a date. I think I'm ugly because I've been called ugly enough times AND because I've never had a date."
+          <cite>— r/dating_advice · 1,077 upvotes on comment</cite>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <span class="pattern-num">04</span>
+        <span class="tag">Identity collapse</span>
+        <h3>Self-Worth Fused with Relationship Status</h3>
+        <p>They don't just feel lonely — they feel worthless as people because they've never been chosen. Every rejection confirms a core belief: "I am unlovable." That belief then drives behaviour that guarantees more rejection.</p>
+        <div class="evidence">
+          "People say just have confidence, but that has been completely stripped away after years of loneliness and rejection. I don't hate women, I hate myself for not being good enough."
+          <cite>— r/ForeverAlone, 26M · 881 upvotes on post</cite>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <span class="pattern-num">05</span>
+        <span class="tag">Infrastructure failure</span>
+        <h3>Social World Collapse</h3>
+        <p>No close friend group → no organic ways to meet women → more time alone → social skills atrophy → even harder to date. Dating requires social density to happen naturally — and that density is already gone.</p>
+        <div class="evidence">
+          "32M, never dated, no friends. Just my job and me. Not involved in any activities or fitness. Boredom of my boring life."
+          <cite>— r/lonely, 32M · 1,000 upvotes on post</cite>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <span class="pattern-num">06</span>
+        <span class="tag">Invisible signal</span>
+        <h3>Being the Safe Friend, Not the Romantic Interest</h3>
+        <p>They attract female friendship easily but never romantic interest. They don't signal intent, don't escalate, wait for her to "come around." Women read them as safe/non-threatening — which means non-romantic. By the time they want to say something, the frame is locked.</p>
+        <div class="evidence">
+          "I have 7 close female friends, go out with them regularly 1-on-1. I've never had a girlfriend. No one tries to introduce me to their single friends."
+          <cite>— r/dating_advice · 722 upvotes on post</cite>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <span class="pattern-num">07</span>
+        <span class="tag">Platform trap</span>
+        <h3>Dating Apps Creating a Distorted Reality</h3>
+        <p>Most effort goes into apps that structurally favour women (women swipe right on ~5% of men). Zero matches convinces them they're hopelessly unattractive. They also build profiles for the male gaze — cars, fish, gym — not what women respond to.</p>
+        <div class="evidence">
+          "A lot of men make their dating profiles surrounding the male gaze instead of the female gaze. Maybe showing your car and fish you caught would appeal to another guy, but not to many women."
+          <cite>— r/dating · 424 upvotes on comment</cite>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <span class="pattern-num">08</span>
+        <span class="tag">Compounding shame</span>
+        <h3>Shame and Secrecy Making it Worse</h3>
+        <p>They can't discuss this in real life because of the incel stigma. Secrecy compounds shame. Shame kills confidence. The only place they feel understood is anonymous Reddit threads — which gives relief but no change.</p>
+        <div class="evidence">
+          "I hate being forever alone but I think I hate the stigma almost as much. I'm not hateful, but people would assume I am if I told them my story."
+          <cite>— r/ForeverAlone, 29M · 1,000 upvotes on post</cite>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <span class="pattern-num">09</span>
+        <span class="tag">Advice failure</span>
+        <h3>Generic Advice That Doesn't Fit Their Problem</h3>
+        <p>"Just be confident." "Hit the gym." "Be yourself." These replies assume a baseline of social skills and emotional regulation they don't have. The advice makes them feel more broken — not helped.</p>
+        <div class="evidence">
+          "I'm sick of that normie advice too. Many of us have tried self-improvement and approaching — it doesn't really work for us. Just thinking more positively isn't going to magically land us dates."
+          <cite>— r/dating_advice · 342 upvotes on comment</cite>
+        </div>
+      </div>
+
+      <div class="pattern-card">
+        <span class="pattern-num">10</span>
+        <span class="tag">Deepest stage</span>
+        <h3>Accumulated Rejection Leading to Preemptive Surrender</h3>
+        <p>After years of failing, many stop before the attempt. They pre-reject themselves to avoid the pain. The giving-up feels like acceptance but it's the deepest stage of the spiral — the one that's hardest to reverse.</p>
+        <div class="evidence">
+          "I've been rejected, bullied and humiliated every time I approached a girl my whole life. Never kissed or held hands. I've been told: kys, stfu, creep, eww. Full of rejection."
+          <cite>— r/dating_advice, mid-30s · 91 upvotes on comment</cite>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:40px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:28px 32px;">
+      <p style="font-weight:700; margin-bottom:10px; color:var(--accent3);">The through-line</p>
+      <p style="color:var(--muted); font-size:14px; line-height:1.7;">These are not 10 separate problems. Approach paralysis → no experience → no validation → collapsed self-worth → social withdrawal → shame about it → bad advice → more rejection → surrender. <strong style="color:var(--text);">It's one reinforcing loop.</strong> Breaking any single link can interrupt the whole cycle — which is why targeted interventions at specific pain points can have outsized effect.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── TOP THREADS ── -->
+<section>
+  <div class="container">
+    <div class="section-label">Evidence</div>
+    <h2>Top Threads &amp; Key Insights</h2>
+    <p class="section-sub">Highest-resonance posts (by upvotes × relevance score) with the top comments that reveal the real pain underneath the surface topic.</p>
+
+    <div class="threads-list">
+
+      <div class="thread-card">
+        <div class="meta">
+          <span class="sub-tag">r/TrueOffMyChest</span>
+          <span class="score-tag">▲ 5,942 upvotes</span>
+          <span class="comment-tag">1,000+ comments</span>
+        </div>
+        <h3><a href="https://reddit.com/r/TrueOffMyChest/comments/1g0badd/my_little_brother_killed_himself_because_he/" target="_blank">My little brother killed himself because he couldn't get a girlfriend.</a></h3>
+        <span class="theme-badge">Accumulated rejection → crisis</span>
+        <div class="comments-block">
+          <div class="comment-item">The most upvoted thread in the dataset. The post itself is the insight — this isn't abstract suffering. For a significant subset of chronically lonely men, the endpoint of this loop is suicidal ideation. The post generated 5,942 upvotes because it resonated with thousands who recognised the trajectory.
+            <span class="comment-score">Signal: extreme end of the loneliness spiral — 5,942 upvotes</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="thread-card">
+        <div class="meta">
+          <span class="sub-tag">r/TrueOffMyChest</span>
+          <span class="score-tag">▲ 4,629 upvotes</span>
+          <span class="comment-tag">800+ comments</span>
+        </div>
+        <h3><a href="https://reddit.com/r/TrueOffMyChest/comments/st47yr/im_27_and_ive_never_had_sex_a_girlfriend_or_been/" target="_blank">I'm 27 and I've never had sex, a girlfriend, or been on a date, and sometimes I just want to disappear.</a></h3>
+        <span class="theme-badge">Shame of being late · Self-worth collapse</span>
+        <div class="comments-block">
+          <div class="comment-item">"Not having a girlfriend is 1 thing. Not being financially independent is 1 thing. Not being in shape is 1 thing. Not knowing what you want in life is 1 thing. There are a lot of other things. All of these add up." <span class="comment-score">▲ 997 upvotes — the community recognising the multi-layered nature of the problem</span></div>
+          <div class="comment-item">"I'm 31 in 2 weeks and never been in a relationship…" <span class="comment-score">▲ 199 upvotes — pure recognition response, no advice needed</span></div>
+        </div>
+      </div>
+
+      <div class="thread-card">
+        <div class="meta">
+          <span class="sub-tag">r/dating_advice</span>
+          <span class="score-tag">▲ 4,324 upvotes</span>
+          <span class="comment-tag">488 comments</span>
+        </div>
+        <h3><a href="https://reddit.com/r/dating_advice/comments/npeeyh/just_because_you_never_dated_or_never_had_a/" target="_blank">Just because you never dated or never had a girlfriend/boyfriend, doesn't mean you are ugly.</a></h3>
+        <span class="theme-badge">Zero validation · Self-image distortion</span>
+        <div class="comments-block">
+          <div class="comment-item">"I don't think I'm ugly solely because I've never had a date. I think I'm ugly because I've been called ugly enough times AND because I've never had a date lol." <span class="comment-score">▲ 1,077 upvotes — the most upvoted comment in the dataset. Reveals the double reinforcement: external insults + lack of experience = unshakeable negative self-image.</span></div>
+          <div class="comment-item">"Women get validation about their looks on a daily basis. Men, on the other hand, very rarely or never at all. How can a man know he's not ugly if he never gets any external validation?" <span class="comment-score">▲ 94 upvotes — identifies the feedback loop failure precisely</span></div>
+        </div>
+      </div>
+
+      <div class="thread-card">
+        <div class="meta">
+          <span class="sub-tag">r/AskMen</span>
+          <span class="score-tag">▲ 10,154 upvotes</span>
+          <span class="comment-tag">2,000+ comments</span>
+        </div>
+        <h3><a href="https://reddit.com/r/AskMen/comments/dcppf1/how_can_a_guy_get_rid_of_the_negative_self_talk/" target="_blank">How can a guy get rid of the negative self talk in his head?</a></h3>
+        <span class="theme-badge">Self-worth collapse · Advice failure</span>
+        <div class="comments-block">
+          <div class="comment-item">"'Just be more confident' / 'Just lift bro' / 'Take a shower'" — top-voted comment is literally a list of useless advice, upvoted because everyone recognised how hollow it is. <span class="comment-score">▲ 237 upvotes — mocking the generic advice that doesn't help</span></div>
+          <div class="comment-item">"I'm not going to bullshit you with 'just be confident bro' or 'it will sort itself out' because I understand how painful it is to feel unable to connect with others and only receive platitudes." <span class="comment-score">▲ 215 upvotes — the comments that land hardest are the ones that refuse to minimise</span></div>
+        </div>
+      </div>
+
+      <div class="thread-card">
+        <div class="meta">
+          <span class="sub-tag">r/self</span>
+          <span class="score-tag">▲ 682 upvotes</span>
+          <span class="comment-tag">1,036 comments</span>
+        </div>
+        <h3><a href="https://reddit.com/r/self/comments/1druste/i_just_want_a_girlfriend_so_badly/" target="_blank">I just want a girlfriend so badly. I'm 25, never in a relationship, never kissed a girl.</a></h3>
+        <span class="theme-badge">Physical loneliness · Inexperience loop</span>
+        <div class="comments-block">
+          <div class="comment-item">"Nah, I asked out my boyfriend when he was 24 with no experience at all. I am his first everything and that is sexy af. Having no relationship experience is not a minus — I would even argue it's a plus. It's nice having a clean slate and an open mind." <span class="comment-score">▲ 231 upvotes — one of the most helpful comments because it directly counters the red-flag fear with a real counter-example</span></div>
+          <div class="comment-item">"Hit the gym man. Don't chase women, build yourself to be something attractive to them." <span class="comment-score">▲ 333 upvotes — highest-voted response is still the generic advice, showing the disconnect between what people offer and what actually helps</span></div>
+        </div>
+      </div>
+
+      <div class="thread-card">
+        <div class="meta">
+          <span class="sub-tag">r/dating_advice</span>
+          <span class="score-tag">▲ 1,652 upvotes</span>
+          <span class="comment-tag">302 comments</span>
+        </div>
+        <h3><a href="https://reddit.com/r/dating_advice/comments/bfb1vm/im_a_shysocially_awkward_23_year_old_guy_turning/" target="_blank">I'm a shy/socially awkward 23 year old. Never had a girlfriend, never kissed a girl, never held a girl's hand. I feel like shit.</a></h3>
+        <span class="theme-badge">Approach anxiety · Learning mechanics</span>
+        <div class="comments-block">
+          <div class="comment-item">"Take it step by step. Ask someone for directions. Then ask a girl for the time. Then ask for the time and give a compliment as you walk away. Keep escalating the degree of difficulty. Over time your comfort zone will shift. It did for me." <span class="comment-score">▲ 755 upvotes — the most upvoted actionable comment in the dataset. Exposure therapy approach resonates because it doesn't require confidence first.</span></div>
+          <div class="comment-item">"Don't waste your youth being so shy." / "Yeah. I did. So much regret. So fucking much regret." <span class="comment-score">▲ 108 upvotes — the regret of older men looking back is a recurring undercurrent across threads</span></div>
+        </div>
+      </div>
+
+      <div class="thread-card">
+        <div class="meta">
+          <span class="sub-tag">r/ForeverAlone</span>
+          <span class="score-tag">▲ 1,062 upvotes</span>
+          <span class="comment-tag">159 comments</span>
+        </div>
+        <h3><a href="https://reddit.com/r/ForeverAlone/comments/iep6ea/i_found_a_girlfriend_i_made_it_bye_and_thank_you/" target="_blank">I found a girlfriend. I made it. Bye and thank you. (27M, never had a girlfriend before)</a></h3>
+        <span class="theme-badge">Success story · Breaking the loop</span>
+        <div class="comments-block">
+          <div class="comment-item">"It's dangerous to idealise relationships like this. If you've spent so much time visualising an ideal form of romance, you are not going to feel good when reality doesn't conform to that ideal." <span class="comment-score">▲ 56 upvotes — success stories expose a new risk: over-idealisation after years of longing</span></div>
+          <div class="comment-item">"Holy feck I was genuinely happy for you. Yeah man, it's a nasty habit living in the past — I'm so addicted to a girl from 16 years ago and I'm 28 now." <span class="comment-score">▲ 136 upvotes — shows how success stories trigger both hope and painful comparison</span></div>
+        </div>
+      </div>
+
+      <div class="thread-card">
+        <div class="meta">
+          <span class="sub-tag">r/dating</span>
+          <span class="score-tag">▲ 818 upvotes</span>
+          <span class="comment-tag">390 comments</span>
+        </div>
+        <h3><a href="https://reddit.com/r/dating/comments/nj1fvq/to_all_the_guys_who_get_little_or_no_matches_on/" target="_blank">To all the guys who get little or no matches on dating apps.</a></h3>
+        <span class="theme-badge">App strategy · Platform distortion</span>
+        <div class="comments-block">
+          <div class="comment-item">"A lot of men make their dating profiles surrounding the male gaze instead of the female gaze. Maybe showing your car and fish you caught would appeal to another guy, but not to many women." <span class="comment-score">▲ 424 upvotes — profile strategy insight with massive engagement</span></div>
+          <div class="comment-item">"Men need to swipe like women do — be selective, have standards. Spam-swiping tells the Tinder algorithm you're a bot and puts your profile at the back of the line." <span class="comment-score">▲ 130 upvotes — tactical insight about algorithm behaviour most men don't know</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── JTBD ── -->
+<section>
+  <div class="container">
+    <div class="section-label">Jobs to Be Done Framework</div>
+    <h2>15 Jobs to Be Done</h2>
+    <p class="section-sub">Each JTBD captures a specific moment where a man needs progress — derived directly from recurring situations described across hundreds of posts. Format: <span style="color:#a78bfa">When</span> [situation] → <span style="color:#f472b6">I want to</span> [action] → <span style="color:#43e8c2">So I can</span> [outcome].</p>
+
+    <div class="jtbd-list">
+
+      <div class="jtbd-item">
+        <div class="jtbd-num">1</div>
+        <div class="jtbd-content">
+          <h3>Breaking the inexperience loop</h3>
+          <p class="jtbd-statement">
+            <span class="when">When</span> my lack of dating experience is itself the reason women reject me,
+            <span class="want">I want to</span> build real experience step by step,
+            <span class="so">so I can</span> stop being disqualified before anyone gets the chance to know me.
+          </p>
+          <span class="jtbd-intensity intensity-high">High intensity</span>
+        </div>
+      </div>
+
+      <div class="jtbd-item">
+        <div class="jtbd-num">2</div>
+        <div class="jtbd-content">
+          <h3>Understanding what is actually blocking them</h3>
+          <p class="jtbd-statement">
+            <span class="when">When</span> I've done everything right — gym, career, therapy, hobbies — and still get zero results,
+            <span class="want">I want to</span> know exactly what is blocking me,
+            <span class="so">so I can</span> stop working on the wrong things and actually make progress.
+          </p>
+          <span class="jtbd-intensity intensity-high">High intensity</span>
+        </div>
+      </div>
+
+      <div class="jtbd-item">
+        <div class="jtbd-num">3</div>
+        <div class="jtbd-content">
+          <h3>Getting over approach anxiety</h3>
+          <p class="jtbd-statement">
+            <span class="when">When</span> I see a woman I'm attracted to,
+            <span class="want">I want to</span> start a conversation without freezing or spiraling,
+            <span class="so">so I can</span> give myself a real shot instead of watching the moment pass every time.
+          </p>
+          <span class="jtbd-intensity intensity-high">High intensity</span>
+        </div>
+      </div>
+
+      <div class="jtbd-item">
+        <div class="jtbd-num">4</div>
+        <div class="jtbd-content">
+          <h3>Learning the mechanics of dating from zero</h3>
+          <p class="jtbd-statement">
+            <span class="when">When</span> I finally get a date or a window to show interest,
+            <span class="want">I want to</span> know what to actually do and say at each stage,
+            <span class="so">so I can</span> move things forward without killing the moment through inexperience.
+          </p>
+          <span class="jtbd-intensity intensity-high">High intensity</span>
+        </div>
+      </div>
+
+      <div class="jtbd-item">
+        <div class="jtbd-num">5</div>
+        <div class="jtbd-content">
+          <h3>Decoding why less-deserving men succeed</h3>
+          <p class="jtbd-statement">
+            <span class="when">When</span> I see men who treat women badly get girlfriends while I fail despite genuinely trying,
+            <span class="want">I want to</span> understand what actually creates attraction,
+            <span class="so">so I can</span> stop feeling invisible and start doing things that work.
+          </p>
+          <span class="jtbd-intensity intensity-high">High intensity</span>
+        </div>
+      </div>
+
+      <div class="jtbd-item">
+        <div class="jtbd-num">6</div>
+        <div class="jtbd-content">
+          <h3>Escaping the friend zone pattern</h3>
+          <p class="jtbd-statement">
+            <span class="when">When</span> I keep ending up as a woman's close male friend instead of a romantic interest,
+            <span class="want">I want to</span> understand what signals I'm not sending,
+            <span class="so">so I can</span> express genuine interest early without it feeling awkward or crossing a line.
+          </p>
+          <span class="jtbd-intensity intensity-high">High intensity</span>
+        </div>
+      </div>
+
+      <div class="jtbd-item">
+        <div class="jtbd-num">7</div>
+        <div class="jtbd-content">
+          <h3>Coping with the physical sensation of loneliness</h3>
+          <p class="jtbd-statement">
+            <span class="when">When</span> days or weeks pass without any physical touch or human warmth,
+            <span class="want">I want to</span> find something that genuinely relieves the ache,
+            <span class="so">so I can</span> stay functional and not feel like I'm slowly disappearing.
+          </p>
+          <span class="jtbd-intensity intensity-high">High intensity</span>
+        </div>
+      </div>
+
+      <div class="jtbd-item">
+        <div class="jtbd-num">8</div>
+        <div class="jtbd-content">
+          <h3>Processing the shame of being "late"</h3>
+          <p class="jtbd-statement">
+            <span class="when">When</span> I'm in my late 20s or 30s and have never been in a relationship,
+            <span class="want">I want to</span> make peace with my own timeline,
+            <span class="so">so I can</span> stop the shame spiral that kills my confidence before I even try.
+          </p>
+          <span class="jtbd-intensity intensity-high">High intensity</span>
+        </div>
+      </div>
+
+      <div class="jtbd-item">
+        <div class="jtbd-num">9</div>
+        <div class="jtbd-content">
+          <h3>Finding where to actually meet women</h3>
+          <p class="jtbd-statement">
+            <span class="when">When</span> dating apps produce zero results and I have no idea where else to look,
+            <span class="want">I want to</span> get a concrete strategy for meeting women offline,
+            <span class="so">so I can</span> stop depending on an algorithm that works against me.
+          </p>
+          <span class="jtbd-intensity intensity-med">Medium–High</span>
+        </div>
+      </div>
+
+      <div class="jtbd-item">
+        <div class="jtbd-num">10</div>
+        <div class="jtbd-content">
+          <h3>Building self-worth not tied to relationship status</h3>
+          <p class="jtbd-statement">
+            <span class="when">When</span> I feel worthless because I've never been chosen by anyone,
+            <span class="want">I want to</span> build a sense of self that doesn't collapse with every rejection,
+            <span class="so">so I can</span> keep trying without sliding into depression.
+          </p>
+          <span class="jtbd-intensity intensity-high">High intensity</span>
+        </div>
+      </div>
+
+      <div class="jtbd-item">
+        <div class="jtbd-num">11</div>
+        <div class="jtbd-content">
+          <h3>Managing neurodivergence in dating</h3>
+          <p class="jtbd-statement">
+            <span class="when">When</span> I realize I'm autistic or neurodivergent and standard dating advice doesn't fit how my brain works,
+            <span class="want">I want to</span> get strategies designed specifically for me,
+            <span class="so">so I can</span> stop failing by following rules that were never made for people like me.
+          </p>
+          <span class="jtbd-intensity intensity-high">High intensity</span>
+        </div>
+      </div>
+
+      <div class="jtbd-item">
+        <div class="jtbd-num">12</div>
+        <div class="jtbd-content">
+          <h3>Destigmatising and discussing the experience</h3>
+          <p class="jtbd-statement">
+            <span class="when">When</span> I can't tell anyone in real life about my situation because they'll assume I'm an incel,
+            <span class="want">I want to</span> find a safe and honest space to talk about my experience,
+            <span class="so">so I can</span> stop carrying this alone and feel like I'm not a freak.
+          </p>
+          <span class="jtbd-intensity intensity-high">High intensity</span>
+        </div>
+      </div>
+
+      <div class="jtbd-item">
+        <div class="jtbd-num">13</div>
+        <div class="jtbd-content">
+          <h3>Dealing with social media and couples comparison</h3>
+          <p class="jtbd-statement">
+            <span class="when">When</span> I open my phone and see couples, Valentine's Day posts, or friends announcing relationships,
+            <span class="want">I want to</span> get through it without my mood collapsing,
+            <span class="so">so I can</span> maintain enough emotional stability to keep moving forward.
+          </p>
+          <span class="jtbd-intensity intensity-med">Medium</span>
+        </div>
+      </div>
+
+      <div class="jtbd-item">
+        <div class="jtbd-num">14</div>
+        <div class="jtbd-content">
+          <h3>Understanding and processing rejection</h3>
+          <p class="jtbd-statement">
+            <span class="when">When</span> I get rejected or ghosted after what felt like a genuine connection,
+            <span class="want">I want to</span> understand what actually happened,
+            <span class="so">so I can</span> learn something real instead of absorbing it as proof I'm unlovable.
+          </p>
+          <span class="jtbd-intensity intensity-med">Medium–High</span>
+        </div>
+      </div>
+
+      <div class="jtbd-item">
+        <div class="jtbd-num">15</div>
+        <div class="jtbd-content">
+          <h3>Overcoming fear of intensity after long abstinence</h3>
+          <p class="jtbd-statement">
+            <span class="when">When</span> I finally get close to someone and physical intimacy becomes possible,
+            <span class="want">I want to</span> manage the anxiety and intensity that comes from years of deprivation,
+            <span class="so">so I can</span> be present and not scare her away by needing too much too fast.
+          </p>
+          <span class="jtbd-intensity intensity-med">Medium–High</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>Research conducted May 2026 · Data sourced from public Reddit threads · 12 subreddits · 332 high-relevance posts · 2,140 classified comments</p>
+  </div>
+</footer>
+
+</body>
+</html>

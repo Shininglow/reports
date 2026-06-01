@@ -1,0 +1,82 @@
+﻿cluster,keyword,avg_interest,peak_interest,peak_month,msv_monthly,trend_direction,est_volume,is_trending
+Attraction & Dating,how to get a girlfriend,65,80,May 2026,22200,Rising,22.2K/mo,Yes
+Attraction & Dating,how to attract women,55,70,Sep 2025,14800,Declining,14.8K/mo,No
+Attraction & Dating,dating advice for men,46,61,Apr 2026,9900,Stable,9.9K/mo,No
+Attraction & Dating,how to talk to women,46,61,Feb 2026,8100,Stable,8.1K/mo,No
+Attraction & Dating,what women find attractive in men,46,61,Apr 2026,6600,Stable,6.6K/mo,No
+Attraction & Dating,dating tips for men,46,61,Apr 2026,6600,Rising,6.6K/mo,Yes
+Attraction & Dating,how to be more attractive to women,46,61,Apr 2026,6600,Rising,6.6K/mo,Yes
+Attraction & Dating,red pill dating,36,51,Apr 2026,4400,Rising,4.4K/mo,Yes
+Attraction & Dating,masculine energy attraction,36,51,Mar 2026,3600,Rising,3.6K/mo,Yes
+Charisma & Confidence,how to be more confident,65,80,Apr 2026,27100,Stable,27.1K/mo,No
+Charisma & Confidence,how to build confidence,55,70,Mar 2026,14800,Stable,14.8K/mo,No
+Charisma & Confidence,how to talk to people,55,70,Mar 2026,12100,Rising,12.1K/mo,Yes
+Charisma & Confidence,how to be more charismatic,46,61,Mar 2026,8100,Rising,8.1K/mo,Yes
+Charisma & Confidence,how to be outgoing,46,61,Apr 2026,6600,Declining,6.6K/mo,No
+Charisma & Confidence,how to be charming,46,61,Apr 2026,5400,Rising,5.4K/mo,Yes
+Charisma & Confidence,how to be more likeable,36,51,May 2026,4400,Rising,4.4K/mo,Yes
+Charisma & Confidence,social confidence,36,51,Feb 2026,4400,Stable,4.4K/mo,No
+Charisma & Confidence,self confidence tips,36,51,Nov 2025,3600,Rising,3.6K/mo,Yes
+Identity & Archetypes,sigma male,82,97,—,110000,Declining,110K/mo,No
+Identity & Archetypes,high value man,75,90,—,60500,Rising,60.5K/mo,Yes
+Identity & Archetypes,alpha male,65,80,—,40500,Declining,40.5K/mo,No
+Identity & Archetypes,sigma male meaning,65,80,Jun 2025,22200,Declining,22.2K/mo,No
+Identity & Archetypes,beta male,55,70,Mar 2026,18100,Stable,18.1K/mo,No
+Identity & Archetypes,how to be an alpha male,55,70,—,14800,Stable,14.8K/mo,No
+Identity & Archetypes,alpha male traits,46,61,Aug 2025,9900,Rising,9.9K/mo,Yes
+Identity & Archetypes,what is alpha male,46,61,Apr 2026,6600,Stable,6.6K/mo,No
+Identity & Archetypes,high value man traits,46,61,May 2026,5400,Rising,5.4K/mo,Yes
+Masculinity & Culture,Andrew Tate,95,100,Dec 2025,550000,Declining,550K+/mo,No
+Masculinity & Culture,masculinity,65,80,Feb 2026,27100,Stable,27.1K/mo,No
+Masculinity & Culture,red pill,65,80,Apr 2026,27100,Stable,27.1K/mo,No
+Masculinity & Culture,toxic masculinity,65,80,Sep 2025,22200,Stable,22.2K/mo,No
+Masculinity & Culture,how to be more masculine,46,61,May 2026,6600,Declining,6.6K/mo,No
+Masculinity & Culture,what is masculinity,46,61,Feb 2026,5400,Stable,5.4K/mo,No
+Masculinity & Culture,modern masculinity,36,51,Feb 2026,4400,Rising,4.4K/mo,Yes
+Masculinity & Culture,masculine men,36,51,Apr 2026,3600,Stable,3.6K/mo,No
+Masculinity & Culture,masculinity crisis,36,51,Feb 2026,3600,Rising,3.6K/mo,Yes
+Mindset & Discipline,morning routine,75,90,Jan 2026,90500,Stable,90.5K/mo,No
+Mindset & Discipline,stoicism,75,90,Feb 2026,74000,Stable,74.0K/mo,No
+Mindset & Discipline,growth mindset,65,80,Aug 2025,22200,Stable,22.2K/mo,No
+Mindset & Discipline,how to be disciplined,55,70,Mar 2026,14800,Stable,14.8K/mo,No
+Mindset & Discipline,mental toughness,55,70,Feb 2026,14800,Stable,14.8K/mo,No
+Mindset & Discipline,stoic philosophy,55,70,Feb 2026,12100,Stable,12.1K/mo,No
+Mindset & Discipline,how to stop caring what people think,46,61,May 2026,9900,Rising,9.9K/mo,Yes
+Mindset & Discipline,how to be more motivated,46,61,Mar 2026,9900,Declining,9.9K/mo,No
+Mindset & Discipline,discipline habits,36,51,Mar 2026,4400,Rising,4.4K/mo,Yes
+Physical Presence,how to improve posture,55,70,Feb 2026,14800,Rising,14.8K/mo,Yes
+Physical Presence,men's style tips,46,61,Apr 2026,9900,Rising,9.9K/mo,Yes
+Physical Presence,body language tips,46,61,May 2026,8100,Declining,8.1K/mo,No
+Physical Presence,men's grooming tips,46,61,Feb 2026,6600,Rising,6.6K/mo,Yes
+Physical Presence,how to dress well men,46,61,Apr 2026,6600,Rising,6.6K/mo,Yes
+Physical Presence,how to look more attractive men,46,61,Feb 2026,5400,Rising,5.4K/mo,Yes
+Physical Presence,how to look more masculine,36,51,Nov 2025,4400,Stable,4.4K/mo,No
+Physical Presence,how to be physically attractive,36,51,Nov 2025,4400,Declining,4.4K/mo,No
+Physical Presence,eye contact attraction,36,51,Apr 2026,3600,Rising,3.6K/mo,Yes
+Self-Improvement,self improvement,82,97,Feb 2026,165000,Stable,165K/mo,No
+Self-Improvement,personal development,65,80,Feb 2026,33100,Stable,33.1K/mo,No
+Self-Improvement,how to change your life,55,70,Apr 2026,18100,Rising,18.1K/mo,Yes
+Self-Improvement,how to improve yourself,55,70,Mar 2026,14800,Stable,14.8K/mo,No
+Self-Improvement,how to be the best version of yourself,46,61,Aug 2025,8100,Rising,8.1K/mo,Yes
+Self-Improvement,how to be a better man,46,61,Apr 2026,6600,Stable,6.6K/mo,No
+Self-Improvement,how to reinvent yourself,46,61,Jun 2025,5400,Declining,5.4K/mo,No
+Self-Improvement,men self improvement,36,51,Mar 2026,4400,Rising,4.4K/mo,Yes
+Self-Improvement,self help for men,36,51,Dec 2025,3600,Stable,3.6K/mo,No
+Social Dynamics,leadership skills,65,80,Feb 2026,27100,Stable,27.1K/mo,No
+Social Dynamics,social skills,65,80,Feb 2026,22200,Stable,22.2K/mo,No
+Social Dynamics,how to set boundaries,55,70,May 2026,18100,Stable,18.1K/mo,No
+Social Dynamics,how to be more assertive,46,61,Apr 2026,9900,Declining,9.9K/mo,No
+Social Dynamics,how to network,46,61,Feb 2026,9900,Stable,9.9K/mo,No
+Social Dynamics,how to be a better leader,46,61,Apr 2026,6600,Stable,6.6K/mo,No
+Social Dynamics,how to gain respect,46,61,Mar 2026,6600,Declining,6.6K/mo,No
+Social Dynamics,how to be more dominant,36,51,Apr 2026,4400,Declining,4.4K/mo,No
+Social Dynamics,how to command respect,36,51,Feb 2026,2900,Rising,2.9K/mo,Yes
+Status & Success,passive income,75,90,Jul 2025,90500,Stable,90.5K/mo,No
+Status & Success,financial independence,65,80,Feb 2026,40500,Stable,40.5K/mo,No
+Status & Success,how to make more money,65,80,Apr 2026,27100,Stable,27.1K/mo,No
+Status & Success,how to build wealth,65,80,Apr 2026,22200,Stable,22.2K/mo,No
+Status & Success,how to be successful,55,70,Mar 2026,18100,Stable,18.1K/mo,No
+Status & Success,how to be productive,55,70,May 2026,12100,Stable,12.1K/mo,No
+Status & Success,how to find your purpose,46,61,Feb 2026,9900,Stable,9.9K/mo,No
+Status & Success,how to level up in life,46,61,May 2026,8100,Stable,8.1K/mo,No
+Status & Success,success mindset,46,61,Jan 2026,6600,Stable,6.6K/mo,No
