@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>High Value Man — Audience Segments</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d0d12;color:#dddde8;line-height:1.65;display:flex}
+
+/* sidebar */
+.sidebar{width:240px;min-height:100vh;background:#0a0a10;border-right:1px solid #1a1a28;position:fixed;top:0;left:0;overflow-y:auto;padding:24px 0 60px;z-index:100;flex-shrink:0}
+.sidebar-logo{padding:0 18px 20px;border-bottom:1px solid #1a1a28;margin-bottom:16px}
+.sidebar-logo h2{font-size:.82rem;font-weight:700;color:#fff;line-height:1.4}
+.sidebar-logo p{font-size:.7rem;color:#444466;margin-top:3px}
+.nav-section{margin-bottom:4px}
+.nav-cat{display:flex;align-items:center;gap:8px;padding:9px 18px;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;cursor:pointer;transition:background .15s}
+.nav-cat:hover{background:rgba(255,255,255,.04)}
+.nav-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.nav-share{margin-left:auto;font-size:.68rem;color:#444466;font-weight:400;font-style:normal}
+.nav-sub{display:block;padding:5px 18px 5px 34px;font-size:.74rem;color:#444466;text-decoration:none;transition:color .15s,background .15s;border-left:2px solid transparent;margin-left:18px}
+.nav-sub:hover{color:#aaaacc;background:rgba(255,255,255,.03)}
+.nav-sub.active{color:#aaaaee;border-left-color:#4444aa}
+.nav-divider{height:1px;background:#1a1a28;margin:8px 0}
+
+/* main */
+.main{margin-left:240px;flex:1;min-width:0;padding-bottom:100px}
+
+/* hero */
+.hero{background:linear-gradient(135deg,#141424 0%,#0e1830 60%,#0a2040 100%);padding:48px 40px 40px;border-bottom:1px solid #1a1a30}
+.hero h1{font-size:1.7rem;font-weight:700;color:#fff;letter-spacing:-.4px;margin-bottom:6px}
+.hero p{color:#6666aa;font-size:.88rem;max-width:640px;line-height:1.6}
+.hero .stats{display:flex;gap:14px;margin-top:20px;flex-wrap:wrap}
+.stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:9px 16px}
+.stat-num{font-size:1.3rem;font-weight:700;color:#fff}
+.stat-label{font-size:.68rem;color:#6666aa;text-transform:uppercase;letter-spacing:.5px}
+
+/* overview bar */
+.overview{padding:24px 40px;border-bottom:1px solid #1a1a28}
+.overview h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#444466;margin-bottom:14px}
+.share-bar{display:flex;height:10px;border-radius:6px;overflow:hidden;gap:2px}
+.share-seg{height:100%;border-radius:3px;transition:opacity .2s;cursor:pointer}
+.share-seg:hover{opacity:.8}
+.share-legend{display:flex;flex-wrap:wrap;gap:12px 20px;margin-top:12px}
+.share-item{display:flex;align-items:center;gap:6px;font-size:.76rem;color:#8888aa}
+.share-dot{width:8px;height:8px;border-radius:50%}
+
+/* segment section */
+.cat-section{padding-top:8px}
+.cat-header{padding:28px 40px 0;position:sticky;top:0;z-index:10}
+.cat-header-inner{display:flex;align-items:flex-start;gap:16px;padding:16px 20px;border-radius:12px 12px 0 0;border:1px solid}
+.cat-num{width:36px;height:36px;min-width:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;flex-shrink:0;margin-top:2px}
+.cat-name{font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:4px}
+.cat-baseline{font-size:.78rem;color:#7777aa;line-height:1.55;max-width:480px}
+.cat-right{margin-left:auto;text-align:right;flex-shrink:0;max-width:280px}
+.share-circle{font-size:1.8rem;font-weight:800;line-height:1}
+.core-q{font-size:.74rem;color:#5555aa;margin-top:6px;font-style:italic;line-height:1.45}
+
+/* segment + trigger cards */
+.seg-section{padding:0 40px 56px}
+.trigger-card{background:#101015;border:1px solid #1e1e2a;border-radius:14px;overflow:hidden;margin-top:16px}
+.trigger-header{display:flex;align-items:flex-start;gap:12px;padding:14px 20px;border-bottom:1px solid #1a1a24;background:rgba(255,255,255,.02)}
+.trigger-type-badge{font-size:.68rem;font-weight:700;padding:3px 10px;border-radius:5px;border:1px solid;white-space:nowrap;flex-shrink:0;margin-top:2px;letter-spacing:.3px;text-transform:uppercase}
+.trigger-title{font-size:.9rem;color:#c8c8e0;line-height:1.5}
+
+.seg-grid{display:grid;grid-template-columns:1fr 1.1fr 1fr}
+@media(max-width:900px){.seg-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:580px){.seg-grid{grid-template-columns:1fr}}
+.seg-col{padding:18px 20px;border-right:1px solid #1a1a24}
+.seg-col:last-child{border-right:none}
+.col-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1.1px;margin-bottom:8px}
+
+/* timing block */
+.timing-block{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;margin-bottom:4px}
+.timing-row{display:flex;gap:8px;margin-bottom:4px;font-size:.76rem}
+.timing-row:last-child{margin-bottom:0}
+.t-key{color:#555577;min-width:90px;flex-shrink:0}
+.t-val{color:#9999bb}
+
+/* jtbd + blockers */
+.list-items{list-style:none;display:flex;flex-direction:column;gap:7px}
+.list-items li{font-size:.79rem;color:#9999bb;padding-left:18px;position:relative;line-height:1.5}
+.list-items.jtbd li::before{content:'→';position:absolute;left:0;opacity:.4;font-size:.72rem}
+.list-items.blk li::before{content:'✕';position:absolute;left:0;opacity:.3;font-size:.7rem}
+.jtbd-badge{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.07);color:#7777aa;margin-right:4px;vertical-align:middle}
+
+/* tags */
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;margin-bottom:6px}
+.comm-tag{font-size:.68rem;padding:2px 7px;border-radius:4px;background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
+.search-tag{font-size:.68rem;padding:2px 7px;border-radius:4px;background:rgba(16,185,129,.1);color:#34d399;border:1px solid rgba(16,185,129,.2)}
+.chan-tag{font-size:.68rem;padding:2px 7px;border-radius:4px;background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.2)}
+
+/* messaging col */
+.hook-text{font-size:.85rem;color:#ddddf0;font-style:italic;line-height:1.55;border-left:3px solid rgba(255,255,255,.15);padding-left:12px}
+.seg-desc{font-size:.8rem;color:#8888aa;line-height:1.6}
+
+/* warning bar */
+.warning-bar{background:rgba(220,38,38,.08);border-top:1px solid rgba(220,38,38,.2);padding:10px 20px;font-size:.78rem;color:#f87171;line-height:1.55}
+
+/* insight bar */
+.insight-bar{padding:11px 22px;background:rgba(255,255,255,.02);border-top:1px solid #1a1a24;font-size:.8rem;color:#8888aa;border-left:4px solid;line-height:1.55}
+.insight-bar strong{color:#ddd}
+.insight-bar em{color:#9999bb;font-style:normal}
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+<div class="sidebar-logo"><h2>High Value Man</h2><p>Audience segments · 5 triggers · Reddit-validated</p></div>
+
+  <div class="nav-section">
+    <div class="nav-cat" onclick="location.href='#seg-A'">
+      <div class="nav-dot" style="background:#D97706"></div>
+      <span style="color:#fbbf24">1 · The Invisible Provider</span>
+      <span class="nav-share">35%</span>
+    </div>
+    <a class="nav-sub" href="#t-A1">Dating app failure</a>
+    <a class="nav-sub" href="#t-A2">Professional undervaluation</a>
+    <a class="nav-sub" href="#t-A3">Chronic friendzoning</a>
+  </div>
+  <div class="nav-divider"></div>
+
+  <div class="nav-section">
+    <div class="nav-cat" onclick="location.href='#seg-B'">
+      <div class="nav-dot" style="background:#7C3AED"></div>
+      <span style="color:#a78bfa">2 · The Man Without a Mission</span>
+      <span class="nav-share">25%</span>
+    </div>
+    <a class="nav-sub" href="#t-B1">The hollow achievement</a>
+    <a class="nav-sub" href="#t-B2">Age milestone reckoning</a>
+    <a class="nav-sub" href="#t-B3">Existential numbness</a>
+  </div>
+  <div class="nav-divider"></div>
+
+  <div class="nav-section">
+    <div class="nav-cat" onclick="location.href='#seg-C'">
+      <div class="nav-dot" style="background:#DC2626"></div>
+      <span style="color:#f87171">3 · The Nice Guy Awakening</span>
+      <span class="nav-share">20%</span>
+    </div>
+    <a class="nav-sub" href="#t-C1">Betrayal by someone he invested in</a>
+    <a class="nav-sub" href="#t-C2">Years of effort, no return</a>
+    <a class="nav-sub" href="#t-C3">Red pill discovery moment</a>
+  </div>
+  <div class="nav-divider"></div>
+
+  <div class="nav-section">
+    <div class="nav-cat" onclick="location.href='#seg-D'">
+      <div class="nav-dot" style="background:#2563EB"></div>
+      <span style="color:#60a5fa">4 · The Rebuilder</span>
+      <span class="nav-share">15%</span>
+    </div>
+    <a class="nav-sub" href="#t-D1">Divorce or relationship collapse</a>
+    <a class="nav-sub" href="#t-D2">Wasted years regret</a>
+    <a class="nav-sub" href="#t-D3">Rock bottom moment</a>
+  </div>
+  <div class="nav-divider"></div>
+
+  <div class="nav-section">
+    <div class="nav-cat" onclick="location.href='#seg-E'">
+      <div class="nav-dot" style="background:#059669"></div>
+      <span style="color:#34d399">5 · The Optimizer</span>
+      <span class="nav-share">5%</span>
+    </div>
+    <a class="nav-sub" href="#t-E1">Plateau in results</a>
+    <a class="nav-sub" href="#t-E2">Ready to commit to a complete identity</a>
+  </div>
+  <div class="nav-divider"></div>
+</nav>
+
+<div class="main">
+
+  <div class="hero">
+    <h1>High Value Man — Audience Segments</h1>
+    <p>5 MECE segments built from 1,178 Reddit posts, 4,803 comments, and 81 validated keywords. Each segment defined by a core identity gap and mapped to the triggers that open the buying window.</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">5</div><div class="stat-label">Segments</div></div>
+      <div class="stat"><div class="stat-num">14</div><div class="stat-label">Buy triggers</div></div>
+      <div class="stat"><div class="stat-num">81</div><div class="stat-label">Validated keywords</div></div>
+      <div class="stat"><div class="stat-num">5,981</div><div class="stat-label">Reddit posts + comments</div></div>
+    </div>
+  </div>
+
+  <div class="overview">
+    <h2>Market share distribution</h2>
+    <div class="share-bar">
+      <div class="share-seg" style="width:35%;background:#D97706" onclick="location.href='#seg-A'" title="Invisible Provider 35%"></div>
+      <div class="share-seg" style="width:25%;background:#7C3AED" onclick="location.href='#seg-B'" title="Man Without a Mission 25%"></div>
+      <div class="share-seg" style="width:20%;background:#DC2626" onclick="location.href='#seg-C'" title="Nice Guy Awakening 20%"></div>
+      <div class="share-seg" style="width:15%;background:#2563EB" onclick="location.href='#seg-D'" title="The Rebuilder 15%"></div>
+      <div class="share-seg" style="width:5%;background:#059669" onclick="location.href='#seg-E'" title="The Optimizer 5%"></div>
+    </div>
+    <div class="share-legend">
+      <div class="share-item"><div class="share-dot" style="background:#D97706"></div>A · Invisible Provider 35%</div>
+      <div class="share-item"><div class="share-dot" style="background:#7C3AED"></div>B · Man Without a Mission 25%</div>
+      <div class="share-item"><div class="share-dot" style="background:#DC2626"></div>C · Nice Guy Awakening 20%</div>
+      <div class="share-item"><div class="share-dot" style="background:#2563EB"></div>D · The Rebuilder 15%</div>
+      <div class="share-item"><div class="share-dot" style="background:#059669"></div>E · The Optimizer 5%</div>
+    </div>
+  </div>
+
+
+  <div class="cat-section" id="seg-A" style="--seg-clr:#D97706;--seg-bg:#15110a;--seg-border:#382800;--seg-text:#fbbf24">
+    <div class="cat-header">
+      <div class="cat-header-inner" style="background:#15110a;border-color:#382800">
+        <div class="cat-num" style="background:#D97706;color:#fff">1</div>
+        <div>
+          <div class="cat-name">The Invisible Provider</div>
+          <div class="cat-baseline">Does everything &#x27;right&#x27; — earns, provides, behaves well — but is treated as an afterthought. Women don&#x27;t choose him. Peers don&#x27;t follow him. Opportunities pass him by. His value is never questioned, just never seen.</div>
+        </div>
+        <div class="cat-right">
+          <div class="share-circle" style="--share:35%;color:#fbbf24">35%</div>
+          <div class="core-q">&ldquo;Why don&#x27;t I get what I&#x27;ve clearly earned?&rdquo;</div>
+        </div>
+      </div>
+    </div>
+    <div class="seg-section">
+    <div class="trigger-card" id="t-A1">
+      <div class="trigger-header" style="border-left:4px solid #D97706">
+        <span class="trigger-type-badge" style="background:#15110a;color:#fbbf24;border-color:#382800">Dating app failure</span>
+        <span class="trigger-title">Months of swiping with no meaningful results despite looking &#x27;better on paper&#x27; than the men who succeed. He&#x27;s done the profile, the gym, the photos — and is still invisible.</span>
+      </div>
+      <div class="seg-grid">
+        <div class="seg-col">
+          <div class="col-label" style="color:#fbbf24">Timing Window</div>
+          <div class="timing-block">
+            <div class="timing-row"><span class="t-key">Enters market</span><span class="t-val">Immediate — within 2 weeks of giving up on apps</span></div>
+            <div class="timing-row"><span class="t-key">Buyable window</span><span class="t-val">0–3 weeks</span></div>
+            <div class="timing-row"><span class="t-key">Sweet spot</span><span class="t-val">0–2 weeks</span></div>
+          </div>
+          <div class="col-label" style="color:#fbbf24;margin-top:16px">Jobs to Be Done</div>
+          <ul class="list-items jtbd"><li><span class="jtbd-badge">Emotional</span> Stop opening a dating app and feeling like my worth is being decided by a stranger&#x27;s swipe on a thumbnail</li>
+<li><span class="jtbd-badge">Functional</span> Go from waiting for someone to pick me to having a real pipeline of women I&#x27;m genuinely interested in</li>
+<li><span class="jtbd-badge">Social</span> Be the kind of man women describe to their friends as &#x27;high value&#x27; before they even know my salary or job title</li>
+<li><span class="jtbd-badge">Functional</span> Have actual standards for who I give my time to — not be grateful for any attention that comes my way</li>
+<li><span class="jtbd-badge">Emotional</span> Feel like I&#x27;m choosing from real options rather than hoping someone chooses me</li></ul>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#fbbf24">Purchase Blockers</div>
+          <ul class="list-items blk"><li>This is just another pickup course — it will make me seem fake and manipulative rather than genuinely attractive</li>
+<li>My looks are the actual problem. No framework changes my height or face.</li>
+<li>Women just want tall, rich, handsome men — charisma and &#x27;value&#x27; are cope for men who don&#x27;t have those things</li>
+<li>I shouldn&#x27;t need to market myself. If she can&#x27;t see my value naturally she&#x27;s not worth my time.</li>
+<li>I&#x27;ve already tried self-improvement and it hasn&#x27;t changed my results — why would this be different</li></ul>
+          <div class="col-label" style="color:#fbbf24;margin-top:14px">Reddit Communities</div>
+          <div class="tag-row"><span class="comm-tag">r/Tinder</span> <span class="comm-tag">r/dating_advice</span> <span class="comm-tag">r/AskMen</span> <span class="comm-tag">r/AskMenOver30</span></div>
+          <div class="col-label" style="color:#fbbf24;margin-top:10px">Search Queries</div>
+          <div class="tag-row"><span class="search-tag">why can&#x27;t I get matches despite being a good guy</span> <span class="search-tag">dating advice for men 30+</span> <span class="search-tag">high value man dating standards</span> <span class="search-tag">how to be more attractive to women</span></div>
+          <div class="col-label" style="color:#fbbf24;margin-top:10px">Content Channels</div>
+          <div class="tag-row"><span class="chan-tag">Better Bachelor</span> <span class="chan-tag">Coach Kyle</span> <span class="chan-tag">How to Beast</span> <span class="chan-tag">Hamza Ahmed</span></div>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#fbbf24">Converting Hook</div>
+          <p class="hook-text">&ldquo;You don&#x27;t have a value problem. You have a visibility problem.&rdquo;</p>
+          <div class="col-label" style="color:#fbbf24;margin-top:14px">Ad Campaign Angle</div>
+          <p class="seg-desc">Target men 28–42 consuming dating failure content; retarget from dating app keywords</p>
+          <div class="col-label" style="color:#fbbf24;margin-top:14px">Landing Page Angle</div>
+          <p class="seg-desc">You&#x27;ve built real value. The problem is no one can see it yet — including you.</p>
+          <div class="col-label" style="color:#fbbf24;margin-top:14px">Testimonial Type</div>
+          <p class="seg-desc">I was doing everything right on paper. Six months in this program I have three women I&#x27;m genuinely interested in reaching out to me first.</p>
+        </div>
+      </div>
+      
+      <div class="insight-bar" style="border-left-color:#D97706">
+        <strong>Product fit:</strong> Core offer — identity and standards framework that changes what he projects, not what he performs — <em>High keyword overlap with &#x27;high value man&#x27; (60K/mo Rising) and &#x27;how to attract women&#x27; (14.8K/mo). Avoid PUA framing entirely.</em>
+      </div>
+    </div>
+    <div class="trigger-card" id="t-A2">
+      <div class="trigger-header" style="border-left:4px solid #D97706">
+        <span class="trigger-type-badge" style="background:#15110a;color:#fbbf24;border-color:#382800">Professional undervaluation</span>
+        <span class="trigger-title">More qualified than the men getting promoted, more reliable than the men getting respect — but still the one people go around. His competence is assumed; his presence is not.</span>
+      </div>
+      <div class="seg-grid">
+        <div class="seg-col">
+          <div class="col-label" style="color:#fbbf24">Timing Window</div>
+          <div class="timing-block">
+            <div class="timing-row"><span class="t-key">Enters market</span><span class="t-val">Within 4 weeks of being passed over or seeing the pattern clearly</span></div>
+            <div class="timing-row"><span class="t-key">Buyable window</span><span class="t-val">0–4 weeks</span></div>
+            <div class="timing-row"><span class="t-key">Sweet spot</span><span class="t-val">1–3 weeks</span></div>
+          </div>
+          <div class="col-label" style="color:#fbbf24;margin-top:16px">Jobs to Be Done</div>
+          <ul class="list-items jtbd"><li><span class="jtbd-badge">Social</span> Be the person in every room that others defer to — not the one who has to prove he deserves to speak</li>
+<li><span class="jtbd-badge">Functional</span> Get what I&#x27;ve earned this year because my presence commands it, not because I finally argued my case</li>
+<li><span class="jtbd-badge">Emotional</span> Stop feeling invisible in meetings I&#x27;m more qualified to run than the man who&#x27;s running them</li>
+<li><span class="jtbd-badge">Social</span> Have people seek my input because they value my judgment — not because I volunteered to help again</li>
+<li><span class="jtbd-badge">Emotional</span> Replace the low-grade resentment I carry into every Monday with something that feels like quiet earned authority</li></ul>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#fbbf24">Purchase Blockers</div>
+          <ul class="list-items blk"><li>Being more &#x27;present&#x27; at work sounds like acting — my results should speak for themselves</li>
+<li>The men getting promoted have political connections or are just better at playing the game — this doesn&#x27;t fix that</li>
+<li>My employer doesn&#x27;t actually reward this kind of thing — it rewards who you know</li>
+<li>If I change how I show up at work people will think I&#x27;m trying too hard or having a crisis</li>
+<li>Self-improvement content always oversimplifies corporate dynamics — the real barriers are systemic not personal</li></ul>
+          <div class="col-label" style="color:#fbbf24;margin-top:14px">Reddit Communities</div>
+          <div class="tag-row"><span class="comm-tag">r/AskMenOver30</span> <span class="comm-tag">r/getdisciplined</span> <span class="comm-tag">r/selfimprovement</span> <span class="comm-tag">r/productivity</span></div>
+          <div class="col-label" style="color:#fbbf24;margin-top:10px">Search Queries</div>
+          <div class="tag-row"><span class="search-tag">how to gain respect at work</span> <span class="search-tag">how to be more assertive</span> <span class="search-tag">leadership skills for men</span> <span class="search-tag">how to command respect</span></div>
+          <div class="col-label" style="color:#fbbf24;margin-top:10px">Content Channels</div>
+          <div class="tag-row"><span class="chan-tag">Alex Hormozi</span> <span class="chan-tag">Naval Ravikant</span> <span class="chan-tag">productivity/leadership YouTube channels</span></div>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#fbbf24">Converting Hook</div>
+          <p class="hook-text">&ldquo;Competence earns a salary. Presence earns a seat at the table.&rdquo;</p>
+          <div class="col-label" style="color:#fbbf24;margin-top:14px">Ad Campaign Angle</div>
+          <p class="seg-desc">Men 30–45 in professional settings consuming leadership and productivity content</p>
+          <div class="col-label" style="color:#fbbf24;margin-top:14px">Landing Page Angle</div>
+          <p class="seg-desc">You&#x27;re the most reliable man in the room. Here&#x27;s why you&#x27;re still not the most respected.</p>
+          <div class="col-label" style="color:#fbbf24;margin-top:14px">Testimonial Type</div>
+          <p class="seg-desc">I was the most competent person in every meeting and still felt invisible. Now my boss brings me in to anchor difficult conversations.</p>
+        </div>
+      </div>
+      
+      <div class="insight-bar" style="border-left-color:#D97706">
+        <strong>Product fit:</strong> Module on standards and masculine presence maps directly to professional context — <em>&#x27;leadership skills&#x27; (27.1K/mo Stable), &#x27;how to gain respect&#x27; (6.6K/mo), &#x27;how to be more assertive&#x27; (9.9K/mo Rising) — all validated</em>
+      </div>
+    </div>
+    <div class="trigger-card" id="t-A3">
+      <div class="trigger-header" style="border-left:4px solid #D97706">
+        <span class="trigger-type-badge" style="background:#15110a;color:#fbbf24;border-color:#382800">Chronic friendzoning</span>
+        <span class="trigger-title">In social circles or with specific women he&#x27;s invested in — always the friend, confidant, emotional support. Never the man she actually picks. He&#x27;s kind, available, supportive — and kept at arm&#x27;s length.</span>
+      </div>
+      <div class="seg-grid">
+        <div class="seg-col">
+          <div class="col-label" style="color:#fbbf24">Timing Window</div>
+          <div class="timing-block">
+            <div class="timing-row"><span class="t-key">Enters market</span><span class="t-val">After being explicitly friendzoned or recognising the repeated pattern</span></div>
+            <div class="timing-row"><span class="t-key">Buyable window</span><span class="t-val">0–2 weeks</span></div>
+            <div class="timing-row"><span class="t-key">Sweet spot</span><span class="t-val">0–1 week</span></div>
+          </div>
+          <div class="col-label" style="color:#fbbf24;margin-top:16px">Jobs to Be Done</div>
+          <ul class="list-items jtbd"><li><span class="jtbd-badge">Emotional</span> Stop being the man women talk to about other men and start being the man they think about</li>
+<li><span class="jtbd-badge">Functional</span> Build standards clear enough that I never again end up deeply invested in someone who was never actually choosing me</li>
+<li><span class="jtbd-badge">Social</span> Be genuinely warm and generous from a position of strength — not because I&#x27;m hoping it will eventually be enough</li>
+<li><span class="jtbd-badge">Emotional</span> Replace the niceness that people took advantage of with self-respect that makes me genuinely more attractive</li>
+<li><span class="jtbd-badge">Functional</span> Understand exactly where I was lowering my standards and stop doing it — without becoming cold or transactional</li></ul>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#fbbf24">Purchase Blockers</div>
+          <ul class="list-items blk"><li>You either have &#x27;it&#x27; or you don&#x27;t — she&#x27;s attracted or she&#x27;s not, and no course fixes that</li>
+<li>If I change how I act around her it will seem manipulative and she&#x27;ll see straight through it</li>
+<li>This stuff teaches you to be less yourself — the whole point of being &#x27;nice&#x27; is that it&#x27;s genuine</li>
+<li>All this self-improvement content just makes men more transactional — that&#x27;s not the kind of man I want to be</li>
+<li>The real issue is I keep meeting the wrong women — changing myself won&#x27;t fix that</li></ul>
+          <div class="col-label" style="color:#fbbf24;margin-top:14px">Reddit Communities</div>
+          <div class="tag-row"><span class="comm-tag">r/AskMen</span> <span class="comm-tag">r/socialskills</span> <span class="comm-tag">r/selfimprovement</span> <span class="comm-tag">r/malementalhealth</span></div>
+          <div class="col-label" style="color:#fbbf24;margin-top:10px">Search Queries</div>
+          <div class="tag-row"><span class="search-tag">nice guy vs high value man</span> <span class="search-tag">why am I always the friend</span> <span class="search-tag">how to stop being friendzoned</span> <span class="search-tag">how to be more attractive to women</span></div>
+          <div class="col-label" style="color:#fbbf24;margin-top:10px">Content Channels</div>
+          <div class="tag-row"><span class="chan-tag">Hamza Ahmed</span> <span class="chan-tag">dating/masculinity channels; this is where red pill content competes hardest</span></div>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#fbbf24">Converting Hook</div>
+          <p class="hook-text">&ldquo;You&#x27;re not in the friend zone because of bad luck. You&#x27;re there because of how you&#x27;ve been showing up — and that&#x27;s fixable.&rdquo;</p>
+          <div class="col-label" style="color:#fbbf24;margin-top:14px">Ad Campaign Angle</div>
+          <p class="seg-desc">Men 22–35 consuming friendzone and &#x27;why am I always the friend&#x27; content</p>
+          <div class="col-label" style="color:#fbbf24;margin-top:14px">Landing Page Angle</div>
+          <p class="seg-desc">She doesn&#x27;t see you as an option yet. Here&#x27;s exactly why — and what to rebuild from today.</p>
+          <div class="col-label" style="color:#fbbf24;margin-top:14px">Testimonial Type</div>
+          <p class="seg-desc">I was the guy women cried to about other men. Now I&#x27;m the man they want.</p>
+        </div>
+      </div>
+      <div class="warning-bar">⚠ ⚠️ Red pill adjacency risk is highest here. Messaging must provide an identity path that doesn&#x27;t require bitterness or manipulation. &#x27;red pill&#x27; keyword 27K/mo but Stable — the audience is looking, landing here is the alternative.</div>
+      <div class="insight-bar" style="border-left-color:#D97706">
+        <strong>Product fit:</strong> Standards and identity modules are the core fix — he needs to change what he tolerates, not just what he says
+      </div>
+    </div></div>
+  </div>
+  <div class="cat-section" id="seg-B" style="--seg-clr:#7C3AED;--seg-bg:#0e0a18;--seg-border:#241650;--seg-text:#a78bfa">
+    <div class="cat-header">
+      <div class="cat-header-inner" style="background:#0e0a18;border-color:#241650">
+        <div class="cat-num" style="background:#7C3AED;color:#fff">2</div>
+        <div>
+          <div class="cat-name">The Man Without a Mission</div>
+          <div class="cat-baseline">Capable, sometimes successful by conventional metrics — but unanchored. No deep sense of what he&#x27;s building or why. Achieves goals that feel hollow when reached. Has direction without destination.</div>
+        </div>
+        <div class="cat-right">
+          <div class="share-circle" style="--share:25%;color:#a78bfa">25%</div>
+          <div class="core-q">&ldquo;What am I actually building — and who is it for?&rdquo;</div>
+        </div>
+      </div>
+    </div>
+    <div class="seg-section">
+    <div class="trigger-card" id="t-B1">
+      <div class="trigger-header" style="border-left:4px solid #7C3AED">
+        <span class="trigger-type-badge" style="background:#0e0a18;color:#a78bfa;border-color:#241650">The hollow achievement</span>
+        <span class="trigger-title">Reached a target — promotion, income milestone, relationship — and felt nothing. The achievement was supposed to mean more than it does. The &#x27;now what?&#x27; feeling is acute.</span>
+      </div>
+      <div class="seg-grid">
+        <div class="seg-col">
+          <div class="col-label" style="color:#a78bfa">Timing Window</div>
+          <div class="timing-block">
+            <div class="timing-row"><span class="t-key">Enters market</span><span class="t-val">Within 4–8 weeks of the hollow moment</span></div>
+            <div class="timing-row"><span class="t-key">Buyable window</span><span class="t-val">0–6 weeks</span></div>
+            <div class="timing-row"><span class="t-key">Sweet spot</span><span class="t-val">2–4 weeks</span></div>
+          </div>
+          <div class="col-label" style="color:#a78bfa;margin-top:16px">Jobs to Be Done</div>
+          <ul class="list-items jtbd"><li><span class="jtbd-badge">Emotional</span> Know — actually feel — what I&#x27;m building my life toward, so that when I achieve something it means something</li>
+<li><span class="jtbd-badge">Functional</span> Have a 5-year mission that organises how I spend money, time and energy instead of drifting between arbitrary goals</li>
+<li><span class="jtbd-badge">Social</span> Be the kind of man people look to for direction, not just reliability — have conviction others can feel</li>
+<li><span class="jtbd-badge">Emotional</span> Stop the low-grade shame of having everything I said I wanted and still feeling like I&#x27;m missing the point</li>
+<li><span class="jtbd-badge">Functional</span> Wake up with a clear reason beyond &#x27;make more money and hope things improve&#x27; — a reason that survives a bad quarter</li></ul>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#a78bfa">Purchase Blockers</div>
+          <ul class="list-items blk"><li>Purpose is something you discover, not something a course teaches you — this can&#x27;t be manufactured</li>
+<li>This feels like the same &#x27;find your why&#x27; self-help content that doesn&#x27;t actually go anywhere</li>
+<li>I&#x27;ve read all the books — Stoicism, Frankl, Covey — and I still feel lost. More content won&#x27;t fix this.</li>
+<li>If I was really meant to have a mission, I&#x27;d have found it by now — maybe I&#x27;m just not that kind of man</li>
+<li>Focusing on &#x27;purpose&#x27; is a luxury I can&#x27;t afford — I have actual responsibilities and can&#x27;t just navel-gaze</li></ul>
+          <div class="col-label" style="color:#a78bfa;margin-top:14px">Reddit Communities</div>
+          <div class="tag-row"><span class="comm-tag">r/AskMenOver30</span> <span class="comm-tag">r/selfimprovement</span> <span class="comm-tag">r/Stoicism</span> <span class="comm-tag">r/getdisciplined</span></div>
+          <div class="col-label" style="color:#a78bfa;margin-top:10px">Search Queries</div>
+          <div class="tag-row"><span class="search-tag">achieved goals and feel empty</span> <span class="search-tag">why am I not happy despite success</span> <span class="search-tag">finding purpose as a man</span> <span class="search-tag">stoicism meaning of life</span> <span class="search-tag">how to find your purpose</span></div>
+          <div class="col-label" style="color:#a78bfa;margin-top:10px">Content Channels</div>
+          <div class="tag-row"><span class="chan-tag">Naval Ravikant</span> <span class="chan-tag">Huberman Lab</span> <span class="chan-tag">Stoicism YouTube channels</span> <span class="chan-tag">Tim Ferriss</span> <span class="chan-tag">Viktor Frankl adjacent content</span></div>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#a78bfa">Converting Hook</div>
+          <p class="hook-text">&ldquo;You hit the target. The target was wrong. Here&#x27;s how to build one that actually means something.&rdquo;</p>
+          <div class="col-label" style="color:#a78bfa;margin-top:14px">Ad Campaign Angle</div>
+          <p class="seg-desc">Men 30–45 who have conventional success markers but consume purpose/philosophy content</p>
+          <div class="col-label" style="color:#a78bfa;margin-top:14px">Landing Page Angle</div>
+          <p class="seg-desc">Everything you built was supposed to feel like enough by now. It doesn&#x27;t — and that&#x27;s important information.</p>
+          <div class="col-label" style="color:#a78bfa;margin-top:14px">Testimonial Type</div>
+          <p class="seg-desc">I made more money than I ever imagined and felt completely lost. This gave me a framework for what I&#x27;m actually building.</p>
+        </div>
+      </div>
+      
+      <div class="insight-bar" style="border-left-color:#7C3AED">
+        <strong>Product fit:</strong> Purpose and identity modules are the lead; standards and value stack built on top of purpose, not achievement — <em>&#x27;stoicism&#x27; (74K/mo Rising), &#x27;how to find your purpose&#x27; (9.9K/mo Rising), &#x27;success mindset&#x27; (6.6K/mo Rising), &#x27;43M $1.5M lost in life&#x27; is a real Reddit post that sparked massive engagement</em>
+      </div>
+    </div>
+    <div class="trigger-card" id="t-B2">
+      <div class="trigger-header" style="border-left:4px solid #7C3AED">
+        <span class="trigger-type-badge" style="background:#0e0a18;color:#a78bfa;border-color:#241650">Age milestone reckoning</span>
+        <span class="trigger-title">Turning 27, 30, 35 or 40 forces a hard audit. Accomplishments don&#x27;t add up to the man he imagined. The drift stops feeling temporary and starts feeling like a decision he never made.</span>
+      </div>
+      <div class="seg-grid">
+        <div class="seg-col">
+          <div class="col-label" style="color:#a78bfa">Timing Window</div>
+          <div class="timing-block">
+            <div class="timing-row"><span class="t-key">Enters market</span><span class="t-val">30–60 days around milestone birthday</span></div>
+            <div class="timing-row"><span class="t-key">Buyable window</span><span class="t-val">0–8 weeks</span></div>
+            <div class="timing-row"><span class="t-key">Sweet spot</span><span class="t-val">0–4 weeks post-birthday</span></div>
+          </div>
+          <div class="col-label" style="color:#a78bfa;margin-top:16px">Jobs to Be Done</div>
+          <ul class="list-items jtbd"><li><span class="jtbd-badge">Emotional</span> Stop having the same birthday conversation with myself where I promise this year will be different</li>
+<li><span class="jtbd-badge">Functional</span> Have a concrete plan for this decade that I actually believe in — not a vague intention to &#x27;do better&#x27;</li>
+<li><span class="jtbd-badge">Social</span> Be someone people look at and see a man who knows exactly what he&#x27;s building — not someone still figuring it out</li>
+<li><span class="jtbd-badge">Emotional</span> Feel like I chose this chapter of my life instead of just drifting into it while waiting for inspiration</li>
+<li><span class="jtbd-badge">Functional</span> Build a daily structure that moves me toward something real, not just keeps me busy enough to ignore the question</li></ul>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#a78bfa">Purchase Blockers</div>
+          <ul class="list-items blk"><li>I&#x27;ve been trying to figure out my &#x27;purpose&#x27; since I was 20 — one more program won&#x27;t unlock something that&#x27;s been missing this long</li>
+<li>This feels like a midlife crisis — spending money on self-improvement instead of actually building something</li>
+<li>I don&#x27;t have time to work on myself — I have a mortgage, a job, and responsibilities that can&#x27;t wait for me to find my mission</li>
+<li>Every &#x27;find your purpose&#x27; program says the same things and none of them have helped anyone I know</li>
+<li>I probably just need more time to figure it out — maybe I&#x27;m being impatient</li></ul>
+          <div class="col-label" style="color:#a78bfa;margin-top:14px">Reddit Communities</div>
+          <div class="tag-row"><span class="comm-tag">r/AskMen</span> <span class="comm-tag">r/AskMenOver30</span> <span class="comm-tag">r/selfimprovement</span> <span class="comm-tag">r/DecidingToBeBetter</span></div>
+          <div class="col-label" style="color:#a78bfa;margin-top:10px">Search Queries</div>
+          <div class="tag-row"><span class="search-tag">quarter life crisis men</span> <span class="search-tag">I just turned 30 what now</span> <span class="search-tag">how to stop wasting my 30s</span> <span class="search-tag">how to level up in life</span> <span class="search-tag">men over 30 self improvement</span></div>
+          <div class="col-label" style="color:#a78bfa;margin-top:10px">Content Channels</div>
+          <div class="tag-row"><span class="chan-tag">AskMen threads</span> <span class="chan-tag">milestone reflection content</span> <span class="chan-tag">Tim Ferriss</span> <span class="chan-tag">self-improvement podcasts</span></div>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#a78bfa">Converting Hook</div>
+          <p class="hook-text">&ldquo;You&#x27;re not behind. You just haven&#x27;t chosen the right direction yet. That&#x27;s what we fix.&rdquo;</p>
+          <div class="col-label" style="color:#a78bfa;margin-top:14px">Ad Campaign Angle</div>
+          <p class="seg-desc">Age-targeted Meta ads around 28–30, 34–36, 39–41 windows; milestone birthday creative</p>
+          <div class="col-label" style="color:#a78bfa;margin-top:14px">Landing Page Angle</div>
+          <p class="seg-desc">You&#x27;re at the age where this stops being a phase and becomes a choice. Choose deliberately.</p>
+          <div class="col-label" style="color:#a78bfa;margin-top:14px">Testimonial Type</div>
+          <p class="seg-desc">I turned 32 and felt like I&#x27;d been asleep. Eight months later I have more clarity about the next decade than I had in my entire 20s.</p>
+        </div>
+      </div>
+      
+      <div class="insight-bar" style="border-left-color:#7C3AED">
+        <strong>Product fit:</strong> Mission-setting and identity modules as core; standard-building as the daily practice that keeps the mission alive — <em>Reddit posts: &#x27;I just turned 27 and feel like I want to run away&#x27;, &#x27;Men over 30 what do you regret not doing in your 20s&#x27; — 282 comments, massive engagement</em>
+      </div>
+    </div>
+    <div class="trigger-card" id="t-B3">
+      <div class="trigger-header" style="border-left:4px solid #7C3AED">
+        <span class="trigger-type-badge" style="background:#0e0a18;color:#a78bfa;border-color:#241650">Existential numbness</span>
+        <span class="trigger-title">No dramatic event — just a slow accumulation of days that feel identical and meaningless. Goes through the motions. Nothing motivates him. Successful on paper, empty underneath.</span>
+      </div>
+      <div class="seg-grid">
+        <div class="seg-col">
+          <div class="col-label" style="color:#a78bfa">Timing Window</div>
+          <div class="timing-block">
+            <div class="timing-row"><span class="t-key">Enters market</span><span class="t-val">Ongoing — no fixed trigger, enters the market gradually through content</span></div>
+            <div class="timing-row"><span class="t-key">Buyable window</span><span class="t-val">2–8 weeks from first serious engagement</span></div>
+            <div class="timing-row"><span class="t-key">Sweet spot</span><span class="t-val">Ongoing — content-led</span></div>
+          </div>
+          <div class="col-label" style="color:#a78bfa;margin-top:16px">Jobs to Be Done</div>
+          <ul class="list-items jtbd"><li><span class="jtbd-badge">Emotional</span> Feel genuinely engaged in my own life — not just going through motions waiting for something to matter</li>
+<li><span class="jtbd-badge">Functional</span> Have a personal definition of &#x27;high value&#x27; that has nothing to do with other people&#x27;s metrics for my life</li>
+<li><span class="jtbd-badge">Social</span> Be the man in my circle who people sense has figured something out — not because I talk about it but because they feel it</li>
+<li><span class="jtbd-badge">Emotional</span> Replace the numbness with something that feels like agency — like my choices actually determine something</li>
+<li><span class="jtbd-badge">Functional</span> Have a framework for deciding what to say yes and no to — not just drift toward whatever comes next</li></ul>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#a78bfa">Purchase Blockers</div>
+          <ul class="list-items blk"><li>This is probably just depression — a program can&#x27;t fix a mental health problem</li>
+<li>I&#x27;ve read everything — Stoics, Frankl, Csikszentmihalyi — I know the theory and it doesn&#x27;t help</li>
+<li>Feeling empty is just the human condition — chasing meaning is itself the problem</li>
+<li>If this were solvable I would have solved it by now — I&#x27;m not someone who gives up easily</li>
+<li>Programs like this prey on men who are vulnerable and promise transformation they can&#x27;t deliver</li></ul>
+          <div class="col-label" style="color:#a78bfa;margin-top:14px">Reddit Communities</div>
+          <div class="tag-row"><span class="comm-tag">r/selfimprovement</span> <span class="comm-tag">r/Stoicism</span> <span class="comm-tag">r/malementalhealth</span> <span class="comm-tag">r/AskMenOver40</span></div>
+          <div class="col-label" style="color:#a78bfa;margin-top:10px">Search Queries</div>
+          <div class="tag-row"><span class="search-tag">nothing motivates me anymore</span> <span class="search-tag">how to stop feeling empty</span> <span class="search-tag">life on autopilot</span> <span class="search-tag">how to find meaning in life man</span> <span class="search-tag">stoicism for men</span></div>
+          <div class="col-label" style="color:#a78bfa;margin-top:10px">Content Channels</div>
+          <div class="tag-row"><span class="chan-tag">Stoicism channels</span> <span class="chan-tag">Huberman Lab</span> <span class="chan-tag">philosophy/meaning content</span> <span class="chan-tag">Derek Sivers</span> <span class="chan-tag">Paul Graham essays</span></div>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#a78bfa">Converting Hook</div>
+          <p class="hook-text">&ldquo;The problem isn&#x27;t that you&#x27;re broken. It&#x27;s that you&#x27;re optimised for the wrong output.&rdquo;</p>
+          <div class="col-label" style="color:#a78bfa;margin-top:14px">Ad Campaign Angle</div>
+          <p class="seg-desc">Retarget from stoicism, purpose and meaning content consumers; long-form content plays well here</p>
+          <div class="col-label" style="color:#a78bfa;margin-top:14px">Landing Page Angle</div>
+          <p class="seg-desc">You&#x27;re not depressed. You&#x27;re just running someone else&#x27;s definition of a good life.</p>
+          <div class="col-label" style="color:#a78bfa;margin-top:14px">Testimonial Type</div>
+          <p class="seg-desc">I&#x27;d been &#x27;successful&#x27; for years and felt nothing. Learning to define value on my own terms changed everything about what I do and why.</p>
+        </div>
+      </div>
+      
+      <div class="insight-bar" style="border-left-color:#7C3AED">
+        <strong>Product fit:</strong> Values clarification and identity framework as the entry point; everything else follows — <em>&#x27;stoicism&#x27; 74K/mo Rising, &#x27;nothing motivates me&#x27; — 9 posts but 29 avg comments showing deep resonance, &#x27;43M $1.5M networth lost in life&#x27; — archetypal post for this trigger</em>
+      </div>
+    </div></div>
+  </div>
+  <div class="cat-section" id="seg-C" style="--seg-clr:#DC2626;--seg-bg:#140808;--seg-border:#360e0e;--seg-text:#f87171">
+    <div class="cat-header">
+      <div class="cat-header-inner" style="background:#140808;border-color:#360e0e">
+        <div class="cat-num" style="background:#DC2626;color:#fff">3</div>
+        <div>
+          <div class="cat-name">The Nice Guy Awakening</div>
+          <div class="cat-baseline">Built his identity around being &#x27;good&#x27; — kind, non-threatening, accommodating, emotionally available. Gets consistently bypassed, friendzoned, or taken for granted despite following the playbook he was handed. Resentment is building. He is close to a radicalisation moment.</div>
+        </div>
+        <div class="cat-right">
+          <div class="share-circle" style="--share:20%;color:#f87171">20%</div>
+          <div class="core-q">&ldquo;Why doesn&#x27;t doing everything right get me anywhere?&rdquo;</div>
+        </div>
+      </div>
+    </div>
+    <div class="seg-section">
+    <div class="trigger-card" id="t-C1">
+      <div class="trigger-header" style="border-left:4px solid #DC2626">
+        <span class="trigger-type-badge" style="background:#140808;color:#f87171;border-color:#360e0e">Betrayal by someone he invested in</span>
+        <span class="trigger-title">The woman he supported, believed in, and prioritised chose someone he sees as objectively worse — less kind, less present, less deserving. The &#x27;good man&#x27; bet failed visibly and publicly.</span>
+      </div>
+      <div class="seg-grid">
+        <div class="seg-col">
+          <div class="col-label" style="color:#f87171">Timing Window</div>
+          <div class="timing-block">
+            <div class="timing-row"><span class="t-key">Enters market</span><span class="t-val">Immediate — 0–2 weeks post betrayal</span></div>
+            <div class="timing-row"><span class="t-key">Buyable window</span><span class="t-val">0–3 weeks</span></div>
+            <div class="timing-row"><span class="t-key">Sweet spot</span><span class="t-val">1–2 weeks</span></div>
+          </div>
+          <div class="col-label" style="color:#f87171;margin-top:16px">Jobs to Be Done</div>
+          <ul class="list-items jtbd"><li><span class="jtbd-badge">Emotional</span> Stop the specific shame of knowing I did everything right and still lost to someone who didn&#x27;t try</li>
+<li><span class="jtbd-badge">Functional</span> Build standards so clear I never again end up deeply invested in someone who was never actually choosing me</li>
+<li><span class="jtbd-badge">Social</span> Be genuinely warm and giving from a position of strength — not from fear of what happens if I stop</li>
+<li><span class="jtbd-badge">Emotional</span> Replace the accommodating behaviour that people took advantage of with self-respect that makes me more attractive, not less</li>
+<li><span class="jtbd-badge">Functional</span> Understand exactly where I lowered my standards and stop doing it — without becoming the cold man I don&#x27;t want to be</li></ul>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#f87171">Purchase Blockers</div>
+          <ul class="list-items blk"><li>This is just another version of the red pill — teaching men to be cold and transactional rather than genuinely good</li>
+<li>I shouldn&#x27;t have to change who I am — the problem is women&#x27;s standards, not my behaviour</li>
+<li>If I become &#x27;high value&#x27; I&#x27;ll attract women who only want my status — not genuine connection</li>
+<li>Nice guys finish last is a myth used to justify men treating women badly — I don&#x27;t want to become that</li>
+<li>I&#x27;ve already lost faith in this kind of thing — I&#x27;ve tried improving myself and it doesn&#x27;t change how I&#x27;m treated</li></ul>
+          <div class="col-label" style="color:#f87171;margin-top:14px">Reddit Communities</div>
+          <div class="tag-row"><span class="comm-tag">r/AskMen</span> <span class="comm-tag">r/malementalhealth</span> <span class="comm-tag">r/selfimprovement</span> <span class="comm-tag">r/AskMenOver30</span></div>
+          <div class="col-label" style="color:#f87171;margin-top:10px">Search Queries</div>
+          <div class="tag-row"><span class="search-tag">nice guy vs high value man</span> <span class="search-tag">why do women choose bad men</span> <span class="search-tag">how to stop being a people pleaser man</span> <span class="search-tag">how to set boundaries with women</span></div>
+          <div class="col-label" style="color:#f87171;margin-top:10px">Content Channels</div>
+          <div class="tag-row"><span class="chan-tag">Hamza Ahmed</span> <span class="chan-tag">No More Mr Nice Guy adjacent channels — red pill competes hard here</span></div>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#f87171">Converting Hook</div>
+          <p class="hook-text">&ldquo;Being good isn&#x27;t the same as being high value. Here&#x27;s the difference — and how to close it.&rdquo;</p>
+          <div class="col-label" style="color:#f87171;margin-top:14px">Ad Campaign Angle</div>
+          <p class="seg-desc">Men 24–38 consuming &#x27;nice guy&#x27; and &#x27;why do women&#x27; content; intercept before red pill capture</p>
+          <div class="col-label" style="color:#f87171;margin-top:14px">Landing Page Angle</div>
+          <p class="seg-desc">You didn&#x27;t fail because you were too good. You failed because you were operating without standards.</p>
+          <div class="col-label" style="color:#f87171;margin-top:14px">Testimonial Type</div>
+          <p class="seg-desc">I used to think being kind and available made me a good man. Now I know it was making me an invisible one.</p>
+        </div>
+      </div>
+      <div class="warning-bar">⚠ ⚠️ HIGHEST RADICALIZATION RISK. Reddit evidence: &#x27;On the verge of going full incel&#x27;, &#x27;How do I stop resenting women&#x27;, &#x27;What can MensLib do to prevent radicalization&#x27;. The product must offer genuine alternative — not tactics, but self-respect with warmth.</div>
+      <div class="insight-bar" style="border-left-color:#DC2626">
+        <strong>Product fit:</strong> Standards module is the most critical — followed by identity and presence. This segment needs an alternative to red pill bitterness.
+      </div>
+    </div>
+    <div class="trigger-card" id="t-C2">
+      <div class="trigger-header" style="border-left:4px solid #DC2626">
+        <span class="trigger-type-badge" style="background:#140808;color:#f87171;border-color:#360e0e">Years of effort, no return</span>
+        <span class="trigger-title">Has been &#x27;working on himself&#x27; — gym, therapy, reading, self-improvement. Still feels taken for granted. The investment hasn&#x27;t changed how he&#x27;s treated. Motivation is collapsing into frustration.</span>
+      </div>
+      <div class="seg-grid">
+        <div class="seg-col">
+          <div class="col-label" style="color:#f87171">Timing Window</div>
+          <div class="timing-block">
+            <div class="timing-row"><span class="t-key">Enters market</span><span class="t-val">Gradual build — enters market after 6-18 months of effort with no result</span></div>
+            <div class="timing-row"><span class="t-key">Buyable window</span><span class="t-val">2–6 weeks from first serious engagement</span></div>
+            <div class="timing-row"><span class="t-key">Sweet spot</span><span class="t-val">Ongoing</span></div>
+          </div>
+          <div class="col-label" style="color:#f87171;margin-top:16px">Jobs to Be Done</div>
+          <ul class="list-items jtbd"><li><span class="jtbd-badge">Emotional</span> Finally understand why years of doing the right things haven&#x27;t changed how I&#x27;m treated — and what actually does</li>
+<li><span class="jtbd-badge">Functional</span> Have standards that I hold without apology and that actually improve the quality of people in my life</li>
+<li><span class="jtbd-badge">Social</span> Be someone people treat with genuine respect — not the polite respect given to someone harmless</li>
+<li><span class="jtbd-badge">Emotional</span> Stop secretly believing that if I just improve enough more, eventually someone will choose me</li>
+<li><span class="jtbd-badge">Functional</span> Know the difference between standards that elevate and demands that isolate — and live confidently on the right side</li></ul>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#f87171">Purchase Blockers</div>
+          <ul class="list-items blk"><li>I&#x27;ve already spent years improving — adding another program is just admitting nothing works</li>
+<li>The problem isn&#x27;t me, it&#x27;s that women are attracted to status and looks — self-improvement doesn&#x27;t fix those</li>
+<li>This sounds like it will teach me to be more demanding and that will push people away further</li>
+<li>I&#x27;ve tried standards before and ended up more alone — lowering expectations is more realistic</li>
+<li>If I haven&#x27;t figured this out after all the work I&#x27;ve done, I&#x27;m probably just not the kind of man this works for</li></ul>
+          <div class="col-label" style="color:#f87171;margin-top:14px">Reddit Communities</div>
+          <div class="tag-row"><span class="comm-tag">r/selfimprovement</span> <span class="comm-tag">r/getdisciplined</span> <span class="comm-tag">r/DecidingToBeBetter</span> <span class="comm-tag">r/malementalhealth</span></div>
+          <div class="col-label" style="color:#f87171;margin-top:10px">Search Queries</div>
+          <div class="tag-row"><span class="search-tag">self improvement not working</span> <span class="search-tag">I&#x27;ve done everything right and still fail</span> <span class="search-tag">how to be high value man</span> <span class="search-tag">why am I still invisible after self improvement</span></div>
+          <div class="col-label" style="color:#f87171;margin-top:10px">Content Channels</div>
+          <div class="tag-row"><span class="chan-tag">Self-improvement YouTube</span> <span class="chan-tag">Hamza Ahmed</span> <span class="chan-tag">content creators who bridge self-improvement and dating</span></div>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#f87171">Converting Hook</div>
+          <p class="hook-text">&ldquo;Self-improvement builds the man. Standards determine how he&#x27;s treated. Most programs teach one and skip the other.&rdquo;</p>
+          <div class="col-label" style="color:#f87171;margin-top:14px">Ad Campaign Angle</div>
+          <p class="seg-desc">Men consuming self-improvement content for 6+ months who also consume dating/respect content</p>
+          <div class="col-label" style="color:#f87171;margin-top:14px">Landing Page Angle</div>
+          <p class="seg-desc">You&#x27;ve done the work. Here&#x27;s why the results haven&#x27;t followed — and the piece you&#x27;re missing.</p>
+          <div class="col-label" style="color:#f87171;margin-top:14px">Testimonial Type</div>
+          <p class="seg-desc">I spent three years improving myself and nothing changed. Turns out I was building a better version of someone with no standards.</p>
+        </div>
+      </div>
+      
+      <div class="insight-bar" style="border-left-color:#DC2626">
+        <strong>Product fit:</strong> Bridge between self-improvement (what he&#x27;s been doing) and standards/identity (what he hasn&#x27;t done) — <em>Reddit thread &#x27;I&#x27;ve removed all the bad things and now don&#x27;t know what else to do&#x27; — 387 comments. Direct proof of this trigger in the data.</em>
+      </div>
+    </div>
+    <div class="trigger-card" id="t-C3">
+      <div class="trigger-header" style="border-left:4px solid #DC2626">
+        <span class="trigger-type-badge" style="background:#140808;color:#f87171;border-color:#360e0e">Red pill discovery moment</span>
+        <span class="trigger-title">Has found red pill content and some of it resonates with his experience. Hasn&#x27;t fully bought in — still has enough self-awareness to feel uncomfortable with the bitterness. This is the exact capture window before radicalisation.</span>
+      </div>
+      <div class="seg-grid">
+        <div class="seg-col">
+          <div class="col-label" style="color:#f87171">Timing Window</div>
+          <div class="timing-block">
+            <div class="timing-row"><span class="t-key">Enters market</span><span class="t-val">Immediate — 0–1 week from first serious red pill exposure</span></div>
+            <div class="timing-row"><span class="t-key">Buyable window</span><span class="t-val">0–2 weeks</span></div>
+            <div class="timing-row"><span class="t-key">Sweet spot</span><span class="t-val">0–1 week</span></div>
+          </div>
+          <div class="col-label" style="color:#f87171;margin-top:16px">Jobs to Be Done</div>
+          <ul class="list-items jtbd"><li><span class="jtbd-badge">Emotional</span> Understand why my experience with women and respect has been what it&#x27;s been — without needing to become someone bitter to explain it</li>
+<li><span class="jtbd-badge">Functional</span> Build an identity that gets me the results the red pill promises, through a path that doesn&#x27;t require cynicism</li>
+<li><span class="jtbd-badge">Social</span> Be a man with real standards and real presence — not a performer of masculinity who women see through immediately</li>
+<li><span class="jtbd-badge">Emotional</span> Resolve the anger I feel about my past without it becoming the thing that defines what I become</li>
+<li><span class="jtbd-badge">Functional</span> Have a framework for masculinity I&#x27;m genuinely proud of — one I&#x27;d be happy for the people I respect most to see</li></ul>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#f87171">Purchase Blockers</div>
+          <ul class="list-items blk"><li>The red pill is the only content that actually tells me the truth about how attraction works — everything else is cope</li>
+<li>High value man sounds like a softer version of the same thing — it&#x27;s just the red pill with better branding</li>
+<li>I&#x27;ve seen where &#x27;be a better man&#x27; content goes — it ends up telling men to suppress their instincts to please women</li>
+<li>This will probably just make me more of what I already am — nice, accommodating, and invisible</li>
+<li>If this worked, the men who teach it wouldn&#x27;t need to sell courses — they&#x27;d just be getting results</li></ul>
+          <div class="col-label" style="color:#f87171;margin-top:14px">Reddit Communities</div>
+          <div class="tag-row"><span class="comm-tag">r/malementalhealth</span> <span class="comm-tag">r/AskMen</span> <span class="comm-tag">r/becomeaman</span> <span class="comm-tag">r/manprovement</span></div>
+          <div class="col-label" style="color:#f87171;margin-top:10px">Search Queries</div>
+          <div class="tag-row"><span class="search-tag">red pill explained</span> <span class="search-tag">is the red pill true</span> <span class="search-tag">high value man vs red pill</span> <span class="search-tag">sigma male meaning</span> <span class="search-tag">how to be a high value man without red pill</span></div>
+          <div class="col-label" style="color:#f87171;margin-top:10px">Content Channels</div>
+          <div class="tag-row"><span class="chan-tag">Red pill adjacent YouTube</span> <span class="chan-tag">Hamza Ahmed (bridge creator)</span> <span class="chan-tag">Patrick Bet-David</span> <span class="chan-tag">Fresh and Fit adjacent</span></div>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#f87171">Converting Hook</div>
+          <p class="hook-text">&ldquo;The red pill explains why you&#x27;ve been treated this way. It doesn&#x27;t have to be where the story ends.&rdquo;</p>
+          <div class="col-label" style="color:#f87171;margin-top:14px">Ad Campaign Angle</div>
+          <p class="seg-desc">Retarget from red pill, sigma male, alpha male content consumers; intercept before full conversion</p>
+          <div class="col-label" style="color:#f87171;margin-top:14px">Landing Page Angle</div>
+          <p class="seg-desc">What the red pill got right — and the better answer it missed.</p>
+          <div class="col-label" style="color:#f87171;margin-top:14px">Testimonial Type</div>
+          <p class="seg-desc">I found the red pill and it named something real. Then I found something better — a path that doesn&#x27;t require becoming angry to get results.</p>
+        </div>
+      </div>
+      
+      <div class="insight-bar" style="border-left-color:#DC2626">
+        <strong>Product fit:</strong> Identity and standards as the alternative to red pill bitterness; the HVM concept is the offer — <em>MOST TIME-SENSITIVE window in the entire funnel. Reddit data: &#x27;What can MensLib do to prevent radicalization&#x27; (367 comments), &#x27;The War on Masculinity&#x27; post (219 comments). Direct evidence this window exists and has audience.</em>
+      </div>
+    </div></div>
+  </div>
+  <div class="cat-section" id="seg-D" style="--seg-clr:#2563EB;--seg-bg:#080e1c;--seg-border:#102050;--seg-text:#60a5fa">
+    <div class="cat-header">
+      <div class="cat-header-inner" style="background:#080e1c;border-color:#102050">
+        <div class="cat-num" style="background:#2563EB;color:#fff">4</div>
+        <div>
+          <div class="cat-name">The Rebuilder</div>
+          <div class="cat-baseline">A clear rupture event ended one chapter of his life. Divorce, major breakup, job loss, hitting bottom. The old version of him — his approach, his standards, his self-image — clearly failed. He&#x27;s ready to start over and needs a framework for who to become.</div>
+        </div>
+        <div class="cat-right">
+          <div class="share-circle" style="--share:15%;color:#60a5fa">15%</div>
+          <div class="core-q">&ldquo;Who do I need to become now that my old life is gone?&rdquo;</div>
+        </div>
+      </div>
+    </div>
+    <div class="seg-section">
+    <div class="trigger-card" id="t-D1">
+      <div class="trigger-header" style="border-left:4px solid #2563EB">
+        <span class="trigger-type-badge" style="background:#080e1c;color:#60a5fa;border-color:#102050">Divorce or relationship collapse</span>
+        <span class="trigger-title">Partnership that organised his identity and daily life has ended. The structure is gone. He&#x27;s asking fundamental questions about who he is, what he wants, and what kind of man he&#x27;s going to become.</span>
+      </div>
+      <div class="seg-grid">
+        <div class="seg-col">
+          <div class="col-label" style="color:#60a5fa">Timing Window</div>
+          <div class="timing-block">
+            <div class="timing-row"><span class="t-key">Enters market</span><span class="t-val">1–3 months post separation — after acute grief, before settling into a new mediocre normal</span></div>
+            <div class="timing-row"><span class="t-key">Buyable window</span><span class="t-val">0–8 weeks in the rebuilding window</span></div>
+            <div class="timing-row"><span class="t-key">Sweet spot</span><span class="t-val">6–12 weeks post separation</span></div>
+          </div>
+          <div class="col-label" style="color:#60a5fa;margin-top:16px">Jobs to Be Done</div>
+          <ul class="list-items jtbd"><li><span class="jtbd-badge">Emotional</span> Have an identity that is entirely mine — not defined by what I lost, who left, or what failed</li>
+<li><span class="jtbd-badge">Functional</span> Build a daily structure that makes me feel like a man with a direction, not a man in recovery</li>
+<li><span class="jtbd-badge">Social</span> Show up in my kids&#x27; / friends&#x27; / new relationships&#x27; lives as someone who clearly knows who he is</li>
+<li><span class="jtbd-badge">Emotional</span> Stop replaying what went wrong and start actually building what comes next</li>
+<li><span class="jtbd-badge">Functional</span> Have a clear picture of the man I&#x27;m becoming — specific enough to make real decisions from, not just inspiration</li></ul>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#60a5fa">Purchase Blockers</div>
+          <ul class="list-items blk"><li>I&#x27;m too raw right now — this isn&#x27;t the time to invest in self-improvement, it&#x27;s the time to just survive</li>
+<li>I&#x27;ve been trying to become a better man for years — that&#x27;s what led to the relationship in the first place. More of it won&#x27;t fix this.</li>
+<li>The problem was her, not me — working on myself buys into the narrative that I was the problem</li>
+<li>Rebuilding &#x27;yourself&#x27; as a divorced man is just a marketing pitch that preys on vulnerability</li>
+<li>I have kids / financial obligations — I can&#x27;t afford the time or money for self-improvement right now</li></ul>
+          <div class="col-label" style="color:#60a5fa;margin-top:14px">Reddit Communities</div>
+          <div class="tag-row"><span class="comm-tag">r/AskMenOver30</span> <span class="comm-tag">r/selfimprovement</span> <span class="comm-tag">r/Stoicism</span> <span class="comm-tag">r/DecidingToBeBetter</span></div>
+          <div class="col-label" style="color:#60a5fa;margin-top:10px">Search Queries</div>
+          <div class="tag-row"><span class="search-tag">how to rebuild after divorce</span> <span class="search-tag">starting over at 35</span> <span class="search-tag">how to become a better man after breakup</span> <span class="search-tag">how to reinvent yourself</span> <span class="search-tag">personal development for men</span></div>
+          <div class="col-label" style="color:#60a5fa;margin-top:10px">Content Channels</div>
+          <div class="tag-row"><span class="chan-tag">AskMenOver30 community</span> <span class="chan-tag">Stoicism channels</span> <span class="chan-tag">self-improvement after breakup content</span> <span class="chan-tag">David Goggins adjacent</span></div>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#60a5fa">Converting Hook</div>
+          <p class="hook-text">&ldquo;The old version of you got you here. The question is who you&#x27;re building next.&rdquo;</p>
+          <div class="col-label" style="color:#60a5fa;margin-top:14px">Ad Campaign Angle</div>
+          <p class="seg-desc">Men 30–50 consuming divorce recovery, self-improvement, and &#x27;starting over&#x27; content</p>
+          <div class="col-label" style="color:#60a5fa;margin-top:14px">Landing Page Angle</div>
+          <p class="seg-desc">You don&#x27;t have to rebuild the life you had. You can build the one you actually wanted.</p>
+          <div class="col-label" style="color:#60a5fa;margin-top:14px">Testimonial Type</div>
+          <p class="seg-desc">My wife left after 10 years. I had no idea who I was without that relationship. This gave me a framework to become someone I&#x27;m actually proud of.</p>
+        </div>
+      </div>
+      
+      <div class="insight-bar" style="border-left-color:#2563EB">
+        <strong>Product fit:</strong> Full stack — identity first, then standards, then purpose. This segment needs everything and is most motivated to use it. — <em>&#x27;My wife of 10 years just left me&#x27; — 1,128 comments, one of the highest-engagement posts in dataset. &#x27;how to reinvent yourself&#x27; (5.4K/mo Rising), &#x27;personal development&#x27; (33.1K/mo Stable)</em>
+      </div>
+    </div>
+    <div class="trigger-card" id="t-D2">
+      <div class="trigger-header" style="border-left:4px solid #2563EB">
+        <span class="trigger-type-badge" style="background:#080e1c;color:#60a5fa;border-color:#102050">Wasted years regret</span>
+        <span class="trigger-title">Age + regret + no clear path = peak openness to a complete framework. Looks back at his 20s or early 30s and sees time he can&#x27;t recover. The window to become the man he wanted to be feels like it&#x27;s closing.</span>
+      </div>
+      <div class="seg-grid">
+        <div class="seg-col">
+          <div class="col-label" style="color:#60a5fa">Timing Window</div>
+          <div class="timing-block">
+            <div class="timing-row"><span class="t-key">Enters market</span><span class="t-val">Within 4 weeks of a clear &#x27;I&#x27;ve wasted too much time&#x27; moment</span></div>
+            <div class="timing-row"><span class="t-key">Buyable window</span><span class="t-val">0–6 weeks</span></div>
+            <div class="timing-row"><span class="t-key">Sweet spot</span><span class="t-val">1–3 weeks</span></div>
+          </div>
+          <div class="col-label" style="color:#60a5fa;margin-top:16px">Jobs to Be Done</div>
+          <ul class="list-items jtbd"><li><span class="jtbd-badge">Emotional</span> Stop grieving the decade I didn&#x27;t use well and actually start building with what I have left</li>
+<li><span class="jtbd-badge">Functional</span> Have a concrete 2–3 year plan that moves me from where I am to a life I&#x27;d actually be proud to live</li>
+<li><span class="jtbd-badge">Social</span> Be someone peers from my past would look at in 5 years and not recognise — in the best possible way</li>
+<li><span class="jtbd-badge">Emotional</span> Replace the regret that paralyses me with momentum that uses it as fuel</li>
+<li><span class="jtbd-badge">Functional</span> Know exactly which high-value man skills have the highest ROI at my age — so I invest in the right things first</li></ul>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#60a5fa">Purchase Blockers</div>
+          <ul class="list-items blk"><li>I&#x27;ve lost so much time that catching up is impossible — the window has genuinely closed for some things</li>
+<li>Every &#x27;it&#x27;s not too late&#x27; program says the same thing to make you feel better before taking your money</li>
+<li>The men who transformed their lives at 35 had advantages I don&#x27;t — resources, looks, connections</li>
+<li>I&#x27;ve tried reinventing myself before and it didn&#x27;t stick — the change never lasts</li>
+<li>If I focus on changing myself I&#x27;m using energy that should go to practical problems like money and career</li></ul>
+          <div class="col-label" style="color:#60a5fa;margin-top:14px">Reddit Communities</div>
+          <div class="tag-row"><span class="comm-tag">r/selfimprovement</span> <span class="comm-tag">r/AskMenOver30</span> <span class="comm-tag">r/DecidingToBeBetter</span> <span class="comm-tag">r/getdisciplined</span></div>
+          <div class="col-label" style="color:#60a5fa;margin-top:10px">Search Queries</div>
+          <div class="tag-row"><span class="search-tag">is 30 too late to change your life</span> <span class="search-tag">wasted my 20s what now</span> <span class="search-tag">how to make up for lost time man</span> <span class="search-tag">self improvement at 35</span> <span class="search-tag">how to reinvent yourself at 30</span></div>
+          <div class="col-label" style="color:#60a5fa;margin-top:10px">Content Channels</div>
+          <div class="tag-row"><span class="chan-tag">Self-improvement recovery content</span> <span class="chan-tag">Hamza Ahmed</span> <span class="chan-tag">motivation channels</span> <span class="chan-tag">before/after transformation content</span></div>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#60a5fa">Converting Hook</div>
+          <p class="hook-text">&ldquo;You haven&#x27;t missed the window. You&#x27;ve just found the right entry point.&rdquo;</p>
+          <div class="col-label" style="color:#60a5fa;margin-top:14px">Ad Campaign Angle</div>
+          <p class="seg-desc">Men 28–40 consuming &#x27;is it too late&#x27; and &#x27;wasted years&#x27; content; high search intent</p>
+          <div class="col-label" style="color:#60a5fa;margin-top:14px">Landing Page Angle</div>
+          <p class="seg-desc">The best time to become the man you needed to be was ten years ago. The second best time is now.</p>
+          <div class="col-label" style="color:#60a5fa;margin-top:14px">Testimonial Type</div>
+          <p class="seg-desc">I was 34, felt like I&#x27;d wasted a decade, and had no idea where to start. A year later I barely recognise my old life.</p>
+        </div>
+      </div>
+      
+      <div class="insight-bar" style="border-left-color:#2563EB">
+        <strong>Product fit:</strong> Mission-setting as the immediate need; standards and identity as the daily practice — <em>&#x27;Is 26 years old too late to change your life for the best?&#x27; — 386 comments. Direct data validation. &#x27;how to change your life&#x27; (18.1K/mo Stable).</em>
+      </div>
+    </div>
+    <div class="trigger-card" id="t-D3">
+      <div class="trigger-header" style="border-left:4px solid #2563EB">
+        <span class="trigger-type-badge" style="background:#080e1c;color:#60a5fa;border-color:#102050">Rock bottom moment</span>
+        <span class="trigger-title">Addiction, financial collapse, health crisis, or simply a day where he looked at his life and couldn&#x27;t accept it anymore. Not a slow drift — a hard stop. Now he needs to rebuild from an honest foundation.</span>
+      </div>
+      <div class="seg-grid">
+        <div class="seg-col">
+          <div class="col-label" style="color:#60a5fa">Timing Window</div>
+          <div class="timing-block">
+            <div class="timing-row"><span class="t-key">Enters market</span><span class="t-val">Immediate — 0–2 weeks post rock bottom moment</span></div>
+            <div class="timing-row"><span class="t-key">Buyable window</span><span class="t-val">0–4 weeks</span></div>
+            <div class="timing-row"><span class="t-key">Sweet spot</span><span class="t-val">1–2 weeks</span></div>
+          </div>
+          <div class="col-label" style="color:#60a5fa;margin-top:16px">Jobs to Be Done</div>
+          <ul class="list-items jtbd"><li><span class="jtbd-badge">Emotional</span> Feel like a man who has standards for himself — not someone who knows what he should do and does the opposite</li>
+<li><span class="jtbd-badge">Functional</span> Have a non-negotiable daily structure that makes my default behaviour the right one — not a constant act of willpower</li>
+<li><span class="jtbd-badge">Social</span> Look the people I&#x27;ve let down in the eye and have them see someone who has genuinely changed</li>
+<li><span class="jtbd-badge">Emotional</span> Stop being disgusted with myself every morning and replace it with something that feels like forward motion</li>
+<li><span class="jtbd-badge">Functional</span> Build a version of myself stable enough that I stop blowing up the good things I do manage to create</li></ul>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#60a5fa">Purchase Blockers</div>
+          <ul class="list-items blk"><li>I&#x27;m too unstable right now to commit to anything — I need to just get through each day</li>
+<li>People who sell &#x27;rebuild your life&#x27; content target men when they&#x27;re at their most vulnerable and least able to judge quality</li>
+<li>Real change has to come from inside — a program can&#x27;t manufacture the discipline I clearly don&#x27;t have</li>
+<li>I&#x27;ve tried to restart before and failed — another attempt will just add another failure to the list</li>
+<li>I need practical help first — money, housing, health — not identity work</li></ul>
+          <div class="col-label" style="color:#60a5fa;margin-top:14px">Reddit Communities</div>
+          <div class="tag-row"><span class="comm-tag">r/NoFap</span> <span class="comm-tag">r/Stoicism</span> <span class="comm-tag">r/DecidingToBeBetter</span> <span class="comm-tag">r/malementalhealth</span></div>
+          <div class="col-label" style="color:#60a5fa;margin-top:10px">Search Queries</div>
+          <div class="tag-row"><span class="search-tag">ruined my life how to recover</span> <span class="search-tag">how to start over from nothing man</span> <span class="search-tag">NoFap motivation</span> <span class="search-tag">how to rebuild yourself</span> <span class="search-tag">rock bottom self improvement</span></div>
+          <div class="col-label" style="color:#60a5fa;margin-top:10px">Content Channels</div>
+          <div class="tag-row"><span class="chan-tag">David Goggins</span> <span class="chan-tag">NoFap community channels</span> <span class="chan-tag">Stoicism</span> <span class="chan-tag">redemption arc content</span></div>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#60a5fa">Converting Hook</div>
+          <p class="hook-text">&ldquo;Rock bottom is the most honest starting point. Most men never get there. You did — use it.&rdquo;</p>
+          <div class="col-label" style="color:#60a5fa;margin-top:14px">Ad Campaign Angle</div>
+          <p class="seg-desc">Men consuming NoFap, addiction recovery, and &#x27;rebuild your life&#x27; content</p>
+          <div class="col-label" style="color:#60a5fa;margin-top:14px">Landing Page Angle</div>
+          <p class="seg-desc">You&#x27;ve seen what happens when you operate without standards. Now build the version that doesn&#x27;t.</p>
+          <div class="col-label" style="color:#60a5fa;margin-top:14px">Testimonial Type</div>
+          <p class="seg-desc">I destroyed my savings, my relationship, and my self-respect by 28. The clarity that came after was the best thing that ever happened to me.</p>
+        </div>
+      </div>
+      
+      <div class="insight-bar" style="border-left-color:#2563EB">
+        <strong>Product fit:</strong> Standards and identity modules first — the foundation he clearly lacked. Purpose as the anchor going forward. — <em>NoFap community: 100 posts, 151 comments. &#x27;Ruined life at 24M&#x27; — 317 comments on Stoicism subreddit. Rock bottom posts have among the highest comment-to-score ratios in dataset.</em>
+      </div>
+    </div></div>
+  </div>
+  <div class="cat-section" id="seg-E" style="--seg-clr:#059669;--seg-bg:#060e0c;--seg-border:#0c2820;--seg-text:#34d399">
+    <div class="cat-header">
+      <div class="cat-header-inner" style="background:#060e0c;border-color:#0c2820">
+        <div class="cat-num" style="background:#059669;color:#fff">5</div>
+        <div>
+          <div class="cat-name">The Optimizer</div>
+          <div class="cat-baseline">Already on a self-improvement path — gym, reading, building income, developing habits. Operates by a collection of practices without a unifying identity framework. Wants the HVM concept as the organising principle for the man he&#x27;s already becoming.</div>
+        </div>
+        <div class="cat-right">
+          <div class="share-circle" style="--share:5%;color:#34d399">5%</div>
+          <div class="core-q">&ldquo;How do I go from good to exceptional across all areas — not just one?&rdquo;</div>
+        </div>
+      </div>
+    </div>
+    <div class="seg-section">
+    <div class="trigger-card" id="t-E1">
+      <div class="trigger-header" style="border-left:4px solid #059669">
+        <span class="trigger-type-badge" style="background:#060e0c;color:#34d399;border-color:#0c2820">Plateau in results</span>
+        <span class="trigger-title">Has optimised one or two areas — fitness is good, income is growing — but the overall picture doesn&#x27;t add up to what he imagined. He&#x27;s missing the framework that ties it all together into an identity.</span>
+      </div>
+      <div class="seg-grid">
+        <div class="seg-col">
+          <div class="col-label" style="color:#34d399">Timing Window</div>
+          <div class="timing-block">
+            <div class="timing-row"><span class="t-key">Enters market</span><span class="t-val">Gradual — enters market from content and community</span></div>
+            <div class="timing-row"><span class="t-key">Buyable window</span><span class="t-val">2–8 weeks from first engagement</span></div>
+            <div class="timing-row"><span class="t-key">Sweet spot</span><span class="t-val">Ongoing — content-led</span></div>
+          </div>
+          <div class="col-label" style="color:#34d399;margin-top:16px">Jobs to Be Done</div>
+          <ul class="list-items jtbd"><li><span class="jtbd-badge">Functional</span> Have a unified identity framework that makes every habit, investment and decision point toward the same man</li>
+<li><span class="jtbd-badge">Social</span> Be recognised as a high value man by the people I respect — not through performance, but through who I genuinely am</li>
+<li><span class="jtbd-badge">Functional</span> Know exactly which remaining gaps between who I am and who I want to be are highest priority to close</li>
+<li><span class="jtbd-badge">Emotional</span> Stop feeling like I&#x27;m doing well by most metrics but still somehow falling short of my own standard</li>
+<li><span class="jtbd-badge">Social</span> Lead men around me through example — be the standard-bearer in my circle, not just in my own life</li></ul>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#34d399">Purchase Blockers</div>
+          <ul class="list-items blk"><li>I already have a system — I don&#x27;t need someone else&#x27;s framework replacing what&#x27;s working</li>
+<li>Most &#x27;high value man&#x27; content is surface-level — it won&#x27;t add anything I haven&#x27;t already encountered</li>
+<li>The men selling this content are not visibly more successful than I am — why would I pay them</li>
+<li>Adding another program means more time on self-improvement content and less time actually doing the work</li>
+<li>I&#x27;ll know when I need this — right now I just need to execute on what I already know</li></ul>
+          <div class="col-label" style="color:#34d399;margin-top:14px">Reddit Communities</div>
+          <div class="tag-row"><span class="comm-tag">r/selfimprovement</span> <span class="comm-tag">r/getdisciplined</span> <span class="comm-tag">r/productivity</span> <span class="comm-tag">r/Stoicism</span></div>
+          <div class="col-label" style="color:#34d399;margin-top:10px">Search Queries</div>
+          <div class="tag-row"><span class="search-tag">how to become a high value man</span> <span class="search-tag">high value man traits</span> <span class="search-tag">financial independence men</span> <span class="search-tag">leadership skills</span> <span class="search-tag">morning routine high performers</span></div>
+          <div class="col-label" style="color:#34d399;margin-top:10px">Content Channels</div>
+          <div class="tag-row"><span class="chan-tag">Alex Hormozi</span> <span class="chan-tag">Naval Ravikant</span> <span class="chan-tag">Huberman Lab</span> <span class="chan-tag">peak performance content</span></div>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#34d399">Converting Hook</div>
+          <p class="hook-text">&ldquo;You&#x27;ve built the habits. Now build the identity that organises them.&rdquo;</p>
+          <div class="col-label" style="color:#34d399;margin-top:14px">Ad Campaign Angle</div>
+          <p class="seg-desc">Men consuming high-performance, optimisation, and peak achievement content</p>
+          <div class="col-label" style="color:#34d399;margin-top:14px">Landing Page Angle</div>
+          <p class="seg-desc">You&#x27;ve already started. Here&#x27;s the identity that makes it all coherent.</p>
+          <div class="col-label" style="color:#34d399;margin-top:14px">Testimonial Type</div>
+          <p class="seg-desc">I was already doing the work. This gave me the framework that made it all point somewhere specific.</p>
+        </div>
+      </div>
+      
+      <div class="insight-bar" style="border-left-color:#059669">
+        <strong>Product fit:</strong> Identity framework as the lead; standards as the integration layer; mission as the capstone — <em>Smallest segment but highest LTV — already spending on self-improvement, most likely to buy premium tiers. &#x27;financial independence&#x27; 40.5K/mo Rising, &#x27;leadership skills&#x27; 27.1K/mo Stable, &#x27;passive income&#x27; 90.5K/mo Stable.</em>
+      </div>
+    </div>
+    <div class="trigger-card" id="t-E2">
+      <div class="trigger-header" style="border-left:4px solid #059669">
+        <span class="trigger-type-badge" style="background:#060e0c;color:#34d399;border-color:#0c2820">Ready to commit to a complete identity</span>
+        <span class="trigger-title">Has done the piece-by-piece work long enough to know he wants a complete framework. He&#x27;s not in crisis — he&#x27;s ambitious. He wants to name and own the identity he&#x27;s been building toward.</span>
+      </div>
+      <div class="seg-grid">
+        <div class="seg-col">
+          <div class="col-label" style="color:#34d399">Timing Window</div>
+          <div class="timing-block">
+            <div class="timing-row"><span class="t-key">Enters market</span><span class="t-val">Gradual — usually triggered by a specific piece of content that names exactly what he&#x27;s been working toward</span></div>
+            <div class="timing-row"><span class="t-key">Buyable window</span><span class="t-val">1–4 weeks from first engagement</span></div>
+            <div class="timing-row"><span class="t-key">Sweet spot</span><span class="t-val">Ongoing — content-led</span></div>
+          </div>
+          <div class="col-label" style="color:#34d399;margin-top:16px">Jobs to Be Done</div>
+          <ul class="list-items jtbd"><li><span class="jtbd-badge">Functional</span> Name and own the identity I&#x27;ve been building so it stops being a collection of habits and becomes who I actually am</li>
+<li><span class="jtbd-badge">Social</span> Be seen by people I respect as the standard — not someone with good habits, but someone who has become something</li>
+<li><span class="jtbd-badge">Emotional</span> Close the gap between the man I perform and the man I feel like on the inside — make them the same person</li>
+<li><span class="jtbd-badge">Functional</span> Identify the 2–3 remaining gaps that are holding me back from the complete picture and close them systematically</li>
+<li><span class="jtbd-badge">Social</span> Become the man in my circle that other men who are on a similar path look to — because I&#x27;ve gone further</li></ul>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#34d399">Purchase Blockers</div>
+          <ul class="list-items blk"><li>I don&#x27;t need a course to tell me who to be — I&#x27;m already figuring it out</li>
+<li>&#x27;High value man&#x27; as a concept is picked up by influencers and diluted — I don&#x27;t want to be associated with that</li>
+<li>I&#x27;m too close to my goals to start over with someone else&#x27;s framework</li>
+<li>The men selling HVM content don&#x27;t look like the men I want to emulate</li>
+<li>I&#x27;ll invest in coaching when I&#x27;ve earned enough to afford the premium version — not an online course</li></ul>
+          <div class="col-label" style="color:#34d399;margin-top:14px">Reddit Communities</div>
+          <div class="tag-row"><span class="comm-tag">r/getdisciplined</span> <span class="comm-tag">r/selfimprovement</span> <span class="comm-tag">r/productivity</span> <span class="comm-tag">r/manprovement</span></div>
+          <div class="col-label" style="color:#34d399;margin-top:10px">Search Queries</div>
+          <div class="tag-row"><span class="search-tag">high value man complete guide</span> <span class="search-tag">how to be the best version of yourself</span> <span class="search-tag">self mastery for men</span> <span class="search-tag">sigma male mindset</span> <span class="search-tag">how to set standards as a man</span></div>
+          <div class="col-label" style="color:#34d399;margin-top:10px">Content Channels</div>
+          <div class="tag-row"><span class="chan-tag">Alex Hormozi</span> <span class="chan-tag">high-performance content</span> <span class="chan-tag">masterclass-style courses</span> <span class="chan-tag">Andrew Huberman</span> <span class="chan-tag">successful creators who embody the concept</span></div>
+        </div>
+        <div class="seg-col">
+          <div class="col-label" style="color:#34d399">Converting Hook</div>
+          <p class="hook-text">&ldquo;You&#x27;ve been building the man. It&#x27;s time to name him.&rdquo;</p>
+          <div class="col-label" style="color:#34d399;margin-top:14px">Ad Campaign Angle</div>
+          <p class="seg-desc">Men 25–40 consuming premium self-improvement content; upsell from content funnel</p>
+          <div class="col-label" style="color:#34d399;margin-top:14px">Landing Page Angle</div>
+          <p class="seg-desc">Every habit you&#x27;ve built, every standard you&#x27;ve raised — they&#x27;ve been pointing toward this.</p>
+          <div class="col-label" style="color:#34d399;margin-top:14px">Testimonial Type</div>
+          <p class="seg-desc">I&#x27;d been doing the work for two years without knowing what I was building toward. This gave it a name, a shape, and a direction.</p>
+        </div>
+      </div>
+      
+      <div class="insight-bar" style="border-left-color:#059669">
+        <strong>Product fit:</strong> Full program as a capstone — position as the framework that organises everything he&#x27;s already done — <em>Best segment for premium pricing and annual programmes. Lowest acquisition cost when reached through quality content. &#x27;high value man traits&#x27; 5.4K/mo Rising — he&#x27;s already searching for the concept.</em>
+      </div>
+    </div></div>
+  </div>
+
+</div>
+
+<script>
+// Active nav on scroll
+const sections = document.querySelectorAll('[id^="t-"]');
+const navLinks = document.querySelectorAll('.nav-sub');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector('.nav-sub[href="#' + e.target.id + '"]');
+      if (active) active.classList.add('active');
+    }
+  });
+}, {rootMargin:'-20% 0px -70% 0px'});
+sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
