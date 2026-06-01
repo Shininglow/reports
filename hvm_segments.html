@@ -18,8 +18,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .nav-cat{display:flex;align-items:center;gap:8px;padding:9px 18px;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;cursor:pointer;transition:background .15s}
 .nav-cat:hover{background:rgba(255,255,255,.04)}
 .nav-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.nav-share{margin-left:auto;font-size:.68rem;color:#444466;font-weight:400;font-style:normal}
-.nav-sub{display:block;padding:5px 18px 5px 34px;font-size:.74rem;color:#444466;text-decoration:none;transition:color .15s,background .15s;border-left:2px solid transparent;margin-left:18px}
+.nav-share{margin-left:auto;font-size:.68rem;color:#444466;font-weight:400}
+.nav-sub{display:block;padding:5px 18px 5px 34px;font-size:.73rem;color:#444466;text-decoration:none;transition:color .15s,background .15s;border-left:2px solid transparent;margin-left:18px}
 .nav-sub:hover{color:#aaaacc;background:rgba(255,255,255,.03)}
 .nav-sub.active{color:#aaaaee;border-left-color:#4444aa}
 .nav-divider{height:1px;background:#1a1a28;margin:8px 0}
@@ -36,6 +36,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .stat-num{font-size:1.3rem;font-weight:700;color:#fff}
 .stat-label{font-size:.68rem;color:#6666aa;text-transform:uppercase;letter-spacing:.5px}
 
+/* TAB BAR */
+.tab-bar{display:flex;gap:0;padding:0 40px;border-bottom:1px solid #1a1a28;background:#0d0d12;position:sticky;top:0;z-index:20}
+.tab-btn{padding:14px 24px;font-size:.82rem;font-weight:600;color:#555577;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;letter-spacing:.2px}
+.tab-btn:hover{color:#9999bb}
+.tab-btn.active{color:#fff;border-bottom-color:#D97706}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+
 /* overview bar */
 .overview{padding:24px 40px;border-bottom:1px solid #1a1a28}
 .overview h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#444466;margin-bottom:14px}
@@ -48,7 +56,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* segment section */
 .cat-section{padding-top:8px}
-.cat-header{padding:28px 40px 0;position:sticky;top:0;z-index:10}
+.cat-header{padding:28px 40px 0;position:sticky;top:45px;z-index:10}
 .cat-header-inner{display:flex;align-items:flex-start;gap:16px;padding:16px 20px;border-radius:12px 12px 0 0;border:1px solid}
 .cat-num{width:36px;height:36px;min-width:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;flex-shrink:0;margin-top:2px}
 .cat-name{font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:4px}
@@ -57,12 +65,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .share-circle{font-size:1.8rem;font-weight:800;line-height:1}
 .core-q{font-size:.74rem;color:#5555aa;margin-top:6px;font-style:italic;line-height:1.45}
 
-/* segment + trigger cards */
+/* trigger cards (tab 1) */
 .seg-section{padding:0 40px 56px}
-.trigger-card{background:#101015;border:1px solid #1e1e2a;border-radius:14px;overflow:hidden;margin-top:16px}
-.trigger-header{display:flex;align-items:flex-start;gap:12px;padding:14px 20px;border-bottom:1px solid #1a1a24;background:rgba(255,255,255,.02)}
+.trigger-card,.subseg-card{background:#101015;border:1px solid #1e1e2a;border-radius:14px;overflow:hidden;margin-top:16px}
+.trigger-header{display:flex;align-items:flex-start;gap:12px;padding:14px 20px;border-bottom:1px solid #1a1a24;background:rgba(255,255,255,.02);flex-wrap:wrap}
 .trigger-type-badge{font-size:.68rem;font-weight:700;padding:3px 10px;border-radius:5px;border:1px solid;white-space:nowrap;flex-shrink:0;margin-top:2px;letter-spacing:.3px;text-transform:uppercase}
-.trigger-title{font-size:.9rem;color:#c8c8e0;line-height:1.5}
+.trigger-title{font-size:.9rem;color:#c8c8e0;line-height:1.5;flex:1;min-width:200px}
+.timing-pills{display:flex;gap:6px;flex-wrap:wrap;width:100%;margin-top:4px}
+.t-pill{font-size:.66rem;padding:2px 8px;border-radius:3px;background:rgba(255,255,255,.04);color:#555577;border:1px solid rgba(255,255,255,.06)}
 
 .seg-grid{display:grid;grid-template-columns:1fr 1.1fr 1fr}
 @media(max-width:900px){.seg-grid{grid-template-columns:1fr 1fr}}
@@ -71,100 +81,116 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .seg-col:last-child{border-right:none}
 .col-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1.1px;margin-bottom:8px}
 
-/* timing block */
 .timing-block{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:10px 12px;margin-bottom:4px}
 .timing-row{display:flex;gap:8px;margin-bottom:4px;font-size:.76rem}
 .timing-row:last-child{margin-bottom:0}
 .t-key{color:#555577;min-width:90px;flex-shrink:0}
 .t-val{color:#9999bb}
 
-/* jtbd + blockers */
 .list-items{list-style:none;display:flex;flex-direction:column;gap:7px}
 .list-items li{font-size:.79rem;color:#9999bb;padding-left:18px;position:relative;line-height:1.5}
 .list-items.jtbd li::before{content:'→';position:absolute;left:0;opacity:.4;font-size:.72rem}
 .list-items.blk li::before{content:'✕';position:absolute;left:0;opacity:.3;font-size:.7rem}
 .jtbd-badge{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.07);color:#7777aa;margin-right:4px;vertical-align:middle}
 
-/* tags */
 .tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;margin-bottom:6px}
 .comm-tag{font-size:.68rem;padding:2px 7px;border-radius:4px;background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
 .search-tag{font-size:.68rem;padding:2px 7px;border-radius:4px;background:rgba(16,185,129,.1);color:#34d399;border:1px solid rgba(16,185,129,.2)}
 .chan-tag{font-size:.68rem;padding:2px 7px;border-radius:4px;background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.2)}
 
-/* messaging col */
 .hook-text{font-size:.85rem;color:#ddddf0;font-style:italic;line-height:1.55;border-left:3px solid rgba(255,255,255,.15);padding-left:12px}
 .seg-desc{font-size:.8rem;color:#8888aa;line-height:1.6}
-
-/* warning bar */
 .warning-bar{background:rgba(220,38,38,.08);border-top:1px solid rgba(220,38,38,.2);padding:10px 20px;font-size:.78rem;color:#f87171;line-height:1.55}
-
-/* insight bar */
 .insight-bar{padding:11px 22px;background:rgba(255,255,255,.02);border-top:1px solid #1a1a24;font-size:.8rem;color:#8888aa;border-left:4px solid;line-height:1.55}
 .insight-bar strong{color:#ddd}
 .insight-bar em{color:#9999bb;font-style:normal}
+
+/* ── TAB 2: SUBSEGMENT DETAIL ─────────────────────────────────────────────── */
+.subseg-body{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #1a1a24}
+@media(max-width:760px){.subseg-body{grid-template-columns:1fr}}
+.subseg-col-jtbd{padding:22px 24px;border-right:1px solid #1a1a24}
+.subseg-col-blk{padding:22px 24px}
+
+.subsec-section-label{display:flex;align-items:center;gap:8px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1.1px;margin-bottom:14px;flex-wrap:wrap}
+.subsec-icon{font-size:.8rem;opacity:.6}
+.subsec-note{font-weight:400;text-transform:none;letter-spacing:0;font-size:.68rem;color:#444466;margin-left:4px}
+
+/* JTBD detail cards */
+.jtbd-cards-grid{display:flex;flex-direction:column;gap:10px}
+.jtbd-detail-card{border:1px solid;border-radius:9px;padding:12px 14px}
+.jtbd-type-header{display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.jtbd-icon{font-size:.9rem;opacity:.7}
+.jtbd-type-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.jtbd-detail-text{font-size:.82rem;color:#c0c0d8;line-height:1.6}
+
+/* Blocker detail cards */
+.blocker-cards-list{display:flex;flex-direction:column;gap:10px}
+.blocker-detail-card{display:flex;gap:12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:9px;padding:12px 14px}
+.blocker-num{width:22px;height:22px;min-width:22px;border-radius:50%;background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.25);color:#f87171;font-size:.68rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.blocker-detail-text{font-size:.82rem;color:#9999bb;line-height:1.6}
 </style>
 </head>
 <body>
 
 <nav class="sidebar">
-<div class="sidebar-logo"><h2>High Value Man</h2><p>Audience segments · 5 triggers · Reddit-validated</p></div>
+<div class="sidebar-logo"><h2>High Value Man</h2><p>Audience segments · Reddit-validated</p></div>
 
   <div class="nav-section">
-    <div class="nav-cat" onclick="location.href='#seg-A'">
+    <div class="nav-cat" data-seg="A" onclick="navToSeg(this)">
       <div class="nav-dot" style="background:#D97706"></div>
       <span style="color:#fbbf24">1 · The Invisible Provider</span>
       <span class="nav-share">35%</span>
     </div>
-    <a class="nav-sub" href="#t-A1">Dating app failure</a>
-    <a class="nav-sub" href="#t-A2">Professional undervaluation</a>
-    <a class="nav-sub" href="#t-A3">Chronic friendzoning</a>
+    <a class="nav-sub" data-seg="A" data-ti="1" href="#" onclick="navToTrig(event,'A',1)">Dating app failure</a>
+    <a class="nav-sub" data-seg="A" data-ti="2" href="#" onclick="navToTrig(event,'A',2)">Professional undervaluation</a>
+    <a class="nav-sub" data-seg="A" data-ti="3" href="#" onclick="navToTrig(event,'A',3)">Chronic friendzoning</a>
   </div>
   <div class="nav-divider"></div>
 
   <div class="nav-section">
-    <div class="nav-cat" onclick="location.href='#seg-B'">
+    <div class="nav-cat" data-seg="B" onclick="navToSeg(this)">
       <div class="nav-dot" style="background:#7C3AED"></div>
       <span style="color:#a78bfa">2 · The Man Without a Mission</span>
       <span class="nav-share">25%</span>
     </div>
-    <a class="nav-sub" href="#t-B1">The hollow achievement</a>
-    <a class="nav-sub" href="#t-B2">Age milestone reckoning</a>
-    <a class="nav-sub" href="#t-B3">Existential numbness</a>
+    <a class="nav-sub" data-seg="B" data-ti="1" href="#" onclick="navToTrig(event,'B',1)">The hollow achievement</a>
+    <a class="nav-sub" data-seg="B" data-ti="2" href="#" onclick="navToTrig(event,'B',2)">Age milestone reckoning</a>
+    <a class="nav-sub" data-seg="B" data-ti="3" href="#" onclick="navToTrig(event,'B',3)">Existential numbness</a>
   </div>
   <div class="nav-divider"></div>
 
   <div class="nav-section">
-    <div class="nav-cat" onclick="location.href='#seg-C'">
+    <div class="nav-cat" data-seg="C" onclick="navToSeg(this)">
       <div class="nav-dot" style="background:#DC2626"></div>
       <span style="color:#f87171">3 · The Nice Guy Awakening</span>
       <span class="nav-share">20%</span>
     </div>
-    <a class="nav-sub" href="#t-C1">Betrayal by someone he invested in</a>
-    <a class="nav-sub" href="#t-C2">Years of effort, no return</a>
-    <a class="nav-sub" href="#t-C3">Red pill discovery moment</a>
+    <a class="nav-sub" data-seg="C" data-ti="1" href="#" onclick="navToTrig(event,'C',1)">Betrayal by someone he invested in</a>
+    <a class="nav-sub" data-seg="C" data-ti="2" href="#" onclick="navToTrig(event,'C',2)">Years of effort, no return</a>
+    <a class="nav-sub" data-seg="C" data-ti="3" href="#" onclick="navToTrig(event,'C',3)">Red pill discovery moment</a>
   </div>
   <div class="nav-divider"></div>
 
   <div class="nav-section">
-    <div class="nav-cat" onclick="location.href='#seg-D'">
+    <div class="nav-cat" data-seg="D" onclick="navToSeg(this)">
       <div class="nav-dot" style="background:#2563EB"></div>
       <span style="color:#60a5fa">4 · The Rebuilder</span>
       <span class="nav-share">15%</span>
     </div>
-    <a class="nav-sub" href="#t-D1">Divorce or relationship collapse</a>
-    <a class="nav-sub" href="#t-D2">Wasted years regret</a>
-    <a class="nav-sub" href="#t-D3">Rock bottom moment</a>
+    <a class="nav-sub" data-seg="D" data-ti="1" href="#" onclick="navToTrig(event,'D',1)">Divorce or relationship collapse</a>
+    <a class="nav-sub" data-seg="D" data-ti="2" href="#" onclick="navToTrig(event,'D',2)">Wasted years regret</a>
+    <a class="nav-sub" data-seg="D" data-ti="3" href="#" onclick="navToTrig(event,'D',3)">Rock bottom moment</a>
   </div>
   <div class="nav-divider"></div>
 
   <div class="nav-section">
-    <div class="nav-cat" onclick="location.href='#seg-E'">
+    <div class="nav-cat" data-seg="E" onclick="navToSeg(this)">
       <div class="nav-dot" style="background:#059669"></div>
       <span style="color:#34d399">5 · The Optimizer</span>
       <span class="nav-share">5%</span>
     </div>
-    <a class="nav-sub" href="#t-E1">Plateau in results</a>
-    <a class="nav-sub" href="#t-E2">Ready to commit to a complete identity</a>
+    <a class="nav-sub" data-seg="E" data-ti="1" href="#" onclick="navToTrig(event,'E',1)">Plateau in results</a>
+    <a class="nav-sub" data-seg="E" data-ti="2" href="#" onclick="navToTrig(event,'E',2)">Ready to commit to a complete identity</a>
   </div>
   <div class="nav-divider"></div>
 </nav>
@@ -173,7 +199,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
   <div class="hero">
     <h1>High Value Man — Audience Segments</h1>
-    <p>5 MECE segments built from 1,178 Reddit posts, 4,803 comments, and 81 validated keywords. Each segment defined by a core identity gap and mapped to the triggers that open the buying window.</p>
+    <p>5 MECE segments · 14 buy triggers · built from 1,178 Reddit posts, 4,803 comments, and 81 validated keywords. Each segment mapped to the triggers that open the buying window.</p>
     <div class="stats">
       <div class="stat"><div class="stat-num">5</div><div class="stat-label">Segments</div></div>
       <div class="stat"><div class="stat-num">14</div><div class="stat-label">Buy triggers</div></div>
@@ -182,26 +208,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
 
-  <div class="overview">
-    <h2>Market share distribution</h2>
-    <div class="share-bar">
-      <div class="share-seg" style="width:35%;background:#D97706" onclick="location.href='#seg-A'" title="Invisible Provider 35%"></div>
-      <div class="share-seg" style="width:25%;background:#7C3AED" onclick="location.href='#seg-B'" title="Man Without a Mission 25%"></div>
-      <div class="share-seg" style="width:20%;background:#DC2626" onclick="location.href='#seg-C'" title="Nice Guy Awakening 20%"></div>
-      <div class="share-seg" style="width:15%;background:#2563EB" onclick="location.href='#seg-D'" title="The Rebuilder 15%"></div>
-      <div class="share-seg" style="width:5%;background:#059669" onclick="location.href='#seg-E'" title="The Optimizer 5%"></div>
-    </div>
-    <div class="share-legend">
-      <div class="share-item"><div class="share-dot" style="background:#D97706"></div>A · Invisible Provider 35%</div>
-      <div class="share-item"><div class="share-dot" style="background:#7C3AED"></div>B · Man Without a Mission 25%</div>
-      <div class="share-item"><div class="share-dot" style="background:#DC2626"></div>C · Nice Guy Awakening 20%</div>
-      <div class="share-item"><div class="share-dot" style="background:#2563EB"></div>D · The Rebuilder 15%</div>
-      <div class="share-item"><div class="share-dot" style="background:#059669"></div>E · The Optimizer 5%</div>
-    </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="overview" onclick="switchTab('overview');setupScrollSpy()">Segments Overview</button>
+    <button class="tab-btn" data-tab="subsegments" onclick="switchTab('subsegments');setupScrollSpy()">Subsegments · JTBDs &amp; Blockers</button>
   </div>
 
-
-  <div class="cat-section" id="seg-A" style="--seg-clr:#D97706;--seg-bg:#15110a;--seg-border:#382800;--seg-text:#fbbf24">
+  <!-- TAB 1: OVERVIEW -->
+  <div class="tab-pane active" id="tab-overview">
+    <div class="overview">
+      <h2>Market share distribution</h2>
+      <div class="share-bar">
+        <div class="share-seg" style="width:35%;background:#D97706" onclick="navToSeg({dataset:{seg:'A'}});switchTab('overview')" title="Invisible Provider 35%"></div>
+        <div class="share-seg" style="width:25%;background:#7C3AED" onclick="navToSeg({dataset:{seg:'B'}});switchTab('overview')" title="Man Without a Mission 25%"></div>
+        <div class="share-seg" style="width:20%;background:#DC2626" onclick="navToSeg({dataset:{seg:'C'}});switchTab('overview')" title="Nice Guy Awakening 20%"></div>
+        <div class="share-seg" style="width:15%;background:#2563EB" onclick="navToSeg({dataset:{seg:'D'}});switchTab('overview')" title="The Rebuilder 15%"></div>
+        <div class="share-seg" style="width:5%;background:#059669" onclick="navToSeg({dataset:{seg:'E'}});switchTab('overview')" title="The Optimizer 5%"></div>
+      </div>
+      <div class="share-legend">
+        <div class="share-item"><div class="share-dot" style="background:#D97706"></div>A · Invisible Provider 35%</div>
+        <div class="share-item"><div class="share-dot" style="background:#7C3AED"></div>B · Man Without a Mission 25%</div>
+        <div class="share-item"><div class="share-dot" style="background:#DC2626"></div>C · Nice Guy Awakening 20%</div>
+        <div class="share-item"><div class="share-dot" style="background:#2563EB"></div>D · The Rebuilder 15%</div>
+        <div class="share-item"><div class="share-dot" style="background:#059669"></div>E · The Optimizer 5%</div>
+      </div>
+    </div>
+    
+  <div class="cat-section" id="seg1-A">
+    
     <div class="cat-header">
       <div class="cat-header-inner" style="background:#15110a;border-color:#382800">
         <div class="cat-num" style="background:#D97706;color:#fff">1</div>
@@ -210,13 +243,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="cat-baseline">Does everything &#x27;right&#x27; — earns, provides, behaves well — but is treated as an afterthought. Women don&#x27;t choose him. Peers don&#x27;t follow him. Opportunities pass him by. His value is never questioned, just never seen.</div>
         </div>
         <div class="cat-right">
-          <div class="share-circle" style="--share:35%;color:#fbbf24">35%</div>
+          <div class="share-circle" style="color:#fbbf24">35%</div>
           <div class="core-q">&ldquo;Why don&#x27;t I get what I&#x27;ve clearly earned?&rdquo;</div>
         </div>
       </div>
     </div>
     <div class="seg-section">
-    <div class="trigger-card" id="t-A1">
+    <div class="trigger-card" id="t1-A1">
       <div class="trigger-header" style="border-left:4px solid #D97706">
         <span class="trigger-type-badge" style="background:#15110a;color:#fbbf24;border-color:#382800">Dating app failure</span>
         <span class="trigger-title">Months of swiping with no meaningful results despite looking &#x27;better on paper&#x27; than the men who succeed. He&#x27;s done the profile, the gym, the photos — and is still invisible.</span>
@@ -266,7 +299,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <strong>Product fit:</strong> Core offer — identity and standards framework that changes what he projects, not what he performs — <em>High keyword overlap with &#x27;high value man&#x27; (60K/mo Rising) and &#x27;how to attract women&#x27; (14.8K/mo). Avoid PUA framing entirely.</em>
       </div>
     </div>
-    <div class="trigger-card" id="t-A2">
+    <div class="trigger-card" id="t1-A2">
       <div class="trigger-header" style="border-left:4px solid #D97706">
         <span class="trigger-type-badge" style="background:#15110a;color:#fbbf24;border-color:#382800">Professional undervaluation</span>
         <span class="trigger-title">More qualified than the men getting promoted, more reliable than the men getting respect — but still the one people go around. His competence is assumed; his presence is not.</span>
@@ -316,7 +349,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <strong>Product fit:</strong> Module on standards and masculine presence maps directly to professional context — <em>&#x27;leadership skills&#x27; (27.1K/mo Stable), &#x27;how to gain respect&#x27; (6.6K/mo), &#x27;how to be more assertive&#x27; (9.9K/mo Rising) — all validated</em>
       </div>
     </div>
-    <div class="trigger-card" id="t-A3">
+    <div class="trigger-card" id="t1-A3">
       <div class="trigger-header" style="border-left:4px solid #D97706">
         <span class="trigger-type-badge" style="background:#15110a;color:#fbbf24;border-color:#382800">Chronic friendzoning</span>
         <span class="trigger-title">In social circles or with specific women he&#x27;s invested in — always the friend, confidant, emotional support. Never the man she actually picks. He&#x27;s kind, available, supportive — and kept at arm&#x27;s length.</span>
@@ -367,7 +400,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
     </div></div>
   </div>
-  <div class="cat-section" id="seg-B" style="--seg-clr:#7C3AED;--seg-bg:#0e0a18;--seg-border:#241650;--seg-text:#a78bfa">
+  <div class="cat-section" id="seg1-B">
+    
     <div class="cat-header">
       <div class="cat-header-inner" style="background:#0e0a18;border-color:#241650">
         <div class="cat-num" style="background:#7C3AED;color:#fff">2</div>
@@ -376,13 +410,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="cat-baseline">Capable, sometimes successful by conventional metrics — but unanchored. No deep sense of what he&#x27;s building or why. Achieves goals that feel hollow when reached. Has direction without destination.</div>
         </div>
         <div class="cat-right">
-          <div class="share-circle" style="--share:25%;color:#a78bfa">25%</div>
+          <div class="share-circle" style="color:#a78bfa">25%</div>
           <div class="core-q">&ldquo;What am I actually building — and who is it for?&rdquo;</div>
         </div>
       </div>
     </div>
     <div class="seg-section">
-    <div class="trigger-card" id="t-B1">
+    <div class="trigger-card" id="t1-B1">
       <div class="trigger-header" style="border-left:4px solid #7C3AED">
         <span class="trigger-type-badge" style="background:#0e0a18;color:#a78bfa;border-color:#241650">The hollow achievement</span>
         <span class="trigger-title">Reached a target — promotion, income milestone, relationship — and felt nothing. The achievement was supposed to mean more than it does. The &#x27;now what?&#x27; feeling is acute.</span>
@@ -432,7 +466,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <strong>Product fit:</strong> Purpose and identity modules are the lead; standards and value stack built on top of purpose, not achievement — <em>&#x27;stoicism&#x27; (74K/mo Rising), &#x27;how to find your purpose&#x27; (9.9K/mo Rising), &#x27;success mindset&#x27; (6.6K/mo Rising), &#x27;43M $1.5M lost in life&#x27; is a real Reddit post that sparked massive engagement</em>
       </div>
     </div>
-    <div class="trigger-card" id="t-B2">
+    <div class="trigger-card" id="t1-B2">
       <div class="trigger-header" style="border-left:4px solid #7C3AED">
         <span class="trigger-type-badge" style="background:#0e0a18;color:#a78bfa;border-color:#241650">Age milestone reckoning</span>
         <span class="trigger-title">Turning 27, 30, 35 or 40 forces a hard audit. Accomplishments don&#x27;t add up to the man he imagined. The drift stops feeling temporary and starts feeling like a decision he never made.</span>
@@ -482,7 +516,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <strong>Product fit:</strong> Mission-setting and identity modules as core; standard-building as the daily practice that keeps the mission alive — <em>Reddit posts: &#x27;I just turned 27 and feel like I want to run away&#x27;, &#x27;Men over 30 what do you regret not doing in your 20s&#x27; — 282 comments, massive engagement</em>
       </div>
     </div>
-    <div class="trigger-card" id="t-B3">
+    <div class="trigger-card" id="t1-B3">
       <div class="trigger-header" style="border-left:4px solid #7C3AED">
         <span class="trigger-type-badge" style="background:#0e0a18;color:#a78bfa;border-color:#241650">Existential numbness</span>
         <span class="trigger-title">No dramatic event — just a slow accumulation of days that feel identical and meaningless. Goes through the motions. Nothing motivates him. Successful on paper, empty underneath.</span>
@@ -533,7 +567,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
     </div></div>
   </div>
-  <div class="cat-section" id="seg-C" style="--seg-clr:#DC2626;--seg-bg:#140808;--seg-border:#360e0e;--seg-text:#f87171">
+  <div class="cat-section" id="seg1-C">
+    
     <div class="cat-header">
       <div class="cat-header-inner" style="background:#140808;border-color:#360e0e">
         <div class="cat-num" style="background:#DC2626;color:#fff">3</div>
@@ -542,13 +577,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="cat-baseline">Built his identity around being &#x27;good&#x27; — kind, non-threatening, accommodating, emotionally available. Gets consistently bypassed, friendzoned, or taken for granted despite following the playbook he was handed. Resentment is building. He is close to a radicalisation moment.</div>
         </div>
         <div class="cat-right">
-          <div class="share-circle" style="--share:20%;color:#f87171">20%</div>
+          <div class="share-circle" style="color:#f87171">20%</div>
           <div class="core-q">&ldquo;Why doesn&#x27;t doing everything right get me anywhere?&rdquo;</div>
         </div>
       </div>
     </div>
     <div class="seg-section">
-    <div class="trigger-card" id="t-C1">
+    <div class="trigger-card" id="t1-C1">
       <div class="trigger-header" style="border-left:4px solid #DC2626">
         <span class="trigger-type-badge" style="background:#140808;color:#f87171;border-color:#360e0e">Betrayal by someone he invested in</span>
         <span class="trigger-title">The woman he supported, believed in, and prioritised chose someone he sees as objectively worse — less kind, less present, less deserving. The &#x27;good man&#x27; bet failed visibly and publicly.</span>
@@ -598,7 +633,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <strong>Product fit:</strong> Standards module is the most critical — followed by identity and presence. This segment needs an alternative to red pill bitterness.
       </div>
     </div>
-    <div class="trigger-card" id="t-C2">
+    <div class="trigger-card" id="t1-C2">
       <div class="trigger-header" style="border-left:4px solid #DC2626">
         <span class="trigger-type-badge" style="background:#140808;color:#f87171;border-color:#360e0e">Years of effort, no return</span>
         <span class="trigger-title">Has been &#x27;working on himself&#x27; — gym, therapy, reading, self-improvement. Still feels taken for granted. The investment hasn&#x27;t changed how he&#x27;s treated. Motivation is collapsing into frustration.</span>
@@ -648,7 +683,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <strong>Product fit:</strong> Bridge between self-improvement (what he&#x27;s been doing) and standards/identity (what he hasn&#x27;t done) — <em>Reddit thread &#x27;I&#x27;ve removed all the bad things and now don&#x27;t know what else to do&#x27; — 387 comments. Direct proof of this trigger in the data.</em>
       </div>
     </div>
-    <div class="trigger-card" id="t-C3">
+    <div class="trigger-card" id="t1-C3">
       <div class="trigger-header" style="border-left:4px solid #DC2626">
         <span class="trigger-type-badge" style="background:#140808;color:#f87171;border-color:#360e0e">Red pill discovery moment</span>
         <span class="trigger-title">Has found red pill content and some of it resonates with his experience. Hasn&#x27;t fully bought in — still has enough self-awareness to feel uncomfortable with the bitterness. This is the exact capture window before radicalisation.</span>
@@ -699,7 +734,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
     </div></div>
   </div>
-  <div class="cat-section" id="seg-D" style="--seg-clr:#2563EB;--seg-bg:#080e1c;--seg-border:#102050;--seg-text:#60a5fa">
+  <div class="cat-section" id="seg1-D">
+    
     <div class="cat-header">
       <div class="cat-header-inner" style="background:#080e1c;border-color:#102050">
         <div class="cat-num" style="background:#2563EB;color:#fff">4</div>
@@ -708,13 +744,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="cat-baseline">A clear rupture event ended one chapter of his life. Divorce, major breakup, job loss, hitting bottom. The old version of him — his approach, his standards, his self-image — clearly failed. He&#x27;s ready to start over and needs a framework for who to become.</div>
         </div>
         <div class="cat-right">
-          <div class="share-circle" style="--share:15%;color:#60a5fa">15%</div>
+          <div class="share-circle" style="color:#60a5fa">15%</div>
           <div class="core-q">&ldquo;Who do I need to become now that my old life is gone?&rdquo;</div>
         </div>
       </div>
     </div>
     <div class="seg-section">
-    <div class="trigger-card" id="t-D1">
+    <div class="trigger-card" id="t1-D1">
       <div class="trigger-header" style="border-left:4px solid #2563EB">
         <span class="trigger-type-badge" style="background:#080e1c;color:#60a5fa;border-color:#102050">Divorce or relationship collapse</span>
         <span class="trigger-title">Partnership that organised his identity and daily life has ended. The structure is gone. He&#x27;s asking fundamental questions about who he is, what he wants, and what kind of man he&#x27;s going to become.</span>
@@ -764,7 +800,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <strong>Product fit:</strong> Full stack — identity first, then standards, then purpose. This segment needs everything and is most motivated to use it. — <em>&#x27;My wife of 10 years just left me&#x27; — 1,128 comments, one of the highest-engagement posts in dataset. &#x27;how to reinvent yourself&#x27; (5.4K/mo Rising), &#x27;personal development&#x27; (33.1K/mo Stable)</em>
       </div>
     </div>
-    <div class="trigger-card" id="t-D2">
+    <div class="trigger-card" id="t1-D2">
       <div class="trigger-header" style="border-left:4px solid #2563EB">
         <span class="trigger-type-badge" style="background:#080e1c;color:#60a5fa;border-color:#102050">Wasted years regret</span>
         <span class="trigger-title">Age + regret + no clear path = peak openness to a complete framework. Looks back at his 20s or early 30s and sees time he can&#x27;t recover. The window to become the man he wanted to be feels like it&#x27;s closing.</span>
@@ -814,7 +850,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <strong>Product fit:</strong> Mission-setting as the immediate need; standards and identity as the daily practice — <em>&#x27;Is 26 years old too late to change your life for the best?&#x27; — 386 comments. Direct data validation. &#x27;how to change your life&#x27; (18.1K/mo Stable).</em>
       </div>
     </div>
-    <div class="trigger-card" id="t-D3">
+    <div class="trigger-card" id="t1-D3">
       <div class="trigger-header" style="border-left:4px solid #2563EB">
         <span class="trigger-type-badge" style="background:#080e1c;color:#60a5fa;border-color:#102050">Rock bottom moment</span>
         <span class="trigger-title">Addiction, financial collapse, health crisis, or simply a day where he looked at his life and couldn&#x27;t accept it anymore. Not a slow drift — a hard stop. Now he needs to rebuild from an honest foundation.</span>
@@ -865,7 +901,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
     </div></div>
   </div>
-  <div class="cat-section" id="seg-E" style="--seg-clr:#059669;--seg-bg:#060e0c;--seg-border:#0c2820;--seg-text:#34d399">
+  <div class="cat-section" id="seg1-E">
+    
     <div class="cat-header">
       <div class="cat-header-inner" style="background:#060e0c;border-color:#0c2820">
         <div class="cat-num" style="background:#059669;color:#fff">5</div>
@@ -874,13 +911,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div class="cat-baseline">Already on a self-improvement path — gym, reading, building income, developing habits. Operates by a collection of practices without a unifying identity framework. Wants the HVM concept as the organising principle for the man he&#x27;s already becoming.</div>
         </div>
         <div class="cat-right">
-          <div class="share-circle" style="--share:5%;color:#34d399">5%</div>
+          <div class="share-circle" style="color:#34d399">5%</div>
           <div class="core-q">&ldquo;How do I go from good to exceptional across all areas — not just one?&rdquo;</div>
         </div>
       </div>
     </div>
     <div class="seg-section">
-    <div class="trigger-card" id="t-E1">
+    <div class="trigger-card" id="t1-E1">
       <div class="trigger-header" style="border-left:4px solid #059669">
         <span class="trigger-type-badge" style="background:#060e0c;color:#34d399;border-color:#0c2820">Plateau in results</span>
         <span class="trigger-title">Has optimised one or two areas — fitness is good, income is growing — but the overall picture doesn&#x27;t add up to what he imagined. He&#x27;s missing the framework that ties it all together into an identity.</span>
@@ -930,7 +967,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <strong>Product fit:</strong> Identity framework as the lead; standards as the integration layer; mission as the capstone — <em>Smallest segment but highest LTV — already spending on self-improvement, most likely to buy premium tiers. &#x27;financial independence&#x27; 40.5K/mo Rising, &#x27;leadership skills&#x27; 27.1K/mo Stable, &#x27;passive income&#x27; 90.5K/mo Stable.</em>
       </div>
     </div>
-    <div class="trigger-card" id="t-E2">
+    <div class="trigger-card" id="t1-E2">
       <div class="trigger-header" style="border-left:4px solid #059669">
         <span class="trigger-type-badge" style="background:#060e0c;color:#34d399;border-color:#0c2820">Ready to commit to a complete identity</span>
         <span class="trigger-title">Has done the piece-by-piece work long enough to know he wants a complete framework. He&#x27;s not in crisis — he&#x27;s ambitious. He wants to name and own the identity he&#x27;s been building toward.</span>
@@ -981,23 +1018,1317 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
     </div></div>
   </div>
+  </div>
+
+  <!-- TAB 2: SUBSEGMENTS -->
+  <div class="tab-pane" id="tab-subsegments">
+    
+  <div class="cat-section" id="seg2-A">
+    
+    <div class="cat-header">
+      <div class="cat-header-inner" style="background:#15110a;border-color:#382800">
+        <div class="cat-num" style="background:#D97706;color:#fff">1</div>
+        <div>
+          <div class="cat-name">The Invisible Provider</div>
+          <div class="cat-baseline">Does everything &#x27;right&#x27; — earns, provides, behaves well — but is treated as an afterthought. Women don&#x27;t choose him. Peers don&#x27;t follow him. Opportunities pass him by. His value is never questioned, just never seen.</div>
+        </div>
+        <div class="cat-right">
+          <div class="share-circle" style="color:#fbbf24">35%</div>
+          <div class="core-q">&ldquo;Why don&#x27;t I get what I&#x27;ve clearly earned?&rdquo;</div>
+        </div>
+      </div>
+    </div>
+    <div class="seg-section">
+    <div class="subseg-card" id="t2-A1">
+      <div class="trigger-header" style="border-left:4px solid #D97706">
+        <span class="trigger-type-badge" style="background:#15110a;color:#fbbf24;border-color:#382800">Dating app failure</span>
+        <span class="trigger-title">Months of swiping with no meaningful results despite looking &#x27;better on paper&#x27; than the men who succeed. He&#x27;s done the profile, the gym, the photos — and is still invisible.</span>
+        <div class="timing-pills">
+          <span class="t-pill">Enters: Immediate — within 2 weeks of giving up on apps</span>
+          <span class="t-pill">Window: 0–3 weeks</span>
+          <span class="t-pill">Sweet spot: 0–2 weeks</span>
+        </div>
+      </div>
+      
+      <div class="subseg-body">
+        <div class="subseg-col-jtbd">
+          <div class="subsec-section-label" style="color:#fbbf24">
+            <span class="subsec-icon">→</span> Jobs to Be Done
+            <span class="subsec-note">What he needs to feel, do, or become</span>
+          </div>
+          <div class="jtbd-cards-grid">
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Stop opening a dating app and feeling like my worth is being decided by a stranger&#x27;s swipe on a thumbnail</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Go from waiting for someone to pick me to having a real pipeline of women I&#x27;m genuinely interested in</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Be the kind of man women describe to their friends as &#x27;high value&#x27; before they even know my salary or job title</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Have actual standards for who I give my time to — not be grateful for any attention that comes my way</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Feel like I&#x27;m choosing from real options rather than hoping someone chooses me</div>
+        </div></div>
+        </div>
+        <div class="subseg-col-blk">
+          <div class="subsec-section-label" style="color:#fbbf24">
+            <span class="subsec-icon">✕</span> Purchase Blockers
+            <span class="subsec-note">What stops him from buying</span>
+          </div>
+          <div class="blocker-cards-list">
+        <div class="blocker-detail-card">
+          <div class="blocker-num">1</div>
+          <div class="blocker-detail-text">This is just another pickup course — it will make me seem fake and manipulative rather than genuinely attractive</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">2</div>
+          <div class="blocker-detail-text">My looks are the actual problem. No framework changes my height or face.</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">3</div>
+          <div class="blocker-detail-text">Women just want tall, rich, handsome men — charisma and &#x27;value&#x27; are cope for men who don&#x27;t have those things</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">4</div>
+          <div class="blocker-detail-text">I shouldn&#x27;t need to market myself. If she can&#x27;t see my value naturally she&#x27;s not worth my time.</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">5</div>
+          <div class="blocker-detail-text">I&#x27;ve already tried self-improvement and it hasn&#x27;t changed my results — why would this be different</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="subseg-card" id="t2-A2">
+      <div class="trigger-header" style="border-left:4px solid #D97706">
+        <span class="trigger-type-badge" style="background:#15110a;color:#fbbf24;border-color:#382800">Professional undervaluation</span>
+        <span class="trigger-title">More qualified than the men getting promoted, more reliable than the men getting respect — but still the one people go around. His competence is assumed; his presence is not.</span>
+        <div class="timing-pills">
+          <span class="t-pill">Enters: Within 4 weeks of being passed over or seeing the pattern clearly</span>
+          <span class="t-pill">Window: 0–4 weeks</span>
+          <span class="t-pill">Sweet spot: 1–3 weeks</span>
+        </div>
+      </div>
+      
+      <div class="subseg-body">
+        <div class="subseg-col-jtbd">
+          <div class="subsec-section-label" style="color:#fbbf24">
+            <span class="subsec-icon">→</span> Jobs to Be Done
+            <span class="subsec-note">What he needs to feel, do, or become</span>
+          </div>
+          <div class="jtbd-cards-grid">
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Be the person in every room that others defer to — not the one who has to prove he deserves to speak</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Get what I&#x27;ve earned this year because my presence commands it, not because I finally argued my case</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Stop feeling invisible in meetings I&#x27;m more qualified to run than the man who&#x27;s running them</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Have people seek my input because they value my judgment — not because I volunteered to help again</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Replace the low-grade resentment I carry into every Monday with something that feels like quiet earned authority</div>
+        </div></div>
+        </div>
+        <div class="subseg-col-blk">
+          <div class="subsec-section-label" style="color:#fbbf24">
+            <span class="subsec-icon">✕</span> Purchase Blockers
+            <span class="subsec-note">What stops him from buying</span>
+          </div>
+          <div class="blocker-cards-list">
+        <div class="blocker-detail-card">
+          <div class="blocker-num">1</div>
+          <div class="blocker-detail-text">Being more &#x27;present&#x27; at work sounds like acting — my results should speak for themselves</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">2</div>
+          <div class="blocker-detail-text">The men getting promoted have political connections or are just better at playing the game — this doesn&#x27;t fix that</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">3</div>
+          <div class="blocker-detail-text">My employer doesn&#x27;t actually reward this kind of thing — it rewards who you know</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">4</div>
+          <div class="blocker-detail-text">If I change how I show up at work people will think I&#x27;m trying too hard or having a crisis</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">5</div>
+          <div class="blocker-detail-text">Self-improvement content always oversimplifies corporate dynamics — the real barriers are systemic not personal</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="subseg-card" id="t2-A3">
+      <div class="trigger-header" style="border-left:4px solid #D97706">
+        <span class="trigger-type-badge" style="background:#15110a;color:#fbbf24;border-color:#382800">Chronic friendzoning</span>
+        <span class="trigger-title">In social circles or with specific women he&#x27;s invested in — always the friend, confidant, emotional support. Never the man she actually picks. He&#x27;s kind, available, supportive — and kept at arm&#x27;s length.</span>
+        <div class="timing-pills">
+          <span class="t-pill">Enters: After being explicitly friendzoned or recognising the repeated pattern</span>
+          <span class="t-pill">Window: 0–2 weeks</span>
+          <span class="t-pill">Sweet spot: 0–1 week</span>
+        </div>
+      </div>
+      <div class="warning-bar" style="margin:0 0 12px">⚠ ⚠️ Red pill adjacency risk is highest here. Messaging must provide an identity path that doesn&#x27;t require bitterness or manipulation. &#x27;red pill&#x27; keyword 27K/mo but Stable — the audience is looking, landing here is the alternative.</div>
+      <div class="subseg-body">
+        <div class="subseg-col-jtbd">
+          <div class="subsec-section-label" style="color:#fbbf24">
+            <span class="subsec-icon">→</span> Jobs to Be Done
+            <span class="subsec-note">What he needs to feel, do, or become</span>
+          </div>
+          <div class="jtbd-cards-grid">
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Stop being the man women talk to about other men and start being the man they think about</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Build standards clear enough that I never again end up deeply invested in someone who was never actually choosing me</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Be genuinely warm and generous from a position of strength — not because I&#x27;m hoping it will eventually be enough</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Replace the niceness that people took advantage of with self-respect that makes me genuinely more attractive</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Understand exactly where I was lowering my standards and stop doing it — without becoming cold or transactional</div>
+        </div></div>
+        </div>
+        <div class="subseg-col-blk">
+          <div class="subsec-section-label" style="color:#fbbf24">
+            <span class="subsec-icon">✕</span> Purchase Blockers
+            <span class="subsec-note">What stops him from buying</span>
+          </div>
+          <div class="blocker-cards-list">
+        <div class="blocker-detail-card">
+          <div class="blocker-num">1</div>
+          <div class="blocker-detail-text">You either have &#x27;it&#x27; or you don&#x27;t — she&#x27;s attracted or she&#x27;s not, and no course fixes that</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">2</div>
+          <div class="blocker-detail-text">If I change how I act around her it will seem manipulative and she&#x27;ll see straight through it</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">3</div>
+          <div class="blocker-detail-text">This stuff teaches you to be less yourself — the whole point of being &#x27;nice&#x27; is that it&#x27;s genuine</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">4</div>
+          <div class="blocker-detail-text">All this self-improvement content just makes men more transactional — that&#x27;s not the kind of man I want to be</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">5</div>
+          <div class="blocker-detail-text">The real issue is I keep meeting the wrong women — changing myself won&#x27;t fix that</div>
+        </div></div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+  <div class="cat-section" id="seg2-B">
+    
+    <div class="cat-header">
+      <div class="cat-header-inner" style="background:#0e0a18;border-color:#241650">
+        <div class="cat-num" style="background:#7C3AED;color:#fff">2</div>
+        <div>
+          <div class="cat-name">The Man Without a Mission</div>
+          <div class="cat-baseline">Capable, sometimes successful by conventional metrics — but unanchored. No deep sense of what he&#x27;s building or why. Achieves goals that feel hollow when reached. Has direction without destination.</div>
+        </div>
+        <div class="cat-right">
+          <div class="share-circle" style="color:#a78bfa">25%</div>
+          <div class="core-q">&ldquo;What am I actually building — and who is it for?&rdquo;</div>
+        </div>
+      </div>
+    </div>
+    <div class="seg-section">
+    <div class="subseg-card" id="t2-B1">
+      <div class="trigger-header" style="border-left:4px solid #7C3AED">
+        <span class="trigger-type-badge" style="background:#0e0a18;color:#a78bfa;border-color:#241650">The hollow achievement</span>
+        <span class="trigger-title">Reached a target — promotion, income milestone, relationship — and felt nothing. The achievement was supposed to mean more than it does. The &#x27;now what?&#x27; feeling is acute.</span>
+        <div class="timing-pills">
+          <span class="t-pill">Enters: Within 4–8 weeks of the hollow moment</span>
+          <span class="t-pill">Window: 0–6 weeks</span>
+          <span class="t-pill">Sweet spot: 2–4 weeks</span>
+        </div>
+      </div>
+      
+      <div class="subseg-body">
+        <div class="subseg-col-jtbd">
+          <div class="subsec-section-label" style="color:#a78bfa">
+            <span class="subsec-icon">→</span> Jobs to Be Done
+            <span class="subsec-note">What he needs to feel, do, or become</span>
+          </div>
+          <div class="jtbd-cards-grid">
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Know — actually feel — what I&#x27;m building my life toward, so that when I achieve something it means something</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Have a 5-year mission that organises how I spend money, time and energy instead of drifting between arbitrary goals</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Be the kind of man people look to for direction, not just reliability — have conviction others can feel</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Stop the low-grade shame of having everything I said I wanted and still feeling like I&#x27;m missing the point</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Wake up with a clear reason beyond &#x27;make more money and hope things improve&#x27; — a reason that survives a bad quarter</div>
+        </div></div>
+        </div>
+        <div class="subseg-col-blk">
+          <div class="subsec-section-label" style="color:#a78bfa">
+            <span class="subsec-icon">✕</span> Purchase Blockers
+            <span class="subsec-note">What stops him from buying</span>
+          </div>
+          <div class="blocker-cards-list">
+        <div class="blocker-detail-card">
+          <div class="blocker-num">1</div>
+          <div class="blocker-detail-text">Purpose is something you discover, not something a course teaches you — this can&#x27;t be manufactured</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">2</div>
+          <div class="blocker-detail-text">This feels like the same &#x27;find your why&#x27; self-help content that doesn&#x27;t actually go anywhere</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">3</div>
+          <div class="blocker-detail-text">I&#x27;ve read all the books — Stoicism, Frankl, Covey — and I still feel lost. More content won&#x27;t fix this.</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">4</div>
+          <div class="blocker-detail-text">If I was really meant to have a mission, I&#x27;d have found it by now — maybe I&#x27;m just not that kind of man</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">5</div>
+          <div class="blocker-detail-text">Focusing on &#x27;purpose&#x27; is a luxury I can&#x27;t afford — I have actual responsibilities and can&#x27;t just navel-gaze</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="subseg-card" id="t2-B2">
+      <div class="trigger-header" style="border-left:4px solid #7C3AED">
+        <span class="trigger-type-badge" style="background:#0e0a18;color:#a78bfa;border-color:#241650">Age milestone reckoning</span>
+        <span class="trigger-title">Turning 27, 30, 35 or 40 forces a hard audit. Accomplishments don&#x27;t add up to the man he imagined. The drift stops feeling temporary and starts feeling like a decision he never made.</span>
+        <div class="timing-pills">
+          <span class="t-pill">Enters: 30–60 days around milestone birthday</span>
+          <span class="t-pill">Window: 0–8 weeks</span>
+          <span class="t-pill">Sweet spot: 0–4 weeks post-birthday</span>
+        </div>
+      </div>
+      
+      <div class="subseg-body">
+        <div class="subseg-col-jtbd">
+          <div class="subsec-section-label" style="color:#a78bfa">
+            <span class="subsec-icon">→</span> Jobs to Be Done
+            <span class="subsec-note">What he needs to feel, do, or become</span>
+          </div>
+          <div class="jtbd-cards-grid">
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Stop having the same birthday conversation with myself where I promise this year will be different</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Have a concrete plan for this decade that I actually believe in — not a vague intention to &#x27;do better&#x27;</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Be someone people look at and see a man who knows exactly what he&#x27;s building — not someone still figuring it out</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Feel like I chose this chapter of my life instead of just drifting into it while waiting for inspiration</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Build a daily structure that moves me toward something real, not just keeps me busy enough to ignore the question</div>
+        </div></div>
+        </div>
+        <div class="subseg-col-blk">
+          <div class="subsec-section-label" style="color:#a78bfa">
+            <span class="subsec-icon">✕</span> Purchase Blockers
+            <span class="subsec-note">What stops him from buying</span>
+          </div>
+          <div class="blocker-cards-list">
+        <div class="blocker-detail-card">
+          <div class="blocker-num">1</div>
+          <div class="blocker-detail-text">I&#x27;ve been trying to figure out my &#x27;purpose&#x27; since I was 20 — one more program won&#x27;t unlock something that&#x27;s been missing this long</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">2</div>
+          <div class="blocker-detail-text">This feels like a midlife crisis — spending money on self-improvement instead of actually building something</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">3</div>
+          <div class="blocker-detail-text">I don&#x27;t have time to work on myself — I have a mortgage, a job, and responsibilities that can&#x27;t wait for me to find my mission</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">4</div>
+          <div class="blocker-detail-text">Every &#x27;find your purpose&#x27; program says the same things and none of them have helped anyone I know</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">5</div>
+          <div class="blocker-detail-text">I probably just need more time to figure it out — maybe I&#x27;m being impatient</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="subseg-card" id="t2-B3">
+      <div class="trigger-header" style="border-left:4px solid #7C3AED">
+        <span class="trigger-type-badge" style="background:#0e0a18;color:#a78bfa;border-color:#241650">Existential numbness</span>
+        <span class="trigger-title">No dramatic event — just a slow accumulation of days that feel identical and meaningless. Goes through the motions. Nothing motivates him. Successful on paper, empty underneath.</span>
+        <div class="timing-pills">
+          <span class="t-pill">Enters: Ongoing — no fixed trigger, enters the market gradually through content</span>
+          <span class="t-pill">Window: 2–8 weeks from first serious engagement</span>
+          <span class="t-pill">Sweet spot: Ongoing — content-led</span>
+        </div>
+      </div>
+      
+      <div class="subseg-body">
+        <div class="subseg-col-jtbd">
+          <div class="subsec-section-label" style="color:#a78bfa">
+            <span class="subsec-icon">→</span> Jobs to Be Done
+            <span class="subsec-note">What he needs to feel, do, or become</span>
+          </div>
+          <div class="jtbd-cards-grid">
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Feel genuinely engaged in my own life — not just going through motions waiting for something to matter</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Have a personal definition of &#x27;high value&#x27; that has nothing to do with other people&#x27;s metrics for my life</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Be the man in my circle who people sense has figured something out — not because I talk about it but because they feel it</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Replace the numbness with something that feels like agency — like my choices actually determine something</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Have a framework for deciding what to say yes and no to — not just drift toward whatever comes next</div>
+        </div></div>
+        </div>
+        <div class="subseg-col-blk">
+          <div class="subsec-section-label" style="color:#a78bfa">
+            <span class="subsec-icon">✕</span> Purchase Blockers
+            <span class="subsec-note">What stops him from buying</span>
+          </div>
+          <div class="blocker-cards-list">
+        <div class="blocker-detail-card">
+          <div class="blocker-num">1</div>
+          <div class="blocker-detail-text">This is probably just depression — a program can&#x27;t fix a mental health problem</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">2</div>
+          <div class="blocker-detail-text">I&#x27;ve read everything — Stoics, Frankl, Csikszentmihalyi — I know the theory and it doesn&#x27;t help</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">3</div>
+          <div class="blocker-detail-text">Feeling empty is just the human condition — chasing meaning is itself the problem</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">4</div>
+          <div class="blocker-detail-text">If this were solvable I would have solved it by now — I&#x27;m not someone who gives up easily</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">5</div>
+          <div class="blocker-detail-text">Programs like this prey on men who are vulnerable and promise transformation they can&#x27;t deliver</div>
+        </div></div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+  <div class="cat-section" id="seg2-C">
+    
+    <div class="cat-header">
+      <div class="cat-header-inner" style="background:#140808;border-color:#360e0e">
+        <div class="cat-num" style="background:#DC2626;color:#fff">3</div>
+        <div>
+          <div class="cat-name">The Nice Guy Awakening</div>
+          <div class="cat-baseline">Built his identity around being &#x27;good&#x27; — kind, non-threatening, accommodating, emotionally available. Gets consistently bypassed, friendzoned, or taken for granted despite following the playbook he was handed. Resentment is building. He is close to a radicalisation moment.</div>
+        </div>
+        <div class="cat-right">
+          <div class="share-circle" style="color:#f87171">20%</div>
+          <div class="core-q">&ldquo;Why doesn&#x27;t doing everything right get me anywhere?&rdquo;</div>
+        </div>
+      </div>
+    </div>
+    <div class="seg-section">
+    <div class="subseg-card" id="t2-C1">
+      <div class="trigger-header" style="border-left:4px solid #DC2626">
+        <span class="trigger-type-badge" style="background:#140808;color:#f87171;border-color:#360e0e">Betrayal by someone he invested in</span>
+        <span class="trigger-title">The woman he supported, believed in, and prioritised chose someone he sees as objectively worse — less kind, less present, less deserving. The &#x27;good man&#x27; bet failed visibly and publicly.</span>
+        <div class="timing-pills">
+          <span class="t-pill">Enters: Immediate — 0–2 weeks post betrayal</span>
+          <span class="t-pill">Window: 0–3 weeks</span>
+          <span class="t-pill">Sweet spot: 1–2 weeks</span>
+        </div>
+      </div>
+      <div class="warning-bar" style="margin:0 0 12px">⚠ ⚠️ HIGHEST RADICALIZATION RISK. Reddit evidence: &#x27;On the verge of going full incel&#x27;, &#x27;How do I stop resenting women&#x27;, &#x27;What can MensLib do to prevent radicalization&#x27;. The product must offer genuine alternative — not tactics, but self-respect with warmth.</div>
+      <div class="subseg-body">
+        <div class="subseg-col-jtbd">
+          <div class="subsec-section-label" style="color:#f87171">
+            <span class="subsec-icon">→</span> Jobs to Be Done
+            <span class="subsec-note">What he needs to feel, do, or become</span>
+          </div>
+          <div class="jtbd-cards-grid">
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Stop the specific shame of knowing I did everything right and still lost to someone who didn&#x27;t try</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Build standards so clear I never again end up deeply invested in someone who was never actually choosing me</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Be genuinely warm and giving from a position of strength — not from fear of what happens if I stop</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Replace the accommodating behaviour that people took advantage of with self-respect that makes me more attractive, not less</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Understand exactly where I lowered my standards and stop doing it — without becoming the cold man I don&#x27;t want to be</div>
+        </div></div>
+        </div>
+        <div class="subseg-col-blk">
+          <div class="subsec-section-label" style="color:#f87171">
+            <span class="subsec-icon">✕</span> Purchase Blockers
+            <span class="subsec-note">What stops him from buying</span>
+          </div>
+          <div class="blocker-cards-list">
+        <div class="blocker-detail-card">
+          <div class="blocker-num">1</div>
+          <div class="blocker-detail-text">This is just another version of the red pill — teaching men to be cold and transactional rather than genuinely good</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">2</div>
+          <div class="blocker-detail-text">I shouldn&#x27;t have to change who I am — the problem is women&#x27;s standards, not my behaviour</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">3</div>
+          <div class="blocker-detail-text">If I become &#x27;high value&#x27; I&#x27;ll attract women who only want my status — not genuine connection</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">4</div>
+          <div class="blocker-detail-text">Nice guys finish last is a myth used to justify men treating women badly — I don&#x27;t want to become that</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">5</div>
+          <div class="blocker-detail-text">I&#x27;ve already lost faith in this kind of thing — I&#x27;ve tried improving myself and it doesn&#x27;t change how I&#x27;m treated</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="subseg-card" id="t2-C2">
+      <div class="trigger-header" style="border-left:4px solid #DC2626">
+        <span class="trigger-type-badge" style="background:#140808;color:#f87171;border-color:#360e0e">Years of effort, no return</span>
+        <span class="trigger-title">Has been &#x27;working on himself&#x27; — gym, therapy, reading, self-improvement. Still feels taken for granted. The investment hasn&#x27;t changed how he&#x27;s treated. Motivation is collapsing into frustration.</span>
+        <div class="timing-pills">
+          <span class="t-pill">Enters: Gradual build — enters market after 6-18 months of effort with no result</span>
+          <span class="t-pill">Window: 2–6 weeks from first serious engagement</span>
+          <span class="t-pill">Sweet spot: Ongoing</span>
+        </div>
+      </div>
+      
+      <div class="subseg-body">
+        <div class="subseg-col-jtbd">
+          <div class="subsec-section-label" style="color:#f87171">
+            <span class="subsec-icon">→</span> Jobs to Be Done
+            <span class="subsec-note">What he needs to feel, do, or become</span>
+          </div>
+          <div class="jtbd-cards-grid">
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Finally understand why years of doing the right things haven&#x27;t changed how I&#x27;m treated — and what actually does</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Have standards that I hold without apology and that actually improve the quality of people in my life</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Be someone people treat with genuine respect — not the polite respect given to someone harmless</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Stop secretly believing that if I just improve enough more, eventually someone will choose me</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Know the difference between standards that elevate and demands that isolate — and live confidently on the right side</div>
+        </div></div>
+        </div>
+        <div class="subseg-col-blk">
+          <div class="subsec-section-label" style="color:#f87171">
+            <span class="subsec-icon">✕</span> Purchase Blockers
+            <span class="subsec-note">What stops him from buying</span>
+          </div>
+          <div class="blocker-cards-list">
+        <div class="blocker-detail-card">
+          <div class="blocker-num">1</div>
+          <div class="blocker-detail-text">I&#x27;ve already spent years improving — adding another program is just admitting nothing works</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">2</div>
+          <div class="blocker-detail-text">The problem isn&#x27;t me, it&#x27;s that women are attracted to status and looks — self-improvement doesn&#x27;t fix those</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">3</div>
+          <div class="blocker-detail-text">This sounds like it will teach me to be more demanding and that will push people away further</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">4</div>
+          <div class="blocker-detail-text">I&#x27;ve tried standards before and ended up more alone — lowering expectations is more realistic</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">5</div>
+          <div class="blocker-detail-text">If I haven&#x27;t figured this out after all the work I&#x27;ve done, I&#x27;m probably just not the kind of man this works for</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="subseg-card" id="t2-C3">
+      <div class="trigger-header" style="border-left:4px solid #DC2626">
+        <span class="trigger-type-badge" style="background:#140808;color:#f87171;border-color:#360e0e">Red pill discovery moment</span>
+        <span class="trigger-title">Has found red pill content and some of it resonates with his experience. Hasn&#x27;t fully bought in — still has enough self-awareness to feel uncomfortable with the bitterness. This is the exact capture window before radicalisation.</span>
+        <div class="timing-pills">
+          <span class="t-pill">Enters: Immediate — 0–1 week from first serious red pill exposure</span>
+          <span class="t-pill">Window: 0–2 weeks</span>
+          <span class="t-pill">Sweet spot: 0–1 week</span>
+        </div>
+      </div>
+      
+      <div class="subseg-body">
+        <div class="subseg-col-jtbd">
+          <div class="subsec-section-label" style="color:#f87171">
+            <span class="subsec-icon">→</span> Jobs to Be Done
+            <span class="subsec-note">What he needs to feel, do, or become</span>
+          </div>
+          <div class="jtbd-cards-grid">
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Understand why my experience with women and respect has been what it&#x27;s been — without needing to become someone bitter to explain it</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Build an identity that gets me the results the red pill promises, through a path that doesn&#x27;t require cynicism</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Be a man with real standards and real presence — not a performer of masculinity who women see through immediately</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Resolve the anger I feel about my past without it becoming the thing that defines what I become</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Have a framework for masculinity I&#x27;m genuinely proud of — one I&#x27;d be happy for the people I respect most to see</div>
+        </div></div>
+        </div>
+        <div class="subseg-col-blk">
+          <div class="subsec-section-label" style="color:#f87171">
+            <span class="subsec-icon">✕</span> Purchase Blockers
+            <span class="subsec-note">What stops him from buying</span>
+          </div>
+          <div class="blocker-cards-list">
+        <div class="blocker-detail-card">
+          <div class="blocker-num">1</div>
+          <div class="blocker-detail-text">The red pill is the only content that actually tells me the truth about how attraction works — everything else is cope</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">2</div>
+          <div class="blocker-detail-text">High value man sounds like a softer version of the same thing — it&#x27;s just the red pill with better branding</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">3</div>
+          <div class="blocker-detail-text">I&#x27;ve seen where &#x27;be a better man&#x27; content goes — it ends up telling men to suppress their instincts to please women</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">4</div>
+          <div class="blocker-detail-text">This will probably just make me more of what I already am — nice, accommodating, and invisible</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">5</div>
+          <div class="blocker-detail-text">If this worked, the men who teach it wouldn&#x27;t need to sell courses — they&#x27;d just be getting results</div>
+        </div></div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+  <div class="cat-section" id="seg2-D">
+    
+    <div class="cat-header">
+      <div class="cat-header-inner" style="background:#080e1c;border-color:#102050">
+        <div class="cat-num" style="background:#2563EB;color:#fff">4</div>
+        <div>
+          <div class="cat-name">The Rebuilder</div>
+          <div class="cat-baseline">A clear rupture event ended one chapter of his life. Divorce, major breakup, job loss, hitting bottom. The old version of him — his approach, his standards, his self-image — clearly failed. He&#x27;s ready to start over and needs a framework for who to become.</div>
+        </div>
+        <div class="cat-right">
+          <div class="share-circle" style="color:#60a5fa">15%</div>
+          <div class="core-q">&ldquo;Who do I need to become now that my old life is gone?&rdquo;</div>
+        </div>
+      </div>
+    </div>
+    <div class="seg-section">
+    <div class="subseg-card" id="t2-D1">
+      <div class="trigger-header" style="border-left:4px solid #2563EB">
+        <span class="trigger-type-badge" style="background:#080e1c;color:#60a5fa;border-color:#102050">Divorce or relationship collapse</span>
+        <span class="trigger-title">Partnership that organised his identity and daily life has ended. The structure is gone. He&#x27;s asking fundamental questions about who he is, what he wants, and what kind of man he&#x27;s going to become.</span>
+        <div class="timing-pills">
+          <span class="t-pill">Enters: 1–3 months post separation — after acute grief, before settling into a new mediocre normal</span>
+          <span class="t-pill">Window: 0–8 weeks in the rebuilding window</span>
+          <span class="t-pill">Sweet spot: 6–12 weeks post separation</span>
+        </div>
+      </div>
+      
+      <div class="subseg-body">
+        <div class="subseg-col-jtbd">
+          <div class="subsec-section-label" style="color:#60a5fa">
+            <span class="subsec-icon">→</span> Jobs to Be Done
+            <span class="subsec-note">What he needs to feel, do, or become</span>
+          </div>
+          <div class="jtbd-cards-grid">
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Have an identity that is entirely mine — not defined by what I lost, who left, or what failed</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Build a daily structure that makes me feel like a man with a direction, not a man in recovery</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Show up in my kids&#x27; / friends&#x27; / new relationships&#x27; lives as someone who clearly knows who he is</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Stop replaying what went wrong and start actually building what comes next</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Have a clear picture of the man I&#x27;m becoming — specific enough to make real decisions from, not just inspiration</div>
+        </div></div>
+        </div>
+        <div class="subseg-col-blk">
+          <div class="subsec-section-label" style="color:#60a5fa">
+            <span class="subsec-icon">✕</span> Purchase Blockers
+            <span class="subsec-note">What stops him from buying</span>
+          </div>
+          <div class="blocker-cards-list">
+        <div class="blocker-detail-card">
+          <div class="blocker-num">1</div>
+          <div class="blocker-detail-text">I&#x27;m too raw right now — this isn&#x27;t the time to invest in self-improvement, it&#x27;s the time to just survive</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">2</div>
+          <div class="blocker-detail-text">I&#x27;ve been trying to become a better man for years — that&#x27;s what led to the relationship in the first place. More of it won&#x27;t fix this.</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">3</div>
+          <div class="blocker-detail-text">The problem was her, not me — working on myself buys into the narrative that I was the problem</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">4</div>
+          <div class="blocker-detail-text">Rebuilding &#x27;yourself&#x27; as a divorced man is just a marketing pitch that preys on vulnerability</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">5</div>
+          <div class="blocker-detail-text">I have kids / financial obligations — I can&#x27;t afford the time or money for self-improvement right now</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="subseg-card" id="t2-D2">
+      <div class="trigger-header" style="border-left:4px solid #2563EB">
+        <span class="trigger-type-badge" style="background:#080e1c;color:#60a5fa;border-color:#102050">Wasted years regret</span>
+        <span class="trigger-title">Age + regret + no clear path = peak openness to a complete framework. Looks back at his 20s or early 30s and sees time he can&#x27;t recover. The window to become the man he wanted to be feels like it&#x27;s closing.</span>
+        <div class="timing-pills">
+          <span class="t-pill">Enters: Within 4 weeks of a clear &#x27;I&#x27;ve wasted too much time&#x27; moment</span>
+          <span class="t-pill">Window: 0–6 weeks</span>
+          <span class="t-pill">Sweet spot: 1–3 weeks</span>
+        </div>
+      </div>
+      
+      <div class="subseg-body">
+        <div class="subseg-col-jtbd">
+          <div class="subsec-section-label" style="color:#60a5fa">
+            <span class="subsec-icon">→</span> Jobs to Be Done
+            <span class="subsec-note">What he needs to feel, do, or become</span>
+          </div>
+          <div class="jtbd-cards-grid">
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Stop grieving the decade I didn&#x27;t use well and actually start building with what I have left</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Have a concrete 2–3 year plan that moves me from where I am to a life I&#x27;d actually be proud to live</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Be someone peers from my past would look at in 5 years and not recognise — in the best possible way</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Replace the regret that paralyses me with momentum that uses it as fuel</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Know exactly which high-value man skills have the highest ROI at my age — so I invest in the right things first</div>
+        </div></div>
+        </div>
+        <div class="subseg-col-blk">
+          <div class="subsec-section-label" style="color:#60a5fa">
+            <span class="subsec-icon">✕</span> Purchase Blockers
+            <span class="subsec-note">What stops him from buying</span>
+          </div>
+          <div class="blocker-cards-list">
+        <div class="blocker-detail-card">
+          <div class="blocker-num">1</div>
+          <div class="blocker-detail-text">I&#x27;ve lost so much time that catching up is impossible — the window has genuinely closed for some things</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">2</div>
+          <div class="blocker-detail-text">Every &#x27;it&#x27;s not too late&#x27; program says the same thing to make you feel better before taking your money</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">3</div>
+          <div class="blocker-detail-text">The men who transformed their lives at 35 had advantages I don&#x27;t — resources, looks, connections</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">4</div>
+          <div class="blocker-detail-text">I&#x27;ve tried reinventing myself before and it didn&#x27;t stick — the change never lasts</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">5</div>
+          <div class="blocker-detail-text">If I focus on changing myself I&#x27;m using energy that should go to practical problems like money and career</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="subseg-card" id="t2-D3">
+      <div class="trigger-header" style="border-left:4px solid #2563EB">
+        <span class="trigger-type-badge" style="background:#080e1c;color:#60a5fa;border-color:#102050">Rock bottom moment</span>
+        <span class="trigger-title">Addiction, financial collapse, health crisis, or simply a day where he looked at his life and couldn&#x27;t accept it anymore. Not a slow drift — a hard stop. Now he needs to rebuild from an honest foundation.</span>
+        <div class="timing-pills">
+          <span class="t-pill">Enters: Immediate — 0–2 weeks post rock bottom moment</span>
+          <span class="t-pill">Window: 0–4 weeks</span>
+          <span class="t-pill">Sweet spot: 1–2 weeks</span>
+        </div>
+      </div>
+      
+      <div class="subseg-body">
+        <div class="subseg-col-jtbd">
+          <div class="subsec-section-label" style="color:#60a5fa">
+            <span class="subsec-icon">→</span> Jobs to Be Done
+            <span class="subsec-note">What he needs to feel, do, or become</span>
+          </div>
+          <div class="jtbd-cards-grid">
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Feel like a man who has standards for himself — not someone who knows what he should do and does the opposite</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Have a non-negotiable daily structure that makes my default behaviour the right one — not a constant act of willpower</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Look the people I&#x27;ve let down in the eye and have them see someone who has genuinely changed</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Stop being disgusted with myself every morning and replace it with something that feels like forward motion</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Build a version of myself stable enough that I stop blowing up the good things I do manage to create</div>
+        </div></div>
+        </div>
+        <div class="subseg-col-blk">
+          <div class="subsec-section-label" style="color:#60a5fa">
+            <span class="subsec-icon">✕</span> Purchase Blockers
+            <span class="subsec-note">What stops him from buying</span>
+          </div>
+          <div class="blocker-cards-list">
+        <div class="blocker-detail-card">
+          <div class="blocker-num">1</div>
+          <div class="blocker-detail-text">I&#x27;m too unstable right now to commit to anything — I need to just get through each day</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">2</div>
+          <div class="blocker-detail-text">People who sell &#x27;rebuild your life&#x27; content target men when they&#x27;re at their most vulnerable and least able to judge quality</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">3</div>
+          <div class="blocker-detail-text">Real change has to come from inside — a program can&#x27;t manufacture the discipline I clearly don&#x27;t have</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">4</div>
+          <div class="blocker-detail-text">I&#x27;ve tried to restart before and failed — another attempt will just add another failure to the list</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">5</div>
+          <div class="blocker-detail-text">I need practical help first — money, housing, health — not identity work</div>
+        </div></div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+  <div class="cat-section" id="seg2-E">
+    
+    <div class="cat-header">
+      <div class="cat-header-inner" style="background:#060e0c;border-color:#0c2820">
+        <div class="cat-num" style="background:#059669;color:#fff">5</div>
+        <div>
+          <div class="cat-name">The Optimizer</div>
+          <div class="cat-baseline">Already on a self-improvement path — gym, reading, building income, developing habits. Operates by a collection of practices without a unifying identity framework. Wants the HVM concept as the organising principle for the man he&#x27;s already becoming.</div>
+        </div>
+        <div class="cat-right">
+          <div class="share-circle" style="color:#34d399">5%</div>
+          <div class="core-q">&ldquo;How do I go from good to exceptional across all areas — not just one?&rdquo;</div>
+        </div>
+      </div>
+    </div>
+    <div class="seg-section">
+    <div class="subseg-card" id="t2-E1">
+      <div class="trigger-header" style="border-left:4px solid #059669">
+        <span class="trigger-type-badge" style="background:#060e0c;color:#34d399;border-color:#0c2820">Plateau in results</span>
+        <span class="trigger-title">Has optimised one or two areas — fitness is good, income is growing — but the overall picture doesn&#x27;t add up to what he imagined. He&#x27;s missing the framework that ties it all together into an identity.</span>
+        <div class="timing-pills">
+          <span class="t-pill">Enters: Gradual — enters market from content and community</span>
+          <span class="t-pill">Window: 2–8 weeks from first engagement</span>
+          <span class="t-pill">Sweet spot: Ongoing — content-led</span>
+        </div>
+      </div>
+      
+      <div class="subseg-body">
+        <div class="subseg-col-jtbd">
+          <div class="subsec-section-label" style="color:#34d399">
+            <span class="subsec-icon">→</span> Jobs to Be Done
+            <span class="subsec-note">What he needs to feel, do, or become</span>
+          </div>
+          <div class="jtbd-cards-grid">
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Have a unified identity framework that makes every habit, investment and decision point toward the same man</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Be recognised as a high value man by the people I respect — not through performance, but through who I genuinely am</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Know exactly which remaining gaps between who I am and who I want to be are highest priority to close</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Stop feeling like I&#x27;m doing well by most metrics but still somehow falling short of my own standard</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Lead men around me through example — be the standard-bearer in my circle, not just in my own life</div>
+        </div></div>
+        </div>
+        <div class="subseg-col-blk">
+          <div class="subsec-section-label" style="color:#34d399">
+            <span class="subsec-icon">✕</span> Purchase Blockers
+            <span class="subsec-note">What stops him from buying</span>
+          </div>
+          <div class="blocker-cards-list">
+        <div class="blocker-detail-card">
+          <div class="blocker-num">1</div>
+          <div class="blocker-detail-text">I already have a system — I don&#x27;t need someone else&#x27;s framework replacing what&#x27;s working</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">2</div>
+          <div class="blocker-detail-text">Most &#x27;high value man&#x27; content is surface-level — it won&#x27;t add anything I haven&#x27;t already encountered</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">3</div>
+          <div class="blocker-detail-text">The men selling this content are not visibly more successful than I am — why would I pay them</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">4</div>
+          <div class="blocker-detail-text">Adding another program means more time on self-improvement content and less time actually doing the work</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">5</div>
+          <div class="blocker-detail-text">I&#x27;ll know when I need this — right now I just need to execute on what I already know</div>
+        </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="subseg-card" id="t2-E2">
+      <div class="trigger-header" style="border-left:4px solid #059669">
+        <span class="trigger-type-badge" style="background:#060e0c;color:#34d399;border-color:#0c2820">Ready to commit to a complete identity</span>
+        <span class="trigger-title">Has done the piece-by-piece work long enough to know he wants a complete framework. He&#x27;s not in crisis — he&#x27;s ambitious. He wants to name and own the identity he&#x27;s been building toward.</span>
+        <div class="timing-pills">
+          <span class="t-pill">Enters: Gradual — usually triggered by a specific piece of content that names exactly what he&#x27;s been working toward</span>
+          <span class="t-pill">Window: 1–4 weeks from first engagement</span>
+          <span class="t-pill">Sweet spot: Ongoing — content-led</span>
+        </div>
+      </div>
+      
+      <div class="subseg-body">
+        <div class="subseg-col-jtbd">
+          <div class="subsec-section-label" style="color:#34d399">
+            <span class="subsec-icon">→</span> Jobs to Be Done
+            <span class="subsec-note">What he needs to feel, do, or become</span>
+          </div>
+          <div class="jtbd-cards-grid">
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Name and own the identity I&#x27;ve been building so it stops being a collection of habits and becomes who I actually am</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Be seen by people I respect as the standard — not someone with good habits, but someone who has become something</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(236,72,153,0.08);border-color:rgba(236,72,153,0.25)">
+          <div class="jtbd-type-header" style="color:#f472b6">
+            <span class="jtbd-icon">♥</span>
+            <span class="jtbd-type-label">Emotional</span>
+          </div>
+          <div class="jtbd-detail-text">Close the gap between the man I perform and the man I feel like on the inside — make them the same person</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.25)">
+          <div class="jtbd-type-header" style="color:#60a5fa">
+            <span class="jtbd-icon">⚙</span>
+            <span class="jtbd-type-label">Functional</span>
+          </div>
+          <div class="jtbd-detail-text">Identify the 2–3 remaining gaps that are holding me back from the complete picture and close them systematically</div>
+        </div>
+        <div class="jtbd-detail-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.25)">
+          <div class="jtbd-type-header" style="color:#a78bfa">
+            <span class="jtbd-icon">◈</span>
+            <span class="jtbd-type-label">Social</span>
+          </div>
+          <div class="jtbd-detail-text">Become the man in my circle that other men who are on a similar path look to — because I&#x27;ve gone further</div>
+        </div></div>
+        </div>
+        <div class="subseg-col-blk">
+          <div class="subsec-section-label" style="color:#34d399">
+            <span class="subsec-icon">✕</span> Purchase Blockers
+            <span class="subsec-note">What stops him from buying</span>
+          </div>
+          <div class="blocker-cards-list">
+        <div class="blocker-detail-card">
+          <div class="blocker-num">1</div>
+          <div class="blocker-detail-text">I don&#x27;t need a course to tell me who to be — I&#x27;m already figuring it out</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">2</div>
+          <div class="blocker-detail-text">&#x27;High value man&#x27; as a concept is picked up by influencers and diluted — I don&#x27;t want to be associated with that</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">3</div>
+          <div class="blocker-detail-text">I&#x27;m too close to my goals to start over with someone else&#x27;s framework</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">4</div>
+          <div class="blocker-detail-text">The men selling HVM content don&#x27;t look like the men I want to emulate</div>
+        </div>
+        <div class="blocker-detail-card">
+          <div class="blocker-num">5</div>
+          <div class="blocker-detail-text">I&#x27;ll invest in coaching when I&#x27;ve earned enough to afford the premium version — not an online course</div>
+        </div></div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+  </div>
 
 </div>
 
 <script>
-// Active nav on scroll
-const sections = document.querySelectorAll('[id^="t-"]');
-const navLinks = document.querySelectorAll('.nav-sub');
-const obs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      navLinks.forEach(l => l.classList.remove('active'));
-      const active = document.querySelector('.nav-sub[href="#' + e.target.id + '"]');
-      if (active) active.classList.add('active');
-    }
-  });
-}, {rootMargin:'-20% 0px -70% 0px'});
-sections.forEach(s => obs.observe(s));
+// Tab switching
+function switchTab(name) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelector('[data-tab="' + name + '"]').classList.add('active');
+  window._activeTab = name;
+}
+
+// Sidebar nav — scroll to segment in active tab
+function navToSeg(el) {
+  const sid = el.dataset.seg;
+  const tab = window._activeTab || 'overview';
+  const prefix = tab === 'overview' ? 'seg1' : 'seg2';
+  const target = document.getElementById(prefix + '-' + sid);
+  if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// Sidebar nav — scroll to trigger in active tab
+function navToTrig(ev, sid, ti) {
+  ev.preventDefault();
+  const tab = window._activeTab || 'overview';
+  const prefix = tab === 'overview' ? 't1' : 't2';
+  const target = document.getElementById(prefix + '-' + sid + ti);
+  if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// Active nav highlight on scroll
+function setupScrollSpy() {
+  const tab = window._activeTab || 'overview';
+  const prefix = tab === 'overview' ? 't1' : 't2';
+  const sections = document.querySelectorAll('[id^="' + prefix + '-"]');
+  const navLinks = document.querySelectorAll('.nav-sub');
+  if (window._scrollObs) window._scrollObs.disconnect();
+  window._scrollObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id; // e.g. t1-A2 or t2-B1
+        const parts = id.split('-'); // [prefix, sidti]
+        if (parts.length < 2) return;
+        const sidti = parts[1]; // e.g. A2
+        const sid = sidti[0];
+        const ti = sidti[1];
+        navLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector('.nav-sub[data-seg="' + sid + '"][data-ti="' + ti + '"]');
+        if (active) active.classList.add('active');
+      }
+    });
+  }, {rootMargin:'-15% 0px -70% 0px'});
+  sections.forEach(s => window._scrollObs.observe(s));
+}
+
+window._activeTab = 'overview';
+document.addEventListener('DOMContentLoaded', () => { setupScrollSpy(); });
 </script>
 </body>
 </html>
