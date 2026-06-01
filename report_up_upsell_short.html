@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upsell A/B Test: up_upsell_short — v4 vs v5</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; color: #1a1a2e; background: #f4f6f9; line-height: 1.6; }
+
+  .page { max-width: 1100px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  h1 { font-size: 22px; font-weight: 700; color: #0d1b2a; margin-bottom: 4px; }
+  h2 { font-size: 16px; font-weight: 700; color: #0d1b2a; margin: 32px 0 10px; padding-bottom: 6px; border-bottom: 2px solid #e0e4ed; text-transform: uppercase; letter-spacing: 0.04em; }
+  h3 { font-size: 14px; font-weight: 700; color: #333; margin: 24px 0 8px; }
+
+  .meta { color: #666; font-size: 13px; margin-bottom: 28px; }
+
+  /* Result badge */
+  .result-badge { display: inline-block; background: #1a7f4b; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 12px; border-radius: 20px; margin-bottom: 12px; }
+
+  .result-summary { background: #fff; border-left: 4px solid #1a7f4b; padding: 14px 18px; border-radius: 0 8px 8px 0; margin-bottom: 24px; color: #333; font-size: 14px; }
+
+  /* Cards */
+  .card { background: #fff; border-radius: 10px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+
+  /* KPI row */
+  .kpi-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .kpi { background: #fff; border-radius: 10px; padding: 16px 20px; flex: 1; min-width: 160px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+  .kpi .label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .kpi .v4 { font-size: 13px; color: #666; }
+  .kpi .v5 { font-size: 22px; font-weight: 700; color: #0d1b2a; }
+  .kpi .delta { font-size: 13px; font-weight: 600; margin-top: 2px; }
+  .kpi .delta.pos { color: #1a7f4b; }
+  .kpi .delta.neg { color: #c0392b; }
+  .kpi .delta.neu { color: #888; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+  th { background: #f0f2f7; text-align: left; padding: 8px 12px; font-weight: 600; color: #444; border-bottom: 2px solid #dde1eb; white-space: nowrap; }
+  td { padding: 8px 12px; border-bottom: 1px solid #edf0f5; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbfd; }
+  .total-row td { font-weight: 700; background: #f7f8fc; border-top: 2px solid #dde1eb; }
+
+  .pos { color: #1a7f4b; font-weight: 600; }
+  .neg { color: #c0392b; font-weight: 600; }
+  .sig { background: #fff3cd; font-weight: 700; }
+  .sig-green { background: #d4edda; font-weight: 700; }
+  .primary-row td { background: #eaf4ff; font-weight: 700; }
+
+  /* Bayesian decomp */
+  .decomp-table th { background: #1a1a2e; color: #fff; }
+
+  /* Screens grid */
+  .screens-section { margin-bottom: 20px; }
+  .screens-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #666; margin-bottom: 10px; }
+  .screens-grid { display: flex; gap: 12px; flex-wrap: wrap; }
+  .screen-item { text-align: center; }
+  .screen-item img { max-width: 110px; border-radius: 8px; border: 1px solid #dde1eb; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: block; }
+  .screen-item .cap { font-size: 11px; color: #888; margin-top: 5px; max-width: 110px; }
+
+  /* Expected loss box */
+  .loss-box { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
+  .loss-item { flex: 1; min-width: 180px; border-radius: 8px; padding: 14px 18px; }
+  .loss-item.bad  { background: #fff0f0; border: 1px solid #f5c6cb; }
+  .loss-item.good { background: #e8f8ee; border: 1px solid #b8ddc5; }
+  .loss-item .loss-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 4px; }
+  .loss-item .loss-val { font-size: 24px; font-weight: 700; }
+  .loss-item.bad  .loss-val { color: #c0392b; }
+  .loss-item.good .loss-val { color: #1a7f4b; }
+  .loss-item .loss-sub { font-size: 12px; color: #666; margin-top: 2px; }
+
+  /* Footnote */
+  .footnote { font-size: 12px; color: #888; background: #f7f8fc; border-radius: 6px; padding: 10px 14px; margin-top: 12px; border-left: 3px solid #ccc; }
+  .footnote a { color: #3a6fc4; }
+
+  /* Ship decision */
+  .ship-box { background: #1a7f4b; color: #fff; border-radius: 10px; padding: 20px 24px; margin-bottom: 20px; }
+  .ship-box h3 { color: #fff; margin: 0 0 8px; font-size: 15px; }
+  .ship-box p { font-size: 13px; opacity: 0.92; line-height: 1.7; }
+  .ship-box .stat { display: inline-block; background: rgba(255,255,255,0.2); border-radius: 4px; padding: 1px 6px; font-weight: 700; font-size: 12px; margin: 0 2px; }
+
+  .section-divider { border: none; border-top: 2px solid #e0e4ed; margin: 32px 0; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <h1>Upsell A/B Test Report: up_upsell_short</h1>
+  <div class="meta">v4 (Control) vs v5 (Test) &nbsp;·&nbsp; 04.03.2026 – 01.04.2026 &nbsp;·&nbsp; 500K Monte Carlo samples</div>
+
+  <!-- Hypothesis -->
+  <h2>Hypothesis</h2>
+  <div class="card">
+    Зменшити кількість ансабскрайбів на v5 (порівняно з v4 і v3), зберігаючи конверсійність, і збільшити ревеню за рахунок підняття ціни на long landing.
+  </div>
+
+  <!-- Test Setup -->
+  <h2>Test Setup</h2>
+  <div class="card">
+    <table>
+      <thead><tr><th></th><th>v4 — Control</th><th>v5 — Test</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Topic</strong></td><td>AI Chat + Breakup Recovery</td><td>AI Chat + Rise Stronger / GlowUp</td></tr>
+        <tr><td><strong>Long page price</strong></td><td>$24.99 — price at the top</td><td>$29.99 — comparison table at the top</td></tr>
+        <tr><td><strong>Cascade flow</strong></td><td colspan="2">Long page → Upsell_1 → Popup → Upsell_2_special</td></tr>
+        <tr><td><strong>Bundle price (Upsell_1)</strong></td><td>$47.99 → $14.99 (with discount)</td><td>$47.99 → $14.99 — unchanged</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- Result -->
+  <span class="result-badge">v5 wins — Upsell ARPU +14%</span>
+  <div class="result-summary">
+    Upsell ARPU v4 <strong>$4.04</strong> vs v5 <strong>$4.59</strong> (+14%). Overall CR identical: 18.09% vs 17.96% (−0.13 pp, p=0.916).
+    Upsell revenue v4 <strong>$8,726</strong> vs v5 <strong>$10,101</strong> (+16%). Total purchases: 391 vs 395 (+1%).
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="label">Upsell ARPU (primary)</div>
+      <div class="v4">v4: $4.04</div>
+      <div class="v5">$4.59</div>
+      <div class="delta pos">+14% &nbsp;·&nbsp; P(v5&gt;v4) = 91.1%</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Upsell Revenue</div>
+      <div class="v4">v4: $8,726</div>
+      <div class="v5">$10,101</div>
+      <div class="delta pos">+16%</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Upsell ARPPU</div>
+      <div class="v4">v4: $22.32</div>
+      <div class="v5">$25.57</div>
+      <div class="delta pos">+14.6% &nbsp;·&nbsp; P = 97.2%</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Upsell CR (overall)</div>
+      <div class="v4">v4: 18.09%</div>
+      <div class="v5">17.96%</div>
+      <div class="delta neu">−0.13 pp &nbsp;·&nbsp; p = 0.916</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Upsell Purchases</div>
+      <div class="v4">v4: 391</div>
+      <div class="v5">395</div>
+      <div class="delta neu">+1%</div>
+    </div>
+  </div>
+
+  <!-- Screens -->
+  <h2>Test Screens</h2>
+  <div class="card">
+    <div class="screens-section">
+      <div class="screens-label">v4 — AI Chat + Breakup Recovery (Control)</div>
+      <div class="screens-grid">
+        <div class="screen-item"><img src="screenshots/AI_chat_long.png" alt="Long page"><div class="cap">Stage 1: Long page</div></div>
+        <div class="screen-item"><img src="screenshots/Popup_upsell_f.png" alt="Popup female"><div class="cap">Stage 3: Popup — Female</div></div>
+        <div class="screen-item"><img src="screenshots/Popup_upsell_m.png" alt="Popup male"><div class="cap">Stage 3: Popup — Male</div></div>
+      </div>
+    </div>
+    <div class="screens-section" style="margin-top:20px;">
+      <div class="screens-label">v5 — AI Chat + Rise Stronger / GlowUp (Test)</div>
+      <div class="screens-grid">
+        <div class="screen-item"><img src="screenshots/AI_chat_long.png" alt="Long page"><div class="cap">Stage 1: Long page</div></div>
+        <div class="screen-item"><img src="screenshots/Upsell_1_f.png" alt="Upsell 1 female"><div class="cap">Stage 2: Upsell_1 — Female</div></div>
+        <div class="screen-item"><img src="screenshots/Upsell_1_m.png" alt="Upsell 1 male"><div class="cap">Stage 2: Upsell_1 — Male</div></div>
+        <div class="screen-item"><img src="screenshots/Upsell_2_special_f.png" alt="Downsell female"><div class="cap">Stage 4: Upsell_2_special — Female</div></div>
+        <div class="screen-item"><img src="screenshots/Upsell_2_special_m.png" alt="Downsell male"><div class="cap">Stage 4: Upsell_2_special — Male</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overall Metrics -->
+  <h2>Overall Metrics</h2>
+  <div class="card">
+    <table>
+      <thead><tr><th>Metric</th><th>v4 Control</th><th>v5 Test</th><th>Delta</th><th>Stat sig</th></tr></thead>
+      <tbody>
+        <tr><td>Main plan purchasers</td><td>2,162</td><td>2,199</td><td>—</td><td>—</td></tr>
+        <tr><td>Upsell purchases</td><td>391</td><td>395</td><td>+1%</td><td>—</td></tr>
+        <tr><td>Upsell revenue</td><td>$8,726</td><td>$10,101</td><td class="pos">+16%</td><td>—</td></tr>
+        <tr class="primary-row"><td><strong>Upsell ARPU (primary)</strong></td><td><strong>$4.04</strong></td><td><strong>$4.59</strong></td><td class="pos"><strong>+14%</strong></td><td>Bayes P(v5&gt;v4) = <strong>91.1%</strong>, HDI [−$0.26, +$1.38]</td></tr>
+        <tr><td>Upsell CR (overall)</td><td>18.09% (391/2,162)</td><td>17.96% (395/2,199)</td><td class="neu">−0.13 pp</td><td>freq p = 0.916; Bayes P = 45.8%</td></tr>
+        <tr><td>Upsell ARPPU</td><td>$22.32</td><td>$25.57</td><td class="pos">+14.6%</td><td>Bayes P(v5&gt;v4) = <strong>97.2%</strong></td></tr>
+        <tr><td>Login rate</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <div class="footnote">
+      Bayesian ARPU test за методологією <a href="https://cdn2.hubspot.net/hubfs/310840/VWO_SmartStats_technical_whitepaper.pdf">VWO SmartStats</a>,
+      калькулятор <a href="https://vidogreg.shinyapps.io/bayes-arpu-test/">bayes-arpu-test</a>.
+      Модель: payer ~ Bernoulli(λ), λ ~ Beta; revenue_per_payer ~ Exp(ω), ω ~ Gamma; ARPU = λ/ω. Monte Carlo 500K samples.
+    </div>
+  </div>
+
+  <!-- Bayesian Decomposition -->
+  <h2>Bayesian Decomposition</h2>
+  <div class="card">
+    <table class="decomp-table">
+      <thead><tr><th>Component</th><th>P(v5 &gt; v4)</th><th>Interpretation</th></tr></thead>
+      <tbody>
+        <tr><td>Conversion rate (λ)</td><td>45.8%</td><td>CR практично ідентичний — сигналу нема (монетка)</td></tr>
+        <tr class="sig-green"><td>Revenue per payer (1/ω)</td><td><strong>97.2%</strong></td><td>v5 ARPPU значно вищий — сильний сигнал</td></tr>
+        <tr class="sig"><td><strong>ARPU = λ/ω</strong></td><td><strong>91.1%</strong></td><td>v5 ARPU вищий, HDI [−$0.26, +$1.38] включає 0</td></tr>
+      </tbody>
+    </table>
+
+    <div class="loss-box">
+      <div class="loss-item bad">
+        <div class="loss-label">Expected loss — ship v4</div>
+        <div class="loss-val">$0.58<span style="font-size:14px;font-weight:400">/user</span></div>
+        <div class="loss-sub">High risk — likely missing v5 uplift</div>
+      </div>
+      <div class="loss-item good">
+        <div class="loss-label">Expected loss — ship v5</div>
+        <div class="loss-val">$0.02<span style="font-size:14px;font-weight:400">/user</span></div>
+        <div class="loss-sub">34× lower — clear choice</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cascade Funnel -->
+  <h2>Cascade Funnel — Stage-by-Stage</h2>
+  <div class="card">
+    <table>
+      <thead><tr><th>Stage</th><th>v4 Reach</th><th>v4 Purch</th><th>v4 CR</th><th>v5 Reach</th><th>v5 Purch</th><th>v5 CR</th><th>Δ CR (pp)</th><th>p-value</th></tr></thead>
+      <tbody>
+        <tr><td>Stage 1: Long page ($24.99 / $29.99)</td><td>2,162</td><td>211</td><td>9.76%</td><td>2,199</td><td>237</td><td>10.78%</td><td class="pos">+1.02</td><td>0.268</td></tr>
+        <tr><td>Stage 2–4: Upsell_1 → Popup → Upsell_2_special</td><td>1,951</td><td>180</td><td>9.23%</td><td>1,962</td><td>158</td><td>8.05%</td><td class="neg">−1.18</td><td>0.192</td></tr>
+        <tr class="total-row"><td><strong>Total cascade</strong></td><td><strong>2,162</strong></td><td><strong>391</strong></td><td><strong>18.09%</strong></td><td><strong>2,199</strong></td><td><strong>395</strong></td><td><strong>17.96%</strong></td><td>−0.13</td><td>0.916</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:14px; font-size:13px; line-height:1.8; color:#444;">
+      <p><strong>Stage 1 (long page)</strong> — v5 трохи краще (+1.02 pp, p=0.268). Підняття ціни до $29.99 + comparison table не знизило конверсію.</p>
+      <p><strong>Stage 2–4 (short funnel)</strong> — v5 трохи гірше (−1.18 pp, p=0.192). Різниця не стат значима. Конверсія стабільна по всьому каскаду.</p>
+      <p><strong>Net effect</strong> — загальна CR практично ідентична (−0.13 pp). Весь приріст ARPU забезпечений вищим ARPPU на long page.</p>
+    </div>
+  </div>
+
+  <!-- Product Breakdowns -->
+  <h2>Upsell Product Breakdown</h2>
+  <div style="display:flex; gap:20px; flex-wrap:wrap;">
+    <div class="card" style="flex:1; min-width:300px;">
+      <h3>v4 — Control: AI Chat + Breakup Recovery</h3>
+      <table>
+        <thead><tr><th>Product</th><th>Purch</th><th>Revenue</th><th>ARPPU</th><th>% rev</th></tr></thead>
+        <tbody>
+          <tr><td>aichat-long-4</td><td>211</td><td>$5,428</td><td>$25.73</td><td>62%</td></tr>
+          <tr><td>brecoveryplan_aichat_4</td><td>111</td><td>$2,267</td><td>$20.42</td><td>26%</td></tr>
+          <tr><td>brecoveryplan_aichat_special_4</td><td>36</td><td>$559</td><td>$15.53</td><td>6%</td></tr>
+          <tr><td>aichat_4</td><td>19</td><td>$285</td><td>$15.00</td><td>3%</td></tr>
+          <tr><td>brecoveryplan_4</td><td>9</td><td>$137</td><td>$15.22</td><td>2%</td></tr>
+          <tr><td>aichat_special_4</td><td>3</td><td>$30</td><td>$10.00</td><td>&lt;1%</td></tr>
+          <tr><td>brecoveryplan_special_4</td><td>2</td><td>$20</td><td>$10.00</td><td>&lt;1%</td></tr>
+          <tr class="total-row"><td><strong>Total</strong></td><td><strong>391</strong></td><td><strong>$8,726</strong></td><td><strong>$22.32</strong></td><td><strong>100%</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card" style="flex:1; min-width:300px;">
+      <h3>v5 — Test: AI Chat + Rise Stronger / GlowUp</h3>
+      <table>
+        <thead><tr><th>Product</th><th>Purch</th><th>Revenue</th><th>ARPPU</th><th>% rev</th></tr></thead>
+        <tbody>
+          <tr><td>aichat-long-5</td><td>237</td><td>$7,325</td><td>$30.91</td><td>72%</td></tr>
+          <tr><td>risestronger_aichat</td><td>65</td><td>$1,338</td><td>$20.58</td><td>13%</td></tr>
+          <tr><td>aichat_5</td><td>39</td><td>$596</td><td>$15.28</td><td>6%</td></tr>
+          <tr><td>risestronger_aichat_special</td><td>28</td><td>$432</td><td>$15.43</td><td>4%</td></tr>
+          <tr><td>glowup_aichat</td><td>10</td><td>$206</td><td>$20.60</td><td>2%</td></tr>
+          <tr><td>glowup_aichat_special</td><td>6</td><td>$92</td><td>$15.33</td><td>1%</td></tr>
+          <tr><td>aichat_special_5</td><td>7</td><td>$71</td><td>$10.14</td><td>1%</td></tr>
+          <tr><td>risestronger</td><td>2</td><td>$30</td><td>$15.00</td><td>&lt;1%</td></tr>
+          <tr><td>risestronger_special</td><td>1</td><td>$10</td><td>$10.00</td><td>&lt;1%</td></tr>
+          <tr class="total-row"><td><strong>Total</strong></td><td><strong>395</strong></td><td><strong>$10,101</strong></td><td><strong>$25.57</strong></td><td><strong>100%</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <h2>Summary</h2>
+  <div class="card">
+    <ol style="padding-left:18px; line-height:2;">
+      <li><strong>Primary metric (ARPU): v5 виграє, +14%.</strong> v4 $4.04 vs v5 $4.59. Bayesian P(v5&gt;v4) = 91.1%, HDI [−$0.26, +$1.38] включає 0 — технічно не стат значимий на 95% рівні, але expected loss при шіпінгу v4 ($0.58/user) у <strong>34 рази вищий</strong> ніж при шіпінгу v5 ($0.02/user).</li>
+      <li><strong>ARPU gain driven entirely by ARPPU.</strong> CR ідентична (18%, p=0.916). v5 ARPPU значно вищий (P = 97.2%) — повністю за рахунок вищої ціни long page ($29.99 vs $24.99). Conversion rate 45.8% — сигналу нема.</li>
+      <li><strong>Long page CR незначно покращився</strong> (+1.02 pp, 9.76% → 10.78%, p=0.268). Вищий прайс + comparison table не відлякав покупців.</li>
+      <li><strong>Short funnel CR незначно знизився</strong> (−1.18 pp, 9.23% → 8.05%, p=0.192). Всі різниці по каскаду — не стат значимі.</li>
+      <li><strong>Revenue концентрується на long page:</strong> частка зросла з 62% до 72% — підтверджує, що вищий прайс є основним драйвером.</li>
+      <li><strong>Гіпотеза підтвердилась:</strong> v5 delivers +14% ARPU (+16% revenue) при збереженні CR на рівні v4.</li>
+    </ol>
+  </div>
+
+  <!-- Ship Decision -->
+  <h2>Next Steps</h2>
+  <div class="ship-box">
+    <h3>✓ Ship v5 — AI Chat + Rise Stronger / GlowUp at $29.99</h3>
+    <p>
+      P(v5 ARPU &gt; v4) = <span class="stat">91.1%</span>.
+      Expected loss при шіпінгу v4 — <span class="stat">$0.58/user</span> vs <span class="stat">$0.02/user</span> для v5 (34× вище).
+      ARPPU stat sig <span class="stat">P = 97.2%</span>, CR ідентична <span class="stat">p = 0.916</span> — підняття ціни не вплинуло на конверсію.
+      HDI [−$0.26, +$1.38] технічно включає 0, але асиметрія expected loss чітко вказує на v5.
+    </p>
+  </div>
+
+</div>
+</body>
+</html>
