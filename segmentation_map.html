@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Men Self-Improvement — Market Segmentation</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#080c14;font-family:'Segoe UI',system-ui,sans-serif;color:#D1D5DB;padding-bottom:80px}
+
+/* ── Header ── */
+.page-title{text-align:center;color:#F59E0B;font-size:16px;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;padding:32px 0 5px}
+.page-sub{text-align:center;color:#374151;font-size:11px;letter-spacing:1.5px;
+  text-transform:uppercase;margin-bottom:28px}
+
+/* ── Root box ── */
+.root-wrap{max-width:1380px;margin:0 auto 0;padding:0 24px}
+.root-box{
+  background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(245,158,11,0.04));
+  border:1px solid rgba(245,158,11,0.35);
+  border-radius:12px;
+  padding:24px 32px;
+  text-align:center;
+  position:relative;
+}
+.root-label{font-size:10px;color:#F59E0B;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:8px}
+.root-title{font-size:18px;font-weight:700;color:#F3F4F6;margin-bottom:10px;line-height:1.4}
+.root-quote{font-size:12px;color:#9CA3AF;font-style:italic;margin-bottom:18px}
+.root-stats{display:flex;justify-content:center;gap:40px;flex-wrap:wrap}
+.rstat{text-align:center}
+.rstat-val{font-size:22px;font-weight:700;color:#F59E0B}
+.rstat-lbl{font-size:9.5px;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
+
+/* ── Tree connector ── */
+.tree-connector{display:flex;justify-content:center;padding:0 24px}
+.connector-svg{width:100%;max-width:1380px;height:60px}
+
+/* ── Proportion bar ── */
+.prop-wrap{max-width:1380px;margin:0 auto 4px;padding:0 24px}
+.prop-bar{display:flex;border-radius:6px;overflow:hidden;height:8px;gap:2px}
+.pb-seg{height:100%;border-radius:2px;transition:opacity 0.2s}
+
+/* ── Segment grid ── */
+.seg-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;
+  max-width:1380px;margin:0 auto;padding:0 24px}
+
+/* ── Segment card ── */
+.seg-card{
+  border-radius:10px;
+  border-top:3px solid;
+  border-left:1px solid rgba(255,255,255,0.06);
+  border-right:1px solid rgba(255,255,255,0.06);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  background:rgba(8,12,22,0.98);
+  padding:0;
+  overflow:hidden;
+  position:relative;
+}
+.seg-head{padding:16px 18px 12px}
+.seg-tag{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  margin-bottom:6px;opacity:0.8}
+.seg-name{font-size:14px;font-weight:700;color:#F3F4F6;line-height:1.3;margin-bottom:6px}
+.seg-pain{font-size:11px;color:#9CA3AF;font-style:italic;line-height:1.45;margin-bottom:12px}
+
+/* Stats row inside card */
+.seg-stats{display:flex;gap:0;border-top:1px solid rgba(255,255,255,0.06);
+           border-bottom:1px solid rgba(255,255,255,0.06)}
+.ss{flex:1;padding:8px 12px;text-align:center;border-right:1px solid rgba(255,255,255,0.06)}
+.ss:last-child{border-right:none}
+.ss-val{font-size:14px;font-weight:700;color:#E5E7EB}
+.ss-lbl{font-size:8.5px;color:#6B7280;text-transform:uppercase;letter-spacing:0.4px;margin-top:1px}
+
+/* Sub-segments */
+.sub-label{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+  color:#6B7280;padding:10px 18px 4px}
+.sub-list{list-style:none;padding:0 18px 6px}
+.sub-list li{
+  font-size:10.5px;color:#9CA3AF;padding:5px 0 5px 14px;
+  position:relative;border-bottom:1px solid rgba(255,255,255,0.04);
+  line-height:1.35
+}
+.sub-list li:last-child{border-bottom:none}
+.sub-list li::before{content:'›';position:absolute;left:0;opacity:0.4;font-size:13px;line-height:1.2}
+.sub-count{font-size:9px;font-weight:600;float:right;margin-top:1px;opacity:0.5}
+
+/* Keywords */
+.kw-label{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+  color:#6B7280;padding:10px 18px 6px;border-top:1px solid rgba(255,255,255,0.06)}
+.kw-chips{display:flex;flex-wrap:wrap;gap:5px;padding:0 18px 16px}
+.kw-chip{
+  font-size:9.5px;padding:3px 8px;border-radius:4px;
+  border:1px solid rgba(255,255,255,0.08);color:#9CA3AF;white-space:nowrap
+}
+.kw-chip span{font-weight:600}
+
+/* ── Active builder (full-width bottom card) ── */
+.active-wrap{max-width:1380px;margin:16px auto 0;padding:0 24px}
+.active-card{
+  background:rgba(16,185,129,0.06);
+  border:1px solid rgba(16,185,129,0.2);
+  border-radius:10px;
+  padding:18px 24px;
+  display:flex;align-items:center;gap:32px;flex-wrap:wrap
+}
+.active-tag{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:#10B981;margin-bottom:4px}
+.active-name{font-size:13px;font-weight:700;color:#F3F4F6}
+.active-desc{font-size:11px;color:#9CA3AF;margin-top:3px;font-style:italic}
+.active-stats{display:flex;gap:24px;flex-shrink:0}
+.as{text-align:center}
+.as-val{font-size:15px;font-weight:700;color:#10B981}
+.as-lbl{font-size:9px;color:#6B7280;text-transform:uppercase;letter-spacing:0.4px}
+.active-kws{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+
+/* ── Insight strip ── */
+.insight-wrap{max-width:1380px;margin:28px auto 0;padding:0 24px}
+.insight-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:#6B7280;margin-bottom:12px;text-align:center}
+.insight-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
+.insight-card{
+  background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);
+  border-radius:8px;padding:14px 16px
+}
+.insight-card h4{font-size:11px;font-weight:700;color:#E5E7EB;margin-bottom:6px}
+.insight-card p{font-size:10.5px;color:#6B7280;line-height:1.5}
+.insight-card strong{color:#9CA3AF}
+
+/* Urgency badge */
+.urgency{
+  display:inline-block;padding:2px 7px;border-radius:3px;
+  font-size:9px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;
+  margin-left:8px;vertical-align:middle
+}
+.urg-high{background:rgba(239,68,68,0.15);color:#F87171}
+.urg-med{background:rgba(245,158,11,0.15);color:#FCD34D}
+.urg-low{background:rgba(59,130,246,0.12);color:#60A5FA}
+
+/* Divider label */
+.divider-label{text-align:center;font-size:9px;color:#374151;letter-spacing:1.5px;
+  text-transform:uppercase;padding:20px 0 12px}
+</style>
+</head>
+<body>
+
+<div class="page-title">Men Self-Improvement — Market Segmentation</div>
+<p class="page-sub">Reddit signal · 1,178 posts · 4,803 comments · 15 communities · keyword-validated</p>
+
+<!-- ROOT -->
+<div class="root-wrap">
+  <div class="root-box">
+    <div class="root-label">Root Insight — Who these men are</div>
+    <div class="root-title">"Men who know they should be more, but aren't yet"</div>
+    <div class="root-quote">"I feel stuck." · "I'm wasting my potential." · "I don't know who I want to be." · "I know what to do but I can't make myself do it."</div>
+    <div class="root-stats">
+      <div class="rstat"><div class="rstat-val">1,178</div><div class="rstat-lbl">Reddit posts analyzed</div></div>
+      <div class="rstat"><div class="rstat-val">4,803</div><div class="rstat-lbl">High-score comments</div></div>
+      <div class="rstat"><div class="rstat-val">2.9M+</div><div class="rstat-lbl">Monthly searches (US)</div></div>
+      <div class="rstat"><div class="rstat-val">15</div><div class="rstat-lbl">Communities scraped</div></div>
+      <div class="rstat"><div class="rstat-val">81</div><div class="rstat-lbl">Keywords researched</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROPORTION BAR -->
+<div class="prop-wrap" style="margin-top:20px">
+  <div style="font-size:9px;color:#374151;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;text-align:center">Post volume distribution across segments</div>
+  <div class="prop-bar">
+    <div class="pb-seg" style="flex:54;background:#3B82F6;opacity:0.7" title="Stuck & Drifting 54%"></div>
+    <div class="pb-seg" style="flex:15;background:#8B5CF6;opacity:0.7" title="Lost Purpose 15%"></div>
+    <div class="pb-seg" style="flex:13;background:#6366F1;opacity:0.7" title="Stuck/Stagnant 13%"></div>
+    <div class="pb-seg" style="flex:9;background:#F97316;opacity:0.7" title="No Discipline 9%"></div>
+    <div class="pb-seg" style="flex:4;background:#EF4444;opacity:0.7" title="Post-Setback 4%"></div>
+    <div class="pb-seg" style="flex:4;background:#10B981;opacity:0.7" title="Active Builder 4%"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;font-size:9px;color:#4B5563;margin-top:4px;flex-wrap:wrap;gap:6px">
+    <span style="color:#3B82F6">■ Stuck & Drifting 54%</span>
+    <span style="color:#8B5CF6">■ Lost Purpose 15%</span>
+    <span style="color:#6366F1">■ Stagnant 13%</span>
+    <span style="color:#F97316">■ Discipline Breakdown 9%</span>
+    <span style="color:#EF4444">■ Post-Setback 4%</span>
+    <span style="color:#10B981">■ Active Builder 4%</span>
+  </div>
+</div>
+
+<!-- SEGMENT LABEL -->
+<div class="divider-label">Primary segments — ordered by total engagement signal</div>
+
+<!-- 4 PRIMARY SEGMENTS -->
+<div class="seg-grid">
+
+  <!-- SEGMENT 1: STUCK -->
+  <div class="seg-card" style="border-top-color:#3B82F6">
+    <div class="seg-head">
+      <div class="seg-tag" style="color:#3B82F6">Segment 1 · 54% of posts</div>
+      <div class="seg-name">Stuck &amp; Drifting</div>
+      <div class="seg-pain">"I feel like I'm wasting my life but I don't know how to get out of this pattern."</div>
+    </div>
+    <div class="seg-stats">
+      <div class="ss">
+        <div class="ss-val" style="color:#3B82F6">638</div>
+        <div class="ss-lbl">posts</div>
+      </div>
+      <div class="ss">
+        <div class="ss-val">55</div>
+        <div class="ss-lbl">avg comments</div>
+      </div>
+      <div class="ss">
+        <div class="ss-val">145K</div>
+        <div class="ss-lbl">total upvotes</div>
+      </div>
+    </div>
+    <div class="sub-label">Core pain flavors</div>
+    <ul class="sub-list">
+      <li>Wasting potential <span class="sub-count">85 posts</span><br><span style="font-size:9.5px;color:#6B7280">"Not living up to what I know I'm capable of"</span></li>
+      <li>Life on autopilot <span class="sub-count">91 posts</span><br><span style="font-size:9.5px;color:#6B7280">"Coasting. Comfortable. But empty inside."</span></li>
+      <li>Falling behind peers <span class="sub-count">68 posts</span><br><span style="font-size:9.5px;color:#6B7280">"Everyone around me is moving forward. I'm not."</span></li>
+    </ul>
+    <div class="kw-label">Search demand validation</div>
+    <div class="kw-chips">
+      <div class="kw-chip" style="border-color:rgba(59,130,246,0.3)">self improvement <span style="color:#3B82F6">165K/mo</span></div>
+      <div class="kw-chip" style="border-color:rgba(59,130,246,0.3)">how to improve yourself <span style="color:#3B82F6">14.8K</span></div>
+      <div class="kw-chip" style="border-color:rgba(59,130,246,0.3)">how to change your life <span style="color:#3B82F6">18.1K</span></div>
+      <div class="kw-chip" style="border-color:rgba(59,130,246,0.3)">how to level up in life <span style="color:#3B82F6">8.1K ↑</span></div>
+    </div>
+  </div>
+
+  <!-- SEGMENT 2: LOST PURPOSE -->
+  <div class="seg-card" style="border-top-color:#8B5CF6">
+    <div class="seg-head">
+      <div class="seg-tag" style="color:#8B5CF6">Segment 2 · 15% of posts · highest avg engagement</div>
+      <div class="seg-name">Lost Purpose<span class="urgency urg-high">High urgency</span></div>
+      <div class="seg-pain">"I don't know who I'm supposed to be as a man. Nothing motivates me. I feel directionless."</div>
+    </div>
+    <div class="seg-stats">
+      <div class="ss">
+        <div class="ss-val" style="color:#8B5CF6">176</div>
+        <div class="ss-lbl">posts</div>
+      </div>
+      <div class="ss">
+        <div class="ss-val">73</div>
+        <div class="ss-lbl">avg comments ↑</div>
+      </div>
+      <div class="ss">
+        <div class="ss-val">431</div>
+        <div class="ss-lbl">avg score ↑</div>
+      </div>
+    </div>
+    <div class="sub-label">Core pain flavors</div>
+    <ul class="sub-list">
+      <li>No north star <span class="sub-count">83 posts</span><br><span style="font-size:9.5px;color:#6B7280">"My life is going nowhere. I have no goals."</span></li>
+      <li>Masculine identity crisis <span class="sub-count">~52 posts</span><br><span style="font-size:9.5px;color:#6B7280">"What does it even mean to be a man today?"</span></li>
+      <li>Empty despite external success <span class="sub-count">~41 posts</span><br><span style="font-size:9.5px;color:#6B7280">"I have a good job, apartment — still feel nothing."</span></li>
+    </ul>
+    <div class="kw-label">Search demand validation</div>
+    <div class="kw-chips">
+      <div class="kw-chip" style="border-color:rgba(139,92,246,0.3)">high value man <span style="color:#8B5CF6">60K/mo ↑</span></div>
+      <div class="kw-chip" style="border-color:rgba(139,92,246,0.3)">stoicism <span style="color:#8B5CF6">74K ↑</span></div>
+      <div class="kw-chip" style="border-color:rgba(139,92,246,0.3)">how to find your purpose <span style="color:#8B5CF6">9.9K ↑</span></div>
+      <div class="kw-chip" style="border-color:rgba(139,92,246,0.3)">what is masculinity <span style="color:#8B5CF6">5.4K</span></div>
+    </div>
+  </div>
+
+  <!-- SEGMENT 3: DISCIPLINE BREAKDOWN -->
+  <div class="seg-card" style="border-top-color:#F97316">
+    <div class="seg-head">
+      <div class="seg-tag" style="color:#F97316">Segment 3 · 9% of posts · rising keyword demand</div>
+      <div class="seg-name">Discipline Breakdown<span class="urgency urg-med">Medium urgency</span></div>
+      <div class="seg-pain">"I know exactly what I should do. I just can't make myself do it consistently."</div>
+    </div>
+    <div class="seg-stats">
+      <div class="ss">
+        <div class="ss-val" style="color:#F97316">101</div>
+        <div class="ss-lbl">posts</div>
+      </div>
+      <div class="ss">
+        <div class="ss-val">32</div>
+        <div class="ss-lbl">avg comments</div>
+      </div>
+      <div class="ss">
+        <div class="ss-val">201</div>
+        <div class="ss-lbl">avg score</div>
+      </div>
+    </div>
+    <div class="sub-label">Core pain flavors</div>
+    <ul class="sub-list">
+      <li>Can't build habits <span class="sub-count">17 posts</span><br><span style="font-size:9.5px;color:#6B7280">"I start strong. By week 2 it's dead."</span></li>
+      <li>Dopamine / distraction trap <span class="sub-count">~45 posts</span><br><span style="font-size:9.5px;color:#6B7280">"Phone, games, porn — killing my drive."</span></li>
+      <li>Self-sabotage loop <span class="sub-count">19 posts</span><br><span style="font-size:9.5px;color:#6B7280">"Every time I get momentum I undermine myself."</span></li>
+    </ul>
+    <div class="kw-label">Search demand validation</div>
+    <div class="kw-chips">
+      <div class="kw-chip" style="border-color:rgba(249,115,22,0.3)">morning routine <span style="color:#F97316">90.5K/mo</span></div>
+      <div class="kw-chip" style="border-color:rgba(249,115,22,0.3)">how to be disciplined <span style="color:#F97316">14.8K</span></div>
+      <div class="kw-chip" style="border-color:rgba(249,115,22,0.3)">mental toughness <span style="color:#F97316">14.8K</span></div>
+      <div class="kw-chip" style="border-color:rgba(249,115,22,0.3)">growth mindset <span style="color:#F97316">22.2K</span></div>
+    </div>
+  </div>
+
+  <!-- SEGMENT 4: POST-SETBACK -->
+  <div class="seg-card" style="border-top-color:#EF4444">
+    <div class="seg-head">
+      <div class="seg-tag" style="color:#EF4444">Segment 4 · 4% of posts · highest motivation to act</div>
+      <div class="seg-name">Post-Setback Reinvention<span class="urgency urg-high">Highest urgency</span></div>
+      <div class="seg-pain">"My life broke apart. Divorce, job loss, rock bottom. I have to rebuild from zero."</div>
+    </div>
+    <div class="seg-stats">
+      <div class="ss">
+        <div class="ss-val" style="color:#EF4444">57</div>
+        <div class="ss-lbl">posts</div>
+      </div>
+      <div class="ss">
+        <div class="ss-val">64</div>
+        <div class="ss-lbl">avg comments ↑</div>
+      </div>
+      <div class="ss">
+        <div class="ss-val">158</div>
+        <div class="ss-lbl">avg score</div>
+      </div>
+    </div>
+    <div class="sub-label">Core pain flavors</div>
+    <ul class="sub-list">
+      <li>Relationship collapse <span class="sub-count">~23 posts</span><br><span style="font-size:9.5px;color:#6B7280">"Wife left. 10 years. Where do I even start?"</span></li>
+      <li>Wasted years regret <span class="sub-count">~21 posts</span><br><span style="font-size:9.5px;color:#6B7280">"I'm 30. I've done nothing with my 20s."</span></li>
+      <li>Rock bottom trigger <span class="sub-count">~13 posts</span><br><span style="font-size:9.5px;color:#6B7280">"I ruined my life at 24. Is it too late?"</span></li>
+    </ul>
+    <div class="kw-label">Search demand validation</div>
+    <div class="kw-chips">
+      <div class="kw-chip" style="border-color:rgba(239,68,68,0.3)">how to reinvent yourself <span style="color:#EF4444">5.4K ↑</span></div>
+      <div class="kw-chip" style="border-color:rgba(239,68,68,0.3)">how to change your life <span style="color:#EF4444">18.1K</span></div>
+      <div class="kw-chip" style="border-color:rgba(239,68,68,0.3)">personal development <span style="color:#EF4444">33.1K</span></div>
+      <div class="kw-chip" style="border-color:rgba(239,68,68,0.3)">how to be a better man <span style="color:#EF4444">6.6K ↑</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ACTIVE BUILDER -->
+<div class="active-wrap">
+  <div class="active-card">
+    <div style="flex:1;min-width:220px">
+      <div class="active-tag">Segment 5 · 4% of posts · highest buyer intent</div>
+      <div class="active-name">Active Builder — Already on the Path</div>
+      <div class="active-desc">"Already doing the work. Looking to optimize, go deeper, move faster."
+        <span class="urgency urg-low" style="margin-left:6px">Low urgency · High intent</span>
+      </div>
+      <div class="active-kws" style="margin-top:10px">
+        <div class="kw-chip" style="border-color:rgba(16,185,129,0.3)">financial independence <span style="color:#10B981">40.5K/mo ↑</span></div>
+        <div class="kw-chip" style="border-color:rgba(16,185,129,0.3)">stoicism <span style="color:#10B981">74K ↑</span></div>
+        <div class="kw-chip" style="border-color:rgba(16,185,129,0.3)">leadership skills <span style="color:#10B981">27.1K</span></div>
+        <div class="kw-chip" style="border-color:rgba(16,185,129,0.3)">passive income <span style="color:#10B981">90.5K</span></div>
+        <div class="kw-chip" style="border-color:rgba(16,185,129,0.3)">how to be more assertive <span style="color:#10B981">9.9K ↑</span></div>
+      </div>
+    </div>
+    <div class="active-stats">
+      <div class="as"><div class="as-val">44</div><div class="as-lbl">posts</div></div>
+      <div class="as"><div class="as-val">41</div><div class="as-lbl">avg comments</div></div>
+      <div class="as"><div class="as-val">324</div><div class="as-lbl">avg score</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- STRATEGIC INSIGHTS STRIP -->
+<div class="insight-wrap">
+  <div class="insight-title">Strategic reading — what the data signals</div>
+  <div class="insight-grid">
+
+    <div class="insight-card" style="border-color:rgba(59,130,246,0.2)">
+      <h4 style="color:#3B82F6">Biggest audience, lowest urgency</h4>
+      <p>The <strong>Stuck &amp; Drifting</strong> segment is 54% of the market but has chronic, diffuse pain — they feel it but aren't in crisis. Messaging needs to make the status quo feel more painful than the change. Loss aversion framing works here.</p>
+    </div>
+
+    <div class="insight-card" style="border-color:rgba(139,92,246,0.2)">
+      <h4 style="color:#8B5CF6">Most emotionally engaged</h4>
+      <p><strong>Lost Purpose</strong> posts spark 73 comments on average — the highest of any segment. These men are searching for identity, not tactics. They respond to frameworks that help them understand who they want to become, not checklists.</p>
+    </div>
+
+    <div class="insight-card" style="border-color:rgba(249,115,22,0.2)">
+      <h4 style="color:#F97316">Rising keyword signal</h4>
+      <p><strong>Discipline Breakdown</strong> is the most solution-oriented segment — they know the problem and are actively looking for systems. Keywords like "morning routine" (90K/mo), "how to be disciplined" (14.8K) are stable/rising. Highest buyer intent after Active Builders.</p>
+    </div>
+
+    <div class="insight-card" style="border-color:rgba(239,68,68,0.2)">
+      <h4 style="color:#EF4444">Best conversion trigger</h4>
+      <p><strong>Post-Setback</strong> men are in crisis and ready to change now. Despite being only 4% of posts, they generate 64 avg comments — second highest. A life event (divorce, 30th birthday, job loss) has already done the convincing. They just need the path.</p>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

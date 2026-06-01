@@ -1,0 +1,21 @@
+# Logs
+*.log
+
+# Large raw data CSVs (keep processed/output ones, skip huge raw files)
+male_charisma_charm.csv
+male_dating_threads.csv
+male_dating_comments.csv
+anxious_comments.csv
+avoidant_comments.csv
+disorganized_comments.csv
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# macOS
+.DS_Store
+
+# Env
+.env

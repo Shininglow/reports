@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>High Value Man — Keyword Search Demand</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#080c14;font-family:'Segoe UI',system-ui,sans-serif;color:#D1D5DB;padding-bottom:60px}
+
+h1{text-align:center;color:#F59E0B;font-size:17px;font-weight:700;letter-spacing:3px;
+    text-transform:uppercase;padding:30px 0 6px}
+.subtitle{text-align:center;color:#374151;font-size:11px;letter-spacing:1.5px;
+           text-transform:uppercase;margin-bottom:24px}
+
+/* Controls */
+.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+           padding:0 40px 20px;max-width:1500px;margin:0 auto}
+.controls button{
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);
+  color:#9CA3AF;font-size:11px;padding:7px 14px;border-radius:6px;cursor:pointer;
+  transition:all 0.15s;letter-spacing:0.3px
+}
+.controls button:hover,.controls button.active{
+  background:rgba(255,255,255,0.1);color:#F3F4F6;border-color:rgba(255,255,255,0.25)
+}
+.controls button.active{font-weight:600}
+
+/* Table */
+.tbl-wrap{max-width:1360px;margin:0 auto;padding:0 20px;overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.08)}
+th{padding:11px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;
+    letter-spacing:0.7px;color:#6B7280;text-align:left;cursor:pointer;white-space:nowrap}
+th:hover{color:#9CA3AF}
+th .sort-arrow{margin-left:4px;opacity:0.4}
+th.sorted{color:#F59E0B}
+th.sorted .sort-arrow{opacity:1}
+
+tbody tr{border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.1s}
+tbody tr:hover{background:rgba(255,255,255,0.03)}
+tbody tr.hidden{display:none}
+
+td{padding:10px 14px;vertical-align:middle;font-size:11px}
+
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;
+      margin-right:8px;flex-shrink:0;vertical-align:middle}
+.td-cluster{font-size:10.5px;color:#9CA3AF;white-space:nowrap}
+.td-keyword{font-size:12px;color:#E5E7EB;max-width:300px}
+.fire{margin-left:5px;font-size:12px}
+
+/* Volume bar */
+.bar-wrap{display:flex;align-items:center;gap:10px;min-width:180px}
+.bar{height:7px;border-radius:4px;min-width:2px;opacity:0.85;flex-shrink:0}
+.bar-val{font-size:11.5px;font-weight:600;color:#E5E7EB;white-space:nowrap}
+
+/* Peak */
+.peak-mo{font-size:10px;color:#6B7280}
+
+/* Badges */
+.badge{display:inline-block;padding:3px 9px;border-radius:4px;
+        font-size:10px;font-weight:600;letter-spacing:0.3px;white-space:nowrap}
+.badge-up{background:rgba(16,185,129,0.15);color:#34D399}
+.badge-st{background:rgba(59,130,246,0.15);color:#60A5FA}
+.badge-dn{background:rgba(239,68,68,0.15);color:#F87171}
+.badge-na{background:rgba(255,255,255,0.06);color:#6B7280}
+
+/* Stats bar */
+.stats{display:flex;justify-content:center;gap:40px;padding:0 0 26px;flex-wrap:wrap}
+.stat{text-align:center}
+.stat-val{font-size:24px;font-weight:700;color:#F59E0B}
+.stat-lbl{font-size:10px;color:#6B7280;letter-spacing:0.5px;text-transform:uppercase;margin-top:3px}
+
+/* Search */
+.search-wrap{text-align:center;margin-bottom:16px}
+#search{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+         color:#E5E7EB;font-size:12px;padding:8px 16px;border-radius:7px;
+         width:280px;outline:none}
+#search::placeholder{color:#4B5563}
+#search:focus{border-color:rgba(245,158,11,0.5)}
+</style>
+</head>
+<body>
+<h1>High Value Man — Search Demand Map</h1>
+<p class="subtitle">Monthly search volume estimates · US market · 81 keywords · market size validation</p>
+
+<div class="stats">
+  <div class="stat"><div class="stat-val">81</div><div class="stat-lbl">Keywords</div></div>
+  <div class="stat"><div class="stat-val">2M</div><div class="stat-lbl">Total monthly searches</div></div>
+  <div class="stat"><div class="stat-val">21</div><div class="stat-lbl">20K+/mo keywords</div></div>
+  <div class="stat"><div class="stat-val">27</div><div class="stat-lbl">Rising trend</div></div>
+  <div class="stat"><div class="stat-val">40</div><div class="stat-lbl">Stable demand</div></div>
+  <div class="stat"><div class="stat-val">14</div><div class="stat-lbl">Declining</div></div>
+</div>
+
+<div class="search-wrap">
+  <input id="search" type="text" placeholder="Filter keywords...">
+</div>
+
+<div class="controls">
+  <button class="active" data-filter="all">All clusters</button>
+  <button data-filter="Identity & Archetypes">Identity & Archetypes</button><button data-filter="Charisma & Confidence">Charisma & Confidence</button><button data-filter="Mindset & Discipline">Mindset & Discipline</button><button data-filter="Status & Success">Status & Success</button><button data-filter="Social Dynamics">Social Dynamics</button><button data-filter="Physical Presence">Physical Presence</button><button data-filter="Attraction & Dating">Attraction & Dating</button><button data-filter="Self-Improvement">Self-Improvement</button><button data-filter="Masculinity & Culture">Masculinity & Culture</button>
+  <button data-trend="Rising">↑ Rising only</button>
+  <button data-trend="Stable">→ Stable only</button>
+  <button data-trend="Declining">↓ Declining only</button>
+</div>
+
+<div class="tbl-wrap">
+<table id="tbl">
+  <thead>
+    <tr>
+      <th onclick="sortBy(0)">Cluster <span class="sort-arrow">↕</span></th>
+      <th onclick="sortBy(1)">Keyword <span class="sort-arrow">↕</span></th>
+      <th onclick="sortBy(2)" class="sorted">Monthly Searches (US) <span class="sort-arrow">↓</span></th>
+      <th onclick="sortBy(3)">Peak Month <span class="sort-arrow">↕</span></th>
+      <th onclick="sortBy(4)">12-Month Trend <span class="sort-arrow">↕</span></th>
+    </tr>
+  </thead>
+  <tbody id="tbody">
+    
+    <tr data-cluster="Attraction & Dating" data-trend="Rising" data-msv="22200" style="--clr:#EC4899">
+      <td class="td-cluster"><span class="dot" style="background:#EC4899"></span>Attraction & Dating</td>
+      <td class="td-keyword">how to get a girlfriend<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:4%;background:var(--clr)"></div><span class="bar-val">22.2K/mo</span></div></td>
+      <td><span class="peak-mo">May 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Attraction & Dating" data-trend="Declining" data-msv="14800" style="--clr:#EC4899">
+      <td class="td-cluster"><span class="dot" style="background:#EC4899"></span>Attraction & Dating</td>
+      <td class="td-keyword">how to attract women</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:2%;background:var(--clr)"></div><span class="bar-val">14.8K/mo</span></div></td>
+      <td><span class="peak-mo">Sep 2025</span></td>
+      <td><span class="badge badge-dn">↓ Declining</span></td>
+    </tr>
+    <tr data-cluster="Attraction & Dating" data-trend="Stable" data-msv="9900" style="--clr:#EC4899">
+      <td class="td-cluster"><span class="dot" style="background:#EC4899"></span>Attraction & Dating</td>
+      <td class="td-keyword">dating advice for men</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">9.9K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Attraction & Dating" data-trend="Stable" data-msv="8100" style="--clr:#EC4899">
+      <td class="td-cluster"><span class="dot" style="background:#EC4899"></span>Attraction & Dating</td>
+      <td class="td-keyword">how to talk to women</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">8.1K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Attraction & Dating" data-trend="Stable" data-msv="6600" style="--clr:#EC4899">
+      <td class="td-cluster"><span class="dot" style="background:#EC4899"></span>Attraction & Dating</td>
+      <td class="td-keyword">what women find attractive in men</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">6.6K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Attraction & Dating" data-trend="Rising" data-msv="6600" style="--clr:#EC4899">
+      <td class="td-cluster"><span class="dot" style="background:#EC4899"></span>Attraction & Dating</td>
+      <td class="td-keyword">dating tips for men<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">6.6K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Attraction & Dating" data-trend="Rising" data-msv="6600" style="--clr:#EC4899">
+      <td class="td-cluster"><span class="dot" style="background:#EC4899"></span>Attraction & Dating</td>
+      <td class="td-keyword">how to be more attractive to women<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">6.6K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Attraction & Dating" data-trend="Rising" data-msv="4400" style="--clr:#EC4899">
+      <td class="td-cluster"><span class="dot" style="background:#EC4899"></span>Attraction & Dating</td>
+      <td class="td-keyword">red pill dating<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">4.4K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Attraction & Dating" data-trend="Rising" data-msv="3600" style="--clr:#EC4899">
+      <td class="td-cluster"><span class="dot" style="background:#EC4899"></span>Attraction & Dating</td>
+      <td class="td-keyword">masculine energy attraction<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">3.6K/mo</span></div></td>
+      <td><span class="peak-mo">Mar 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Charisma & Confidence" data-trend="Stable" data-msv="27100" style="--clr:#6366F1">
+      <td class="td-cluster"><span class="dot" style="background:#6366F1"></span>Charisma & Confidence</td>
+      <td class="td-keyword">how to be more confident</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:4%;background:var(--clr)"></div><span class="bar-val">27.1K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Charisma & Confidence" data-trend="Stable" data-msv="14800" style="--clr:#6366F1">
+      <td class="td-cluster"><span class="dot" style="background:#6366F1"></span>Charisma & Confidence</td>
+      <td class="td-keyword">how to build confidence</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:2%;background:var(--clr)"></div><span class="bar-val">14.8K/mo</span></div></td>
+      <td><span class="peak-mo">Mar 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Charisma & Confidence" data-trend="Rising" data-msv="12100" style="--clr:#6366F1">
+      <td class="td-cluster"><span class="dot" style="background:#6366F1"></span>Charisma & Confidence</td>
+      <td class="td-keyword">how to talk to people<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:2%;background:var(--clr)"></div><span class="bar-val">12.1K/mo</span></div></td>
+      <td><span class="peak-mo">Mar 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Charisma & Confidence" data-trend="Rising" data-msv="8100" style="--clr:#6366F1">
+      <td class="td-cluster"><span class="dot" style="background:#6366F1"></span>Charisma & Confidence</td>
+      <td class="td-keyword">how to be more charismatic<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">8.1K/mo</span></div></td>
+      <td><span class="peak-mo">Mar 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Charisma & Confidence" data-trend="Declining" data-msv="6600" style="--clr:#6366F1">
+      <td class="td-cluster"><span class="dot" style="background:#6366F1"></span>Charisma & Confidence</td>
+      <td class="td-keyword">how to be outgoing</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">6.6K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-dn">↓ Declining</span></td>
+    </tr>
+    <tr data-cluster="Charisma & Confidence" data-trend="Rising" data-msv="5400" style="--clr:#6366F1">
+      <td class="td-cluster"><span class="dot" style="background:#6366F1"></span>Charisma & Confidence</td>
+      <td class="td-keyword">how to be charming<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">5.4K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Charisma & Confidence" data-trend="Rising" data-msv="4400" style="--clr:#6366F1">
+      <td class="td-cluster"><span class="dot" style="background:#6366F1"></span>Charisma & Confidence</td>
+      <td class="td-keyword">how to be more likeable<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">4.4K/mo</span></div></td>
+      <td><span class="peak-mo">May 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Charisma & Confidence" data-trend="Stable" data-msv="4400" style="--clr:#6366F1">
+      <td class="td-cluster"><span class="dot" style="background:#6366F1"></span>Charisma & Confidence</td>
+      <td class="td-keyword">social confidence</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">4.4K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Charisma & Confidence" data-trend="Rising" data-msv="3600" style="--clr:#6366F1">
+      <td class="td-cluster"><span class="dot" style="background:#6366F1"></span>Charisma & Confidence</td>
+      <td class="td-keyword">self confidence tips<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">3.6K/mo</span></div></td>
+      <td><span class="peak-mo">Nov 2025</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Identity & Archetypes" data-trend="Declining" data-msv="110000" style="--clr:#F59E0B">
+      <td class="td-cluster"><span class="dot" style="background:#F59E0B"></span>Identity & Archetypes</td>
+      <td class="td-keyword">sigma male</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:20%;background:var(--clr)"></div><span class="bar-val">110K/mo</span></div></td>
+      <td><span class="peak-mo">—</span></td>
+      <td><span class="badge badge-dn">↓ Declining</span></td>
+    </tr>
+    <tr data-cluster="Identity & Archetypes" data-trend="Rising" data-msv="60500" style="--clr:#F59E0B">
+      <td class="td-cluster"><span class="dot" style="background:#F59E0B"></span>Identity & Archetypes</td>
+      <td class="td-keyword">high value man<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:11%;background:var(--clr)"></div><span class="bar-val">60.5K/mo</span></div></td>
+      <td><span class="peak-mo">—</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Identity & Archetypes" data-trend="Declining" data-msv="40500" style="--clr:#F59E0B">
+      <td class="td-cluster"><span class="dot" style="background:#F59E0B"></span>Identity & Archetypes</td>
+      <td class="td-keyword">alpha male</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:7%;background:var(--clr)"></div><span class="bar-val">40.5K/mo</span></div></td>
+      <td><span class="peak-mo">—</span></td>
+      <td><span class="badge badge-dn">↓ Declining</span></td>
+    </tr>
+    <tr data-cluster="Identity & Archetypes" data-trend="Declining" data-msv="22200" style="--clr:#F59E0B">
+      <td class="td-cluster"><span class="dot" style="background:#F59E0B"></span>Identity & Archetypes</td>
+      <td class="td-keyword">sigma male meaning</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:4%;background:var(--clr)"></div><span class="bar-val">22.2K/mo</span></div></td>
+      <td><span class="peak-mo">Jun 2025</span></td>
+      <td><span class="badge badge-dn">↓ Declining</span></td>
+    </tr>
+    <tr data-cluster="Identity & Archetypes" data-trend="Stable" data-msv="18100" style="--clr:#F59E0B">
+      <td class="td-cluster"><span class="dot" style="background:#F59E0B"></span>Identity & Archetypes</td>
+      <td class="td-keyword">beta male</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:3%;background:var(--clr)"></div><span class="bar-val">18.1K/mo</span></div></td>
+      <td><span class="peak-mo">Mar 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Identity & Archetypes" data-trend="Stable" data-msv="14800" style="--clr:#F59E0B">
+      <td class="td-cluster"><span class="dot" style="background:#F59E0B"></span>Identity & Archetypes</td>
+      <td class="td-keyword">how to be an alpha male</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:2%;background:var(--clr)"></div><span class="bar-val">14.8K/mo</span></div></td>
+      <td><span class="peak-mo">—</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Identity & Archetypes" data-trend="Rising" data-msv="9900" style="--clr:#F59E0B">
+      <td class="td-cluster"><span class="dot" style="background:#F59E0B"></span>Identity & Archetypes</td>
+      <td class="td-keyword">alpha male traits<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">9.9K/mo</span></div></td>
+      <td><span class="peak-mo">Aug 2025</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Identity & Archetypes" data-trend="Stable" data-msv="6600" style="--clr:#F59E0B">
+      <td class="td-cluster"><span class="dot" style="background:#F59E0B"></span>Identity & Archetypes</td>
+      <td class="td-keyword">what is alpha male</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">6.6K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Identity & Archetypes" data-trend="Rising" data-msv="5400" style="--clr:#F59E0B">
+      <td class="td-cluster"><span class="dot" style="background:#F59E0B"></span>Identity & Archetypes</td>
+      <td class="td-keyword">high value man traits<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">5.4K/mo</span></div></td>
+      <td><span class="peak-mo">May 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Masculinity & Culture" data-trend="Declining" data-msv="550000" style="--clr:#F97316">
+      <td class="td-cluster"><span class="dot" style="background:#F97316"></span>Masculinity & Culture</td>
+      <td class="td-keyword">Andrew Tate</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:100%;background:var(--clr)"></div><span class="bar-val">550K+/mo</span></div></td>
+      <td><span class="peak-mo">Dec 2025</span></td>
+      <td><span class="badge badge-dn">↓ Declining</span></td>
+    </tr>
+    <tr data-cluster="Masculinity & Culture" data-trend="Stable" data-msv="27100" style="--clr:#F97316">
+      <td class="td-cluster"><span class="dot" style="background:#F97316"></span>Masculinity & Culture</td>
+      <td class="td-keyword">masculinity</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:4%;background:var(--clr)"></div><span class="bar-val">27.1K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Masculinity & Culture" data-trend="Stable" data-msv="27100" style="--clr:#F97316">
+      <td class="td-cluster"><span class="dot" style="background:#F97316"></span>Masculinity & Culture</td>
+      <td class="td-keyword">red pill</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:4%;background:var(--clr)"></div><span class="bar-val">27.1K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Masculinity & Culture" data-trend="Stable" data-msv="22200" style="--clr:#F97316">
+      <td class="td-cluster"><span class="dot" style="background:#F97316"></span>Masculinity & Culture</td>
+      <td class="td-keyword">toxic masculinity</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:4%;background:var(--clr)"></div><span class="bar-val">22.2K/mo</span></div></td>
+      <td><span class="peak-mo">Sep 2025</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Masculinity & Culture" data-trend="Declining" data-msv="6600" style="--clr:#F97316">
+      <td class="td-cluster"><span class="dot" style="background:#F97316"></span>Masculinity & Culture</td>
+      <td class="td-keyword">how to be more masculine</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">6.6K/mo</span></div></td>
+      <td><span class="peak-mo">May 2026</span></td>
+      <td><span class="badge badge-dn">↓ Declining</span></td>
+    </tr>
+    <tr data-cluster="Masculinity & Culture" data-trend="Stable" data-msv="5400" style="--clr:#F97316">
+      <td class="td-cluster"><span class="dot" style="background:#F97316"></span>Masculinity & Culture</td>
+      <td class="td-keyword">what is masculinity</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">5.4K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Masculinity & Culture" data-trend="Rising" data-msv="4400" style="--clr:#F97316">
+      <td class="td-cluster"><span class="dot" style="background:#F97316"></span>Masculinity & Culture</td>
+      <td class="td-keyword">modern masculinity<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">4.4K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Masculinity & Culture" data-trend="Stable" data-msv="3600" style="--clr:#F97316">
+      <td class="td-cluster"><span class="dot" style="background:#F97316"></span>Masculinity & Culture</td>
+      <td class="td-keyword">masculine men</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">3.6K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Masculinity & Culture" data-trend="Rising" data-msv="3600" style="--clr:#F97316">
+      <td class="td-cluster"><span class="dot" style="background:#F97316"></span>Masculinity & Culture</td>
+      <td class="td-keyword">masculinity crisis<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">3.6K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Mindset & Discipline" data-trend="Stable" data-msv="90500" style="--clr:#8B5CF6">
+      <td class="td-cluster"><span class="dot" style="background:#8B5CF6"></span>Mindset & Discipline</td>
+      <td class="td-keyword">morning routine</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:16%;background:var(--clr)"></div><span class="bar-val">90.5K/mo</span></div></td>
+      <td><span class="peak-mo">Jan 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Mindset & Discipline" data-trend="Stable" data-msv="74000" style="--clr:#8B5CF6">
+      <td class="td-cluster"><span class="dot" style="background:#8B5CF6"></span>Mindset & Discipline</td>
+      <td class="td-keyword">stoicism</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:13%;background:var(--clr)"></div><span class="bar-val">74.0K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Mindset & Discipline" data-trend="Stable" data-msv="22200" style="--clr:#8B5CF6">
+      <td class="td-cluster"><span class="dot" style="background:#8B5CF6"></span>Mindset & Discipline</td>
+      <td class="td-keyword">growth mindset</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:4%;background:var(--clr)"></div><span class="bar-val">22.2K/mo</span></div></td>
+      <td><span class="peak-mo">Aug 2025</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Mindset & Discipline" data-trend="Stable" data-msv="14800" style="--clr:#8B5CF6">
+      <td class="td-cluster"><span class="dot" style="background:#8B5CF6"></span>Mindset & Discipline</td>
+      <td class="td-keyword">how to be disciplined</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:2%;background:var(--clr)"></div><span class="bar-val">14.8K/mo</span></div></td>
+      <td><span class="peak-mo">Mar 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Mindset & Discipline" data-trend="Stable" data-msv="14800" style="--clr:#8B5CF6">
+      <td class="td-cluster"><span class="dot" style="background:#8B5CF6"></span>Mindset & Discipline</td>
+      <td class="td-keyword">mental toughness</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:2%;background:var(--clr)"></div><span class="bar-val">14.8K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Mindset & Discipline" data-trend="Stable" data-msv="12100" style="--clr:#8B5CF6">
+      <td class="td-cluster"><span class="dot" style="background:#8B5CF6"></span>Mindset & Discipline</td>
+      <td class="td-keyword">stoic philosophy</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:2%;background:var(--clr)"></div><span class="bar-val">12.1K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Mindset & Discipline" data-trend="Rising" data-msv="9900" style="--clr:#8B5CF6">
+      <td class="td-cluster"><span class="dot" style="background:#8B5CF6"></span>Mindset & Discipline</td>
+      <td class="td-keyword">how to stop caring what people think<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">9.9K/mo</span></div></td>
+      <td><span class="peak-mo">May 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Mindset & Discipline" data-trend="Declining" data-msv="9900" style="--clr:#8B5CF6">
+      <td class="td-cluster"><span class="dot" style="background:#8B5CF6"></span>Mindset & Discipline</td>
+      <td class="td-keyword">how to be more motivated</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">9.9K/mo</span></div></td>
+      <td><span class="peak-mo">Mar 2026</span></td>
+      <td><span class="badge badge-dn">↓ Declining</span></td>
+    </tr>
+    <tr data-cluster="Mindset & Discipline" data-trend="Rising" data-msv="4400" style="--clr:#8B5CF6">
+      <td class="td-cluster"><span class="dot" style="background:#8B5CF6"></span>Mindset & Discipline</td>
+      <td class="td-keyword">discipline habits<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">4.4K/mo</span></div></td>
+      <td><span class="peak-mo">Mar 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Physical Presence" data-trend="Rising" data-msv="14800" style="--clr:#EF4444">
+      <td class="td-cluster"><span class="dot" style="background:#EF4444"></span>Physical Presence</td>
+      <td class="td-keyword">how to improve posture<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:2%;background:var(--clr)"></div><span class="bar-val">14.8K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Physical Presence" data-trend="Rising" data-msv="9900" style="--clr:#EF4444">
+      <td class="td-cluster"><span class="dot" style="background:#EF4444"></span>Physical Presence</td>
+      <td class="td-keyword">men's style tips<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">9.9K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Physical Presence" data-trend="Declining" data-msv="8100" style="--clr:#EF4444">
+      <td class="td-cluster"><span class="dot" style="background:#EF4444"></span>Physical Presence</td>
+      <td class="td-keyword">body language tips</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">8.1K/mo</span></div></td>
+      <td><span class="peak-mo">May 2026</span></td>
+      <td><span class="badge badge-dn">↓ Declining</span></td>
+    </tr>
+    <tr data-cluster="Physical Presence" data-trend="Rising" data-msv="6600" style="--clr:#EF4444">
+      <td class="td-cluster"><span class="dot" style="background:#EF4444"></span>Physical Presence</td>
+      <td class="td-keyword">men's grooming tips<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">6.6K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Physical Presence" data-trend="Rising" data-msv="6600" style="--clr:#EF4444">
+      <td class="td-cluster"><span class="dot" style="background:#EF4444"></span>Physical Presence</td>
+      <td class="td-keyword">how to dress well men<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">6.6K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Physical Presence" data-trend="Rising" data-msv="5400" style="--clr:#EF4444">
+      <td class="td-cluster"><span class="dot" style="background:#EF4444"></span>Physical Presence</td>
+      <td class="td-keyword">how to look more attractive men<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">5.4K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Physical Presence" data-trend="Stable" data-msv="4400" style="--clr:#EF4444">
+      <td class="td-cluster"><span class="dot" style="background:#EF4444"></span>Physical Presence</td>
+      <td class="td-keyword">how to look more masculine</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">4.4K/mo</span></div></td>
+      <td><span class="peak-mo">Nov 2025</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Physical Presence" data-trend="Declining" data-msv="4400" style="--clr:#EF4444">
+      <td class="td-cluster"><span class="dot" style="background:#EF4444"></span>Physical Presence</td>
+      <td class="td-keyword">how to be physically attractive</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">4.4K/mo</span></div></td>
+      <td><span class="peak-mo">Nov 2025</span></td>
+      <td><span class="badge badge-dn">↓ Declining</span></td>
+    </tr>
+    <tr data-cluster="Physical Presence" data-trend="Rising" data-msv="3600" style="--clr:#EF4444">
+      <td class="td-cluster"><span class="dot" style="background:#EF4444"></span>Physical Presence</td>
+      <td class="td-keyword">eye contact attraction<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">3.6K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Self-Improvement" data-trend="Stable" data-msv="165000" style="--clr:#06B6D4">
+      <td class="td-cluster"><span class="dot" style="background:#06B6D4"></span>Self-Improvement</td>
+      <td class="td-keyword">self improvement</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:30%;background:var(--clr)"></div><span class="bar-val">165K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Self-Improvement" data-trend="Stable" data-msv="33100" style="--clr:#06B6D4">
+      <td class="td-cluster"><span class="dot" style="background:#06B6D4"></span>Self-Improvement</td>
+      <td class="td-keyword">personal development</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:6%;background:var(--clr)"></div><span class="bar-val">33.1K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Self-Improvement" data-trend="Rising" data-msv="18100" style="--clr:#06B6D4">
+      <td class="td-cluster"><span class="dot" style="background:#06B6D4"></span>Self-Improvement</td>
+      <td class="td-keyword">how to change your life<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:3%;background:var(--clr)"></div><span class="bar-val">18.1K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Self-Improvement" data-trend="Stable" data-msv="14800" style="--clr:#06B6D4">
+      <td class="td-cluster"><span class="dot" style="background:#06B6D4"></span>Self-Improvement</td>
+      <td class="td-keyword">how to improve yourself</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:2%;background:var(--clr)"></div><span class="bar-val">14.8K/mo</span></div></td>
+      <td><span class="peak-mo">Mar 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Self-Improvement" data-trend="Rising" data-msv="8100" style="--clr:#06B6D4">
+      <td class="td-cluster"><span class="dot" style="background:#06B6D4"></span>Self-Improvement</td>
+      <td class="td-keyword">how to be the best version of yourself<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">8.1K/mo</span></div></td>
+      <td><span class="peak-mo">Aug 2025</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Self-Improvement" data-trend="Stable" data-msv="6600" style="--clr:#06B6D4">
+      <td class="td-cluster"><span class="dot" style="background:#06B6D4"></span>Self-Improvement</td>
+      <td class="td-keyword">how to be a better man</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">6.6K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Self-Improvement" data-trend="Declining" data-msv="5400" style="--clr:#06B6D4">
+      <td class="td-cluster"><span class="dot" style="background:#06B6D4"></span>Self-Improvement</td>
+      <td class="td-keyword">how to reinvent yourself</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">5.4K/mo</span></div></td>
+      <td><span class="peak-mo">Jun 2025</span></td>
+      <td><span class="badge badge-dn">↓ Declining</span></td>
+    </tr>
+    <tr data-cluster="Self-Improvement" data-trend="Rising" data-msv="4400" style="--clr:#06B6D4">
+      <td class="td-cluster"><span class="dot" style="background:#06B6D4"></span>Self-Improvement</td>
+      <td class="td-keyword">men self improvement<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">4.4K/mo</span></div></td>
+      <td><span class="peak-mo">Mar 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Self-Improvement" data-trend="Stable" data-msv="3600" style="--clr:#06B6D4">
+      <td class="td-cluster"><span class="dot" style="background:#06B6D4"></span>Self-Improvement</td>
+      <td class="td-keyword">self help for men</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">3.6K/mo</span></div></td>
+      <td><span class="peak-mo">Dec 2025</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Social Dynamics" data-trend="Stable" data-msv="27100" style="--clr:#3B82F6">
+      <td class="td-cluster"><span class="dot" style="background:#3B82F6"></span>Social Dynamics</td>
+      <td class="td-keyword">leadership skills</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:4%;background:var(--clr)"></div><span class="bar-val">27.1K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Social Dynamics" data-trend="Stable" data-msv="22200" style="--clr:#3B82F6">
+      <td class="td-cluster"><span class="dot" style="background:#3B82F6"></span>Social Dynamics</td>
+      <td class="td-keyword">social skills</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:4%;background:var(--clr)"></div><span class="bar-val">22.2K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Social Dynamics" data-trend="Stable" data-msv="18100" style="--clr:#3B82F6">
+      <td class="td-cluster"><span class="dot" style="background:#3B82F6"></span>Social Dynamics</td>
+      <td class="td-keyword">how to set boundaries</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:3%;background:var(--clr)"></div><span class="bar-val">18.1K/mo</span></div></td>
+      <td><span class="peak-mo">May 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Social Dynamics" data-trend="Declining" data-msv="9900" style="--clr:#3B82F6">
+      <td class="td-cluster"><span class="dot" style="background:#3B82F6"></span>Social Dynamics</td>
+      <td class="td-keyword">how to be more assertive</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">9.9K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-dn">↓ Declining</span></td>
+    </tr>
+    <tr data-cluster="Social Dynamics" data-trend="Stable" data-msv="9900" style="--clr:#3B82F6">
+      <td class="td-cluster"><span class="dot" style="background:#3B82F6"></span>Social Dynamics</td>
+      <td class="td-keyword">how to network</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">9.9K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Social Dynamics" data-trend="Stable" data-msv="6600" style="--clr:#3B82F6">
+      <td class="td-cluster"><span class="dot" style="background:#3B82F6"></span>Social Dynamics</td>
+      <td class="td-keyword">how to be a better leader</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">6.6K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Social Dynamics" data-trend="Declining" data-msv="6600" style="--clr:#3B82F6">
+      <td class="td-cluster"><span class="dot" style="background:#3B82F6"></span>Social Dynamics</td>
+      <td class="td-keyword">how to gain respect</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">6.6K/mo</span></div></td>
+      <td><span class="peak-mo">Mar 2026</span></td>
+      <td><span class="badge badge-dn">↓ Declining</span></td>
+    </tr>
+    <tr data-cluster="Social Dynamics" data-trend="Declining" data-msv="4400" style="--clr:#3B82F6">
+      <td class="td-cluster"><span class="dot" style="background:#3B82F6"></span>Social Dynamics</td>
+      <td class="td-keyword">how to be more dominant</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">4.4K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-dn">↓ Declining</span></td>
+    </tr>
+    <tr data-cluster="Social Dynamics" data-trend="Rising" data-msv="2900" style="--clr:#3B82F6">
+      <td class="td-cluster"><span class="dot" style="background:#3B82F6"></span>Social Dynamics</td>
+      <td class="td-keyword">how to command respect<span class='fire'>🔥</span></td>
+      <td><div class="bar-wrap"><div class="bar" style="width:0%;background:var(--clr)"></div><span class="bar-val">2.9K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-up">↑ Rising</span></td>
+    </tr>
+    <tr data-cluster="Status & Success" data-trend="Stable" data-msv="90500" style="--clr:#10B981">
+      <td class="td-cluster"><span class="dot" style="background:#10B981"></span>Status & Success</td>
+      <td class="td-keyword">passive income</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:16%;background:var(--clr)"></div><span class="bar-val">90.5K/mo</span></div></td>
+      <td><span class="peak-mo">Jul 2025</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Status & Success" data-trend="Stable" data-msv="40500" style="--clr:#10B981">
+      <td class="td-cluster"><span class="dot" style="background:#10B981"></span>Status & Success</td>
+      <td class="td-keyword">financial independence</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:7%;background:var(--clr)"></div><span class="bar-val">40.5K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Status & Success" data-trend="Stable" data-msv="27100" style="--clr:#10B981">
+      <td class="td-cluster"><span class="dot" style="background:#10B981"></span>Status & Success</td>
+      <td class="td-keyword">how to make more money</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:4%;background:var(--clr)"></div><span class="bar-val">27.1K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Status & Success" data-trend="Stable" data-msv="22200" style="--clr:#10B981">
+      <td class="td-cluster"><span class="dot" style="background:#10B981"></span>Status & Success</td>
+      <td class="td-keyword">how to build wealth</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:4%;background:var(--clr)"></div><span class="bar-val">22.2K/mo</span></div></td>
+      <td><span class="peak-mo">Apr 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Status & Success" data-trend="Stable" data-msv="18100" style="--clr:#10B981">
+      <td class="td-cluster"><span class="dot" style="background:#10B981"></span>Status & Success</td>
+      <td class="td-keyword">how to be successful</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:3%;background:var(--clr)"></div><span class="bar-val">18.1K/mo</span></div></td>
+      <td><span class="peak-mo">Mar 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Status & Success" data-trend="Stable" data-msv="12100" style="--clr:#10B981">
+      <td class="td-cluster"><span class="dot" style="background:#10B981"></span>Status & Success</td>
+      <td class="td-keyword">how to be productive</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:2%;background:var(--clr)"></div><span class="bar-val">12.1K/mo</span></div></td>
+      <td><span class="peak-mo">May 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Status & Success" data-trend="Stable" data-msv="9900" style="--clr:#10B981">
+      <td class="td-cluster"><span class="dot" style="background:#10B981"></span>Status & Success</td>
+      <td class="td-keyword">how to find your purpose</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">9.9K/mo</span></div></td>
+      <td><span class="peak-mo">Feb 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Status & Success" data-trend="Stable" data-msv="8100" style="--clr:#10B981">
+      <td class="td-cluster"><span class="dot" style="background:#10B981"></span>Status & Success</td>
+      <td class="td-keyword">how to level up in life</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">8.1K/mo</span></div></td>
+      <td><span class="peak-mo">May 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+    <tr data-cluster="Status & Success" data-trend="Stable" data-msv="6600" style="--clr:#10B981">
+      <td class="td-cluster"><span class="dot" style="background:#10B981"></span>Status & Success</td>
+      <td class="td-keyword">success mindset</td>
+      <td><div class="bar-wrap"><div class="bar" style="width:1%;background:var(--clr)"></div><span class="bar-val">6.6K/mo</span></div></td>
+      <td><span class="peak-mo">Jan 2026</span></td>
+      <td><span class="badge badge-st">→ Stable</span></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<script>
+// Filter buttons
+const btns = document.querySelectorAll('.controls button');
+btns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    btns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  });
+});
+
+document.getElementById('search').addEventListener('input', applyFilters);
+
+function applyFilters() {
+  const activeBtn = document.querySelector('.controls button.active');
+  const filter  = activeBtn?.dataset.filter;
+  const tFilter = activeBtn?.dataset.trend;
+  const q = document.getElementById('search').value.toLowerCase().trim();
+
+  document.querySelectorAll('#tbody tr').forEach(row => {
+    const kw = row.cells[1]?.innerText.toLowerCase() || '';
+    const matchCluster = !filter || filter === 'all' || row.dataset.cluster === filter;
+    const matchTrend   = !tFilter || row.dataset.trend === tFilter;
+    const matchSearch  = !q || kw.includes(q);
+    row.classList.toggle('hidden', !(matchCluster && matchTrend && matchSearch));
+  });
+}
+
+// Sort — table starts sorted by MSV (col 2, desc)
+let sortDir = {2: -1};
+function sortBy(col) {
+  const tbody = document.getElementById('tbody');
+  const rows  = Array.from(tbody.querySelectorAll('tr'));
+  const dir   = (sortDir[col] = -(sortDir[col] || -1));
+
+  document.querySelectorAll('th').forEach((th, i) => {
+    th.classList.toggle('sorted', i === col);
+    if (i === col) {
+      th.querySelector('.sort-arrow').textContent = dir === 1 ? '↑' : '↓';
+    } else {
+      th.querySelector('.sort-arrow').textContent = '↕';
+    }
+  });
+
+  rows.sort((a, b) => {
+    if (col === 2) {
+      // Sort by data-msv attribute for accurate numeric sort
+      const am = parseFloat(a.dataset.msv || 0);
+      const bm = parseFloat(b.dataset.msv || 0);
+      return dir * (am - bm);
+    }
+    const at = a.cells[col]?.innerText.trim() || '';
+    const bt = b.cells[col]?.innerText.trim() || '';
+    const an = parseFloat(at), bn = parseFloat(bt);
+    if (!isNaN(an) && !isNaN(bn)) return dir * (an - bn);
+    return dir * at.localeCompare(bt);
+  });
+  rows.forEach(r => tbody.appendChild(r));
+}
+
+// Auto-sort by MSV on load
+sortBy(2);
+</script>
+</body>
+</html>
