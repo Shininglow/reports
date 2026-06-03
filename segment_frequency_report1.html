@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lonely Men — Segment Frequency Analysis</title>
+<style>
+:root {
+  --bg: #0f172a; --surface: #1e293b; --surface2: #263148;
+  --border: #334155; --text: #e2e8f0; --muted: #94a3b8; --accent: #6366f1;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif;
+       font-size: 14px; line-height: 1.5; }
+
+.header { background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 60%);
+          border-bottom: 1px solid var(--border); padding: 32px 40px 24px; }
+.header h1 { font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.header p  { color: var(--muted); font-size: 14px; max-width: 700px; }
+.meta { display: flex; gap: 28px; margin-top: 18px; flex-wrap: wrap; }
+.meta-stat .n { font-size: 26px; font-weight: 700; color: var(--accent); }
+.meta-stat .l { font-size: 11px; text-transform: uppercase; letter-spacing:.08em; color: var(--muted); margin-top:2px; }
+
+/* Sidebar nav */
+.layout { display: flex; min-height: 100vh; }
+.sidebar { width: 220px; flex-shrink: 0; background: var(--surface);
+           border-right: 1px solid var(--border); position: sticky; top: 0; height: 100vh;
+           overflow-y: auto; padding: 20px 0; }
+.sidebar a { display: block; padding: 8px 20px; color: var(--muted); text-decoration: none;
+             font-size: 13px; border-left: 3px solid transparent; transition: all .15s; }
+.sidebar a:hover { color: var(--text); background: rgba(255,255,255,.03); }
+.sidebar a.active { color: var(--text); border-left-color: var(--accent); background: rgba(99,102,241,.08); }
+.sidebar .sec-label { padding: 14px 20px 6px; font-size: 11px; text-transform: uppercase;
+                      letter-spacing: .08em; color: #475569; font-weight: 600; }
+
+.content { flex: 1; padding: 28px 36px 80px; max-width: 1000px; }
+
+/* Section */
+.section { margin-bottom: 56px; scroll-margin-top: 24px; }
+.sec-header { display: flex; align-items: center; gap: 12px; margin-bottom: 6px;
+              padding-bottom: 14px; border-bottom: 2px solid var(--border); }
+.sec-stripe { width: 5px; height: 36px; border-radius: 3px; flex-shrink: 0; }
+.sec-title  { font-size: 20px; font-weight: 700; }
+.sec-total  { margin-left: auto; font-size: 13px; color: var(--muted); }
+.sec-desc   { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.7; }
+
+/* Segment card */
+.seg-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 20px; margin-bottom: 14px;
+}
+.seg-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.seg-name { font-size: 15px; font-weight: 600; flex: 1; }
+.seg-n    { font-size: 22px; font-weight: 700; color: var(--accent); min-width: 44px; text-align: right; line-height: 1.2; }
+.seg-n small { display: block; font-size: 10px; font-weight: 400; color: var(--muted); text-align: right; }
+.seg-desc { font-size: 12px; color: var(--muted); margin-bottom: 10px; font-style: italic; }
+
+.bar-bg   { background: var(--border); border-radius: 3px; height: 5px; margin-bottom: 10px; overflow: hidden; }
+.bar-fill { height: 5px; border-radius: 3px; }
+
+.sources  { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.src-reddit_post     { background: rgba(99,102,241,.15); color: #818cf8; padding: 2px 9px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+.src-comment         { background: rgba(52,211,153,.12); color: #34d399; padding: 2px 9px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+.src-book_review     { background: rgba(251,146,60,.12); color: #fb923c; padding: 2px 9px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+.src-quora           { background: rgba(248,113,113,.12); color: #f87171; padding: 2px 9px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+.src-youtube_comment { background: rgba(167,139,250,.12); color: #a78bfa; padding: 2px 9px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+
+.quotes-label { font-size: 11px; text-transform: uppercase; letter-spacing:.07em; color: var(--muted); margin-bottom: 8px; }
+.quote-list { display: flex; flex-direction: column; gap: 8px; }
+.quote-item {
+  background: rgba(255,255,255,.03); border-left: 3px solid var(--border);
+  padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 13px; color: #cbd5e1; line-height: 1.7;
+  font-style: italic;
+}
+.quote-item .q-src { font-size: 10px; color: var(--muted); font-style: normal; margin-top: 4px; text-transform: uppercase; letter-spacing:.06em; }
+
+.no-data { color: #475569; font-size: 13px; font-style: italic; padding: 8px 0; }
+
+/* Overview chart */
+.overview-section { margin-bottom: 56px; }
+.overview-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.overview-desc { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+.charts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+
+.chart-block { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+.chart-block-header { border-left: 4px solid; padding-left: 10px; margin-bottom: 16px; }
+.chart-block-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; display: block; margin-bottom: 3px; }
+.chart-winner { font-size: 13px; font-weight: 600; color: var(--text); }
+
+.chart-rows { display: flex; flex-direction: column; gap: 8px; }
+.chart-row { display: grid; grid-template-columns: 1fr 100px 32px; align-items: center; gap: 8px; }
+.chart-row-winner .chart-row-label { color: var(--text); font-weight: 600; }
+.chart-row-label { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chart-bar-wrap { background: var(--border); border-radius: 3px; height: 6px; overflow: hidden; }
+.chart-bar { height: 6px; border-radius: 3px; transition: width .3s ease; }
+.chart-row-n { font-size: 12px; font-weight: 600; color: var(--muted); text-align: right; }
+.chart-row-winner .chart-row-n { color: var(--text); }
+
+/* Intent distribution block */
+.intent-section { margin-bottom: 56px; }
+.intent-section h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.intent-section .intent-desc { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+.intent-grid { display: grid; grid-template-columns: 280px 1fr; gap: 32px; align-items: start; margin-bottom: 32px; }
+.donut-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.donut-legend { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+.donut-legend-item { display: flex; align-items: center; gap: 10px; }
+.dl-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+.dl-label { font-size: 12px; color: var(--muted); flex: 1; }
+.dl-n { font-size: 15px; font-weight: 700; }
+.dl-pct { font-size: 11px; color: var(--muted); }
+.intent-stats-col { display: flex; flex-direction: column; gap: 16px; }
+.intent-stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.intent-stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+.intent-stat-card .isn { font-size: 30px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+.intent-stat-card .isl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 2px; }
+.intent-stat-card .isp { font-size: 12px; color: var(--muted); }
+.intent-insight { background: rgba(99,102,241,.08); border: 1px solid rgba(99,102,241,.25); border-radius: 10px; padding: 14px 18px; font-size: 13px; color: #c7d2fe; line-height: 1.7; }
+.intent-insight strong { color: #a5b4fc; }
+
+/* Subreddit intent table */
+.isub-table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.isub-table-wrap table { width: 100%; border-collapse: collapse; }
+.isub-table-wrap th { background: var(--surface2); padding: 9px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing:.07em; color: var(--muted); font-weight: 600; }
+.isub-table-wrap td { padding: 9px 14px; border-top: 1px solid var(--border); }
+.isub-name { font-weight: 600; }
+.isub-total { font-weight: 700; color: var(--accent); text-align: right; white-space: nowrap; }
+.isub-bar-cell { width: 42%; }
+.isub-bar-track { display: flex; height: 7px; border-radius: 4px; overflow: hidden; background: var(--border); gap: 1px; }
+.isub-bar-seg { height: 100%; }
+.isub-ltr { color: #60a5fa; font-weight: 600; text-align: right; }
+.isub-sex { color: #f87171; font-weight: 600; text-align: right; }
+.isub-unk { color: #64748b; font-weight: 600; text-align: right; }
+
+/* Inline subreddit chart */
+.inline-subchart { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin-bottom: 20px; }
+.sleg { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.sleg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+.sleg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Lonely Men — Segment Frequency Analysis</h1>
+  <p>Each segment is drawn from Reddit posts, comments, Quora answers, YouTube comments, and book reviews. Counts reflect corpus frequency of organic mentions matching each segment's language patterns.</p>
+  <div class="meta">
+    <div class="meta-stat"><div class="n">96,546</div><div class="l">Records Scanned</div></div>
+    <div class="meta-stat"><div class="n">43,869</div><div class="l">New Reddit Threads</div></div>
+    <div class="meta-stat"><div class="n">5</div><div class="l">Dimensions</div></div>
+    <div class="meta-stat"><div class="n">29</div><div class="l">Segments</div></div>
+    <div class="meta-stat"><div class="n">1,902</div><div class="l">Top Segment Mentions</div></div>
+  </div>
+</div>
+
+<div class="layout">
+<nav class="sidebar">
+  <div class="sec-label">Overview</div>
+  <a href="#intent-dist">Intent Distribution</a>
+  <a href="#seg-overview">Segment Overview</a>
+  <div class="sec-label">By Need</div>
+  <a href="#need__get_noticed_desired">Get Noticed & Desired (General) <span style="float:right;color:#475569">160</span></a>
+  <a href="#need__get_chosen_loved">Get Chosen & Loved (by Someone S… <span style="float:right;color:#475569">833</span></a>
+  <div class="sec-label">By Fear</div>
+  <a href="#fear__stay_lonely">Stay Lonely Forever <span style="float:right;color:#475569">609</span></a>
+  <a href="#fear__shame_judgment">Get Shamed or Judged <span style="float:right;color:#475569">188</span></a>
+  <a href="#fear__rejection">Be Rejected <span style="float:right;color:#475569">130</span></a>
+  <a href="#fear__run_out_of_time">Run Out of Time <span style="float:right;color:#475569">57</span></a>
+  <a href="#fear__get_hurt">Get Hurt in a Relationship <span style="float:right;color:#475569">64</span></a>
+  <div class="sec-label">By Cause</div>
+  <a href="#cause__friendzoned">Unable to Build Connection — Fri… <span style="float:right;color:#475569">209</span></a>
+  <a href="#cause__nice_guy_no_spark">Unable to Build Connection — Nic… <span style="float:right;color:#475569">377</span></a>
+  <a href="#cause__clueless_flirting">Unable to Build Connection — No … <span style="float:right;color:#475569">149</span></a>
+  <a href="#cause__poor_looks">Not Attractive / Defeated — Poor… <span style="float:right;color:#475569">1032</span></a>
+  <a href="#cause__bad_character_unknown">Not Attractive / Defeated — Unkn… <span style="float:right;color:#475569">280</span></a>
+  <a href="#cause__fixated_one_woman">Picky — Won't Settle: Wants Only… <span style="float:right;color:#475569">36</span></a>
+  <a href="#cause__too_busy">Too Busy to Date — Poor Time Man… <span style="float:right;color:#475569">63</span></a>
+  <a href="#cause__afraid_women">Afraid to Try — Negative Percept… <span style="float:right;color:#475569">39</span></a>
+  <a href="#cause__brutal_rejection">Afraid to Try — Was Brutally Rej… <span style="float:right;color:#475569">22</span></a>
+  <a href="#cause__toxic_past">Afraid to Try — Was in a Toxic R… <span style="float:right;color:#475569">142</span></a>
+  <a href="#cause__inexperienced_shy">Sexually / Romantically Rejected… <span style="float:right;color:#475569">571</span></a>
+  <a href="#cause__no_chemistry_sexual">Sexually / Romantically Rejected… <span style="float:right;color:#475569">4</span></a>
+  <div class="sec-label">By Stage of Loneliness</div>
+  <a href="#stage__inexperienced_starter">Inexperienced Starter <span style="float:right;color:#475569">1567</span></a>
+  <a href="#stage__disillusioned_burned">Disillusioned or Burned <span style="float:right;color:#475569">210</span></a>
+  <a href="#stage__rebuilder">Rebuilder <span style="float:right;color:#475569">156</span></a>
+  <a href="#stage__chronically_lonely">Chronically Lonely <span style="float:right;color:#475569">268</span></a>
+  <div class="sec-label">By Aspiration & Goal</div>
+  <a href="#goal__first_date">Find a First Date <span style="float:right;color:#475569">155</span></a>
+  <a href="#goal__get_sex">Get Sexual Experience <span style="float:right;color:#475569">427</span></a>
+  <a href="#goal__higher_value">Become More Attractive / Level U… <span style="float:right;color:#475569">240</span></a>
+  <a href="#goal__get_girlfriend">Get a Girlfriend / Find a Relati… <span style="float:right;color:#475569">1902</span></a>
+  <a href="#goal__get_specific_woman">Get the Specific Woman He Likes <span style="float:right;color:#475569">91</span></a>
+</nav>
+<div class="content">
+
+<div class="intent-section" id="intent-dist">
+  <h2>Reddit Intent Distribution — What Men Are Actually Looking For</h2>
+  <p class="intent-desc">Classified from 4,759 Reddit posts &amp; comments across 10 communities. Each record filtered for male loneliness relevance, then scored against LTR vs sex-seeking signals.</p>
+
+  <div class="intent-grid">
+    <div class="donut-wrap">
+      <svg viewBox="0 0 260 260" width="220" height="220">
+        <path d="M 130.0 30.0 A 100 100 0 0 1 200.1 58.7 L 170.6 88.6 A 58 58 0 0 0 130.0 72.0 Z" fill="#60a5fa" opacity="0.9"/>
+<path d="M 200.1 58.7 A 100 100 0 0 1 221.6 90.0 L 183.2 106.8 A 58 58 0 0 0 170.6 88.6 Z" fill="#f87171" opacity="0.9"/>
+<path d="M 221.6 90.0 A 100 100 0 1 1 130.0 30.0 L 130.0 72.0 A 58 58 0 1 0 183.2 106.8 Z" fill="#94a3b8" opacity="0.9"/>
+        <text x="130" y="124" text-anchor="middle" fill="#e2e8f0" font-size="28" font-weight="800" font-family="Segoe UI,sans-serif">4,759</text>
+        <text x="130" y="144" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">records</text>
+      </svg>
+      <div class="donut-legend">
+        <div class="donut-legend-item">
+          <div class="dl-dot" style="background:#60a5fa"></div>
+          <span class="dl-label">Seeking Long-Term Relationship</span>
+          <span class="dl-n" style="color:#60a5fa">588</span>
+          <span class="dl-pct">12.4%</span>
+        </div>
+        <div class="donut-legend-item">
+          <div class="dl-dot" style="background:#f87171"></div>
+          <span class="dl-label">Seeking Sex / Physical Intimacy</span>
+          <span class="dl-n" style="color:#f87171">290</span>
+          <span class="dl-pct">6.1%</span>
+        </div>
+        <div class="donut-legend-item">
+          <div class="dl-dot" style="background:#94a3b8"></div>
+          <span class="dl-label">Undefined / Unclear Goal</span>
+          <span class="dl-n" style="color:#94a3b8">3,881</span>
+          <span class="dl-pct">81.6%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="intent-stats-col">
+      <div class="intent-stat-cards">
+        <div class="intent-stat-card">
+          <div class="isl">Seeking LTR</div>
+          <div class="isn" style="color:#60a5fa">588</div>
+          <div class="isp">12.4% of total</div>
+        </div>
+        <div class="intent-stat-card">
+          <div class="isl">Seeking Sex</div>
+          <div class="isn" style="color:#f87171">290</div>
+          <div class="isp">6.1% of total</div>
+        </div>
+        <div class="intent-stat-card">
+          <div class="isl">Undefined</div>
+          <div class="isn" style="color:#94a3b8">3,881</div>
+          <div class="isp">81.6% of total</div>
+        </div>
+      </div>
+      <div class="intent-insight">
+        <strong>Key insight:</strong> 82% of men express pain without stating a clear goal —
+        they are not "looking for sex" or "looking for a girlfriend", they are simply suffering.
+        Among those who do signal intent, LTR-seekers outnumber sex-seekers
+        <strong>2.0×</strong> — pointing to connection and belonging as the dominant
+        unmet need for this audience.
+      </div>
+
+      <div class="isub-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Subreddit</th>
+              <th style="text-align:right">Total</th>
+              <th>Distribution</th>
+              <th style="color:#60a5fa">LTR</th>
+              <th style="color:#f87171">Sex</th>
+              <th style="color:#64748b">Undef</th>
+            </tr>
+          </thead>
+          <tbody>
+      <tr>
+        <td class="isub-name">r/ForeverAlone</td>
+        <td class="isub-total">1,013</td>
+        <td class="isub-bar-cell">
+          <div class="isub-bar-track">
+            <div class="isub-bar-seg" style="width:11%;background:#60a5fa" title="LTR: 108"></div>
+            <div class="isub-bar-seg" style="width:4%;background:#f87171" title="Sex: 40"></div>
+            <div class="isub-bar-seg" style="width:85%;background:#475569" title="Undefined: 865"></div>
+          </div>
+        </td>
+        <td class="isub-ltr">108</td>
+        <td class="isub-sex">40</td>
+        <td class="isub-unk">865</td>
+      </tr>
+      <tr>
+        <td class="isub-name">r/virgin</td>
+        <td class="isub-total">722</td>
+        <td class="isub-bar-cell">
+          <div class="isub-bar-track">
+            <div class="isub-bar-seg" style="width:13%;background:#60a5fa" title="LTR: 91"></div>
+            <div class="isub-bar-seg" style="width:15%;background:#f87171" title="Sex: 111"></div>
+            <div class="isub-bar-seg" style="width:72%;background:#475569" title="Undefined: 520"></div>
+          </div>
+        </td>
+        <td class="isub-ltr">91</td>
+        <td class="isub-sex">111</td>
+        <td class="isub-unk">520</td>
+      </tr>
+      <tr>
+        <td class="isub-name">r/dating_advice</td>
+        <td class="isub-total">701</td>
+        <td class="isub-bar-cell">
+          <div class="isub-bar-track">
+            <div class="isub-bar-seg" style="width:20%;background:#60a5fa" title="LTR: 143"></div>
+            <div class="isub-bar-seg" style="width:6%;background:#f87171" title="Sex: 44"></div>
+            <div class="isub-bar-seg" style="width:74%;background:#475569" title="Undefined: 514"></div>
+          </div>
+        </td>
+        <td class="isub-ltr">143</td>
+        <td class="isub-sex">44</td>
+        <td class="isub-unk">514</td>
+      </tr>
+      <tr>
+        <td class="isub-name">r/lonely</td>
+        <td class="isub-total">538</td>
+        <td class="isub-bar-cell">
+          <div class="isub-bar-track">
+            <div class="isub-bar-seg" style="width:15%;background:#60a5fa" title="LTR: 79"></div>
+            <div class="isub-bar-seg" style="width:1%;background:#f87171" title="Sex: 5"></div>
+            <div class="isub-bar-seg" style="width:84%;background:#475569" title="Undefined: 454"></div>
+          </div>
+        </td>
+        <td class="isub-ltr">79</td>
+        <td class="isub-sex">5</td>
+        <td class="isub-unk">454</td>
+      </tr>
+      <tr>
+        <td class="isub-name">r/AskMen</td>
+        <td class="isub-total">500</td>
+        <td class="isub-bar-cell">
+          <div class="isub-bar-track">
+            <div class="isub-bar-seg" style="width:13%;background:#60a5fa" title="LTR: 65"></div>
+            <div class="isub-bar-seg" style="width:3%;background:#f87171" title="Sex: 13"></div>
+            <div class="isub-bar-seg" style="width:84%;background:#475569" title="Undefined: 422"></div>
+          </div>
+        </td>
+        <td class="isub-ltr">65</td>
+        <td class="isub-sex">13</td>
+        <td class="isub-unk">422</td>
+      </tr>
+      <tr>
+        <td class="isub-name">r/IncelsWithoutHate</td>
+        <td class="isub-total">452</td>
+        <td class="isub-bar-cell">
+          <div class="isub-bar-track">
+            <div class="isub-bar-seg" style="width:5%;background:#60a5fa" title="LTR: 21"></div>
+            <div class="isub-bar-seg" style="width:4%;background:#f87171" title="Sex: 20"></div>
+            <div class="isub-bar-seg" style="width:91%;background:#475569" title="Undefined: 411"></div>
+          </div>
+        </td>
+        <td class="isub-ltr">21</td>
+        <td class="isub-sex">20</td>
+        <td class="isub-unk">411</td>
+      </tr>
+      <tr>
+        <td class="isub-name">r/FA30plus</td>
+        <td class="isub-total">329</td>
+        <td class="isub-bar-cell">
+          <div class="isub-bar-track">
+            <div class="isub-bar-seg" style="width:9%;background:#60a5fa" title="LTR: 31"></div>
+            <div class="isub-bar-seg" style="width:4%;background:#f87171" title="Sex: 14"></div>
+            <div class="isub-bar-seg" style="width:87%;background:#475569" title="Undefined: 284"></div>
+          </div>
+        </td>
+        <td class="isub-ltr">31</td>
+        <td class="isub-sex">14</td>
+        <td class="isub-unk">284</td>
+      </tr>
+      <tr>
+        <td class="isub-name">r/OnlineDating</td>
+        <td class="isub-total">300</td>
+        <td class="isub-bar-cell">
+          <div class="isub-bar-track">
+            <div class="isub-bar-seg" style="width:14%;background:#60a5fa" title="LTR: 42"></div>
+            <div class="isub-bar-seg" style="width:5%;background:#f87171" title="Sex: 15"></div>
+            <div class="isub-bar-seg" style="width:81%;background:#475569" title="Undefined: 243"></div>
+          </div>
+        </td>
+        <td class="isub-ltr">42</td>
+        <td class="isub-sex">15</td>
+        <td class="isub-unk">243</td>
+      </tr>
+      <tr>
+        <td class="isub-name">r/seduction</td>
+        <td class="isub-total">204</td>
+        <td class="isub-bar-cell">
+          <div class="isub-bar-track">
+            <div class="isub-bar-seg" style="width:4%;background:#60a5fa" title="LTR: 8"></div>
+            <div class="isub-bar-seg" style="width:14%;background:#f87171" title="Sex: 28"></div>
+            <div class="isub-bar-seg" style="width:82%;background:#475569" title="Undefined: 168"></div>
+          </div>
+        </td>
+        <td class="isub-ltr">8</td>
+        <td class="isub-sex">28</td>
+        <td class="isub-unk">168</td>
+      </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overview-section" id="seg-overview">
+  <h2 class="overview-title">Most Frequent Segment per Block</h2>
+  <p class="overview-desc">Ranked by total corpus mentions. Each block shows all its segments — winner highlighted at the top.</p>
+  <div class="charts-grid">
+    <div class="chart-block">
+      <div class="chart-block-header" style="border-color:#a78bfa">
+        <span class="chart-block-label" style="color:#a78bfa">By Need</span>
+        <span class="chart-winner">Get Chosen & Loved (by Someone Specific)</span>
+      </div>
+      <div class="chart-rows">
+        <div class="chart-row chart-row-winner">
+          <span class="chart-row-label">Get Chosen & Loved (by Someone Speci…</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:100%;background:#a78bfaff"></div>
+          </div>
+          <span class="chart-row-n">833</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Get Noticed & Desired (General)</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:19%;background:#a78bfa55"></div>
+          </div>
+          <span class="chart-row-n">160</span>
+        </div>
+      </div>
+    </div>
+    <div class="chart-block">
+      <div class="chart-block-header" style="border-color:#f87171">
+        <span class="chart-block-label" style="color:#f87171">By Fear</span>
+        <span class="chart-winner">Stay Lonely Forever</span>
+      </div>
+      <div class="chart-rows">
+        <div class="chart-row chart-row-winner">
+          <span class="chart-row-label">Stay Lonely Forever</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:100%;background:#f87171ff"></div>
+          </div>
+          <span class="chart-row-n">609</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Get Shamed or Judged</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:31%;background:#f8717155"></div>
+          </div>
+          <span class="chart-row-n">188</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Be Rejected</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:21%;background:#f8717155"></div>
+          </div>
+          <span class="chart-row-n">130</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Get Hurt in a Relationship</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:11%;background:#f8717155"></div>
+          </div>
+          <span class="chart-row-n">64</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Run Out of Time</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:9%;background:#f8717155"></div>
+          </div>
+          <span class="chart-row-n">57</span>
+        </div>
+      </div>
+    </div>
+    <div class="chart-block">
+      <div class="chart-block-header" style="border-color:#fb923c">
+        <span class="chart-block-label" style="color:#fb923c">By Cause</span>
+        <span class="chart-winner">Not Attractive / Defeated — Poor Looks</span>
+      </div>
+      <div class="chart-rows">
+        <div class="chart-row chart-row-winner">
+          <span class="chart-row-label">Not Attractive / Defeated — Poor Loo…</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:100%;background:#fb923cff"></div>
+          </div>
+          <span class="chart-row-n">1032</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Sexually / Romantically Rejected — I…</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:55%;background:#fb923c55"></div>
+          </div>
+          <span class="chart-row-n">571</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Unable to Build Connection — Nice Gu…</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:37%;background:#fb923c55"></div>
+          </div>
+          <span class="chart-row-n">377</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Not Attractive / Defeated — Unknown …</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:27%;background:#fb923c55"></div>
+          </div>
+          <span class="chart-row-n">280</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Unable to Build Connection — Friendz…</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:20%;background:#fb923c55"></div>
+          </div>
+          <span class="chart-row-n">209</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Unable to Build Connection — No Clue…</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:14%;background:#fb923c55"></div>
+          </div>
+          <span class="chart-row-n">149</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Afraid to Try — Was in a Toxic Relat…</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:14%;background:#fb923c55"></div>
+          </div>
+          <span class="chart-row-n">142</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Too Busy to Date — Poor Time Managem…</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:6%;background:#fb923c55"></div>
+          </div>
+          <span class="chart-row-n">63</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Afraid to Try — Negative Perception …</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:4%;background:#fb923c55"></div>
+          </div>
+          <span class="chart-row-n">39</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Picky — Won't Settle: Wants Only Her</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:3%;background:#fb923c55"></div>
+          </div>
+          <span class="chart-row-n">36</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Afraid to Try — Was Brutally Rejecte…</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:2%;background:#fb923c55"></div>
+          </div>
+          <span class="chart-row-n">22</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Sexually / Romantically Rejected — D…</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:2%;background:#fb923c55"></div>
+          </div>
+          <span class="chart-row-n">4</span>
+        </div>
+      </div>
+    </div>
+    <div class="chart-block">
+      <div class="chart-block-header" style="border-color:#34d399">
+        <span class="chart-block-label" style="color:#34d399">By Stage of Loneliness</span>
+        <span class="chart-winner">Inexperienced Starter</span>
+      </div>
+      <div class="chart-rows">
+        <div class="chart-row chart-row-winner">
+          <span class="chart-row-label">Inexperienced Starter</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:100%;background:#34d399ff"></div>
+          </div>
+          <span class="chart-row-n">1567</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Chronically Lonely</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:17%;background:#34d39955"></div>
+          </div>
+          <span class="chart-row-n">268</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Disillusioned or Burned</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:13%;background:#34d39955"></div>
+          </div>
+          <span class="chart-row-n">210</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Rebuilder</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:10%;background:#34d39955"></div>
+          </div>
+          <span class="chart-row-n">156</span>
+        </div>
+      </div>
+    </div>
+    <div class="chart-block">
+      <div class="chart-block-header" style="border-color:#60a5fa">
+        <span class="chart-block-label" style="color:#60a5fa">By Aspiration & Goal</span>
+        <span class="chart-winner">Get a Girlfriend / Find a Relationship</span>
+      </div>
+      <div class="chart-rows">
+        <div class="chart-row chart-row-winner">
+          <span class="chart-row-label">Get a Girlfriend / Find a Relationsh…</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:100%;background:#60a5faff"></div>
+          </div>
+          <span class="chart-row-n">1902</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Get Sexual Experience</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:22%;background:#60a5fa55"></div>
+          </div>
+          <span class="chart-row-n">427</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Become More Attractive / Level Up</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:13%;background:#60a5fa55"></div>
+          </div>
+          <span class="chart-row-n">240</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Find a First Date</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:8%;background:#60a5fa55"></div>
+          </div>
+          <span class="chart-row-n">155</span>
+        </div>
+        <div class="chart-row">
+          <span class="chart-row-label">Get the Specific Woman He Likes</span>
+          <div class="chart-bar-wrap">
+            <div class="chart-bar" style="width:5%;background:#60a5fa55"></div>
+          </div>
+          <span class="chart-row-n">91</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="need">
+  <div class="sec-header">
+    <div class="sec-stripe" style="background:#a78bfa"></div>
+    <div class="sec-title">By Need</div>
+    <div class="sec-total">993 total mentions across all sub-segments</div>
+  </div>
+  <p class="sec-desc">What men ultimately want — stated or implied in the way they describe their situation</p>
+  <div class="inline-subchart">
+    <div class="sleg"><span class="sleg-item"><span class="sleg-dot" style="background:#a78bfa"></span>Get Noticed & Desired (General)</span><span class="sleg-item"><span class="sleg-dot" style="background:#c4b5fd"></span>Get Chosen & Loved (by Someone Specific)</span></div>
+    <svg viewBox="0 0 532 188" width="100%" height="188"><g transform="translate(0,0)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/lonely</text><rect x="158.0" y="0" width="8" height="18" fill="#a78bfa" opacity="0.85"><title>7</title></rect><rect x="166.0" y="0" width="332" height="18" fill="#c4b5fd" opacity="0.85"><title>297</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">304</text></g><g transform="translate(0,23)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/ForeverAlone</text><rect x="158.0" y="0" width="54" height="18" fill="#a78bfa" opacity="0.85"><title>35</title></rect><rect x="212.0" y="0" width="286" height="18" fill="#c4b5fd" opacity="0.85"><title>187</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">222</text></g><g transform="translate(0,46)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/dating_advice</text><rect x="158.0" y="0" width="52" height="18" fill="#a78bfa" opacity="0.85"><title>28</title></rect><rect x="210.0" y="0" width="288" height="18" fill="#c4b5fd" opacity="0.85"><title>156</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">184</text></g><g transform="translate(0,69)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/OnlineDating</text><rect x="158.0" y="0" width="254" height="18" fill="#a78bfa" opacity="0.85"><title>47</title></rect><rect x="412.0" y="0" width="86" height="18" fill="#c4b5fd" opacity="0.85"><title>16</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">63</text></g><g transform="translate(0,92)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/virgin</text><rect x="158.0" y="0" width="62" height="18" fill="#a78bfa" opacity="0.85"><title>6</title></rect><rect x="220.0" y="0" width="278" height="18" fill="#c4b5fd" opacity="0.85"><title>27</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">33</text></g><g transform="translate(0,115)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/AskMen</text><rect x="158.0" y="0" width="64" height="18" fill="#a78bfa" opacity="0.85"><title>6</title></rect><rect x="222.0" y="0" width="276" height="18" fill="#c4b5fd" opacity="0.85"><title>26</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">32</text></g><g transform="translate(0,138)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/FA30plus</text><rect x="158.0" y="0" width="152" height="18" fill="#a78bfa" opacity="0.85"><title>13</title></rect><rect x="310.0" y="0" width="188" height="18" fill="#c4b5fd" opacity="0.85"><title>16</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">29</text></g><g transform="translate(0,161)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/datingoverthirty</text><rect x="158.0" y="0" width="44" height="18" fill="#a78bfa" opacity="0.85"><title>3</title></rect><rect x="202.0" y="0" width="296" height="18" fill="#c4b5fd" opacity="0.85"><title>20</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">23</text></g></svg>
+  </div>
+  <div class="seg-card" id="need__get_noticed_desired">
+    <div class="seg-top">
+      <div class="seg-name">Get Noticed & Desired (General)</div>
+      <div class="seg-n">160<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Wants women to notice, feel attracted to, or pay attention to him — not fixated on a specific person.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:8%;background:#a78bfa88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">126 Reddit posts</span>
+      <span class="src-comment">33 comments</span>
+      <span class="src-youtube_comment">1 YouTube comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"No matches on apps, not many female connections through friends as I'm new to the city, no women interested in me at bars/clubs even when drunk."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"A few things to get out of the way since I know a lot of guys love to bring this up:
+
+* **I do have a decent face** 
+* **I am relatively tall (6')**
+* **I do well for myself financially**
+
+But I cannot stress this enough, even with these things in my favor, when I DIDN'T take care of my appearance, I was invisible to w…"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I have never acted out of line and I have never been creepy, women or men are not creeped out of me, I have great hygiene and am in shape, however I'm too ugly in the face, my head shape is like an egg, so I'm invisible to women who don't know me and funny looking to people who do."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="need__get_chosen_loved">
+    <div class="seg-top">
+      <div class="seg-name">Get Chosen & Loved (by Someone Specific)</div>
+      <div class="seg-n">833<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Wants a particular person — 'her' — to want him. More emotionally specific and often more painful.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:44%;background:#a78bfa88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">734 Reddit posts</span>
+      <span class="src-comment">79 comments</span>
+      <span class="src-book_review">17 book reviews</span>
+      <span class="src-youtube_comment">3 YouTube comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"You know, I just want someone to choose me, and just me, I don’t want to be a second choice?"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"So, needless to say, I get desperate to want to be loved by a woman."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I too want to be loved, I too want someone to come back home to, but I am too scared now."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="section" id="fear">
+  <div class="sec-header">
+    <div class="sec-stripe" style="background:#f87171"></div>
+    <div class="sec-title">By Fear</div>
+    <div class="sec-total">1048 total mentions across all sub-segments</div>
+  </div>
+  <p class="sec-desc">The underlying fears that drive avoidance, paralysis, and resignation</p>
+  <div class="inline-subchart">
+    <div class="sleg"><span class="sleg-item"><span class="sleg-dot" style="background:#f87171"></span>Stay Lonely Forever</span><span class="sleg-item"><span class="sleg-dot" style="background:#fb923c"></span>Get Shamed or Judged</span><span class="sleg-item"><span class="sleg-dot" style="background:#fbbf24"></span>Be Rejected</span><span class="sleg-item"><span class="sleg-dot" style="background:#34d399"></span>Run Out of Time</span><span class="sleg-item"><span class="sleg-dot" style="background:#60a5fa"></span>Get Hurt in a Relationship</span></div>
+    <svg viewBox="0 0 532 188" width="100%" height="188"><g transform="translate(0,0)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/ForeverAlone</text><rect x="158.0" y="0" width="270" height="18" fill="#f87171" opacity="0.85"><title>399</title></rect><rect x="428.0" y="0" width="43" height="18" fill="#fb923c" opacity="0.85"><title>63</title></rect><rect x="471.0" y="0" width="11" height="18" fill="#fbbf24" opacity="0.85"><title>17</title></rect><rect x="482.0" y="0" width="8" height="18" fill="#34d399" opacity="0.85"><title>12</title></rect><rect x="490.0" y="0" width="8" height="18" fill="#60a5fa" opacity="0.85"><title>12</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">503</text></g><g transform="translate(0,23)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/lonely</text><rect x="158.0" y="0" width="164" height="18" fill="#f87171" opacity="0.85"><title>54</title></rect><rect x="322.0" y="0" width="49" height="18" fill="#fb923c" opacity="0.85"><title>16</title></rect><rect x="371.0" y="0" width="49" height="18" fill="#fbbf24" opacity="0.85"><title>16</title></rect><rect x="420.0" y="0" width="33" height="18" fill="#34d399" opacity="0.85"><title>11</title></rect><rect x="453.0" y="0" width="46" height="18" fill="#60a5fa" opacity="0.85"><title>15</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">112</text></g><g transform="translate(0,46)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/dating_advice</text><rect x="158.0" y="0" width="87" height="18" fill="#f87171" opacity="0.85"><title>27</title></rect><rect x="245.0" y="0" width="58" height="18" fill="#fb923c" opacity="0.85"><title>18</title></rect><rect x="303.0" y="0" width="100" height="18" fill="#fbbf24" opacity="0.85"><title>31</title></rect><rect x="403.0" y="0" width="52" height="18" fill="#34d399" opacity="0.85"><title>16</title></rect><rect x="455.0" y="0" width="42" height="18" fill="#60a5fa" opacity="0.85"><title>13</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">105</text></g><g transform="translate(0,69)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/FA30plus</text><rect x="158.0" y="0" width="269" height="18" fill="#f87171" opacity="0.85"><title>57</title></rect><rect x="427.0" y="0" width="33" height="18" fill="#fb923c" opacity="0.85"><title>7</title></rect><rect x="460.0" y="0" width="24" height="18" fill="#fbbf24" opacity="0.85"><title>5</title></rect><rect x="484.0" y="0" width="9" height="18" fill="#34d399" opacity="0.85"><title>2</title></rect><rect x="493.0" y="0" width="5" height="18" fill="#60a5fa" opacity="0.85"><title>1</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">72</text></g><g transform="translate(0,92)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/virgin</text><rect x="158.0" y="0" width="45" height="18" fill="#f87171" opacity="0.85"><title>6</title></rect><rect x="203.0" y="0" width="249" height="18" fill="#fb923c" opacity="0.85"><title>33</title></rect><rect x="452.0" y="0" width="38" height="18" fill="#fbbf24" opacity="0.85"><title>5</title></rect><rect x="490.0" y="0" width="8" height="18" fill="#34d399" opacity="0.85"><title>1</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">45</text></g><g transform="translate(0,115)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/seduction</text><rect x="158.0" y="0" width="49" height="18" fill="#f87171" opacity="0.85"><title>5</title></rect><rect x="207.0" y="0" width="10" height="18" fill="#fb923c" opacity="0.85"><title>1</title></rect><rect x="217.0" y="0" width="262" height="18" fill="#fbbf24" opacity="0.85"><title>27</title></rect><rect x="479.0" y="0" width="19" height="18" fill="#34d399" opacity="0.85"><title>2</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">35</text></g><g transform="translate(0,138)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/socialskills</text><rect x="158.0" y="0" width="107" height="18" fill="#f87171" opacity="0.85"><title>11</title></rect><rect x="265.0" y="0" width="117" height="18" fill="#fb923c" opacity="0.85"><title>12</title></rect><rect x="382.0" y="0" width="49" height="18" fill="#fbbf24" opacity="0.85"><title>5</title></rect><rect x="431.0" y="0" width="49" height="18" fill="#34d399" opacity="0.85"><title>5</title></rect><rect x="480.0" y="0" width="19" height="18" fill="#60a5fa" opacity="0.85"><title>2</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">35</text></g><g transform="translate(0,161)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/AskMen</text><rect x="158.0" y="0" width="219" height="18" fill="#f87171" opacity="0.85"><title>18</title></rect><rect x="377.0" y="0" width="24" height="18" fill="#fb923c" opacity="0.85"><title>2</title></rect><rect x="401.0" y="0" width="85" height="18" fill="#fbbf24" opacity="0.85"><title>7</title></rect><rect x="486.0" y="0" width="12" height="18" fill="#34d399" opacity="0.85"><title>1</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">28</text></g></svg>
+  </div>
+  <div class="seg-card" id="fear__stay_lonely">
+    <div class="seg-top">
+      <div class="seg-name">Stay Lonely Forever</div>
+      <div class="seg-n">609<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">The existential fear that nothing will change — that he is destined to be alone.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:32%;background:#f8717188"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">490 Reddit posts</span>
+      <span class="src-comment">113 comments</span>
+      <span class="src-book_review">6 book reviews</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"It's been weighing heavily on me lately, and I feel like I'm destined to be alone forever."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"34M, soon turning 35, and I fear I'll never romantically connect with a member of the opposite sex again...Dating at this age is so challenging.  While I'm decent looking, have a good job, stable life, and interesting hobbies (I was both a professional chef and musician in the past, speak multiple l"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"As a long time lurker of this sub I’ve never contributed much, but at the age of 34 I finally accepted last night that I’m going to end up alone."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="fear__shame_judgment">
+    <div class="seg-top">
+      <div class="seg-name">Get Shamed or Judged</div>
+      <div class="seg-n">188<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Fear of being mocked, exposed, or judged for his inexperience, age, or failure to attract.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:10%;background:#f8717188"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">165 Reddit posts</span>
+      <span class="src-comment">23 comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"It was humiliating when she laughed at me and said “you?"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"The handful of times I tried to ask a girl out I got at best a ‘no’ and usually got laughed at."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"Hello, all my life I've been ugly, I've been called ugly, I've been mocked and laughed at."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="fear__rejection">
+    <div class="seg-top">
+      <div class="seg-name">Be Rejected</div>
+      <div class="seg-n">130<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">The immediate fear of a 'no' — paralysing approach anxiety or avoidance of dating entirely.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:7%;background:#f8717188"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">99 Reddit posts</span>
+      <span class="src-comment">27 comments</span>
+      <span class="src-book_review">4 book reviews</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"On top of that, I really feel like I faced my seemingly insurmountable fear of rejection."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"As a result, I was scared to approach girls, wasn’t confident in my body when I was with them, and lost the desire to want to be sexual with women."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I never hit on girls because I fear rejection, and I fear being labeled as 'the thirsty one'. Yeah I guarantee I've missed a lot of opportunities because of the self doubt that sets in."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="fear__run_out_of_time">
+    <div class="seg-top">
+      <div class="seg-name">Run Out of Time</div>
+      <div class="seg-n">57<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Age-based despair: the window is closing, peers are ahead, it's 'too late' to start.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:3%;background:#f8717188"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">57 Reddit posts</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"Outside of the normal heartbreak/stages of grief...I have this overwhelming feeling of lonliness/despair - like it's too late for me because of how old I am."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I wouldn’t want to be a 20-something in 2025’s world but I feel like time is running out on my dating life and I wish I had years ahead of me to get over this without feeling like my few remaining healthy years are being wasted crying alone into my pillow (or into the pillow at my therapist’s office twice a week)."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"But I worry that it's too late for me now."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="fear__get_hurt">
+    <div class="seg-top">
+      <div class="seg-name">Get Hurt in a Relationship</div>
+      <div class="seg-n">64<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Fear of vulnerability after previous damage — walls, distrust, avoidance of closeness.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:3%;background:#f8717188"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">55 Reddit posts</span>
+      <span class="src-comment">4 comments</span>
+      <span class="src-book_review">5 book reviews</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"She has borderline personality disorder and after years of being cheated on and emotionally abused I finally accepted that a life with her would be worse than a life alone."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I tried for a couple of months to stay together but the trust was gone and we were both just suffering every day because I couldn't get over the feeling of being betrayed."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"We tried to go on marriage counselling, but my wife really built her walls up, said that she’s tired of being a cheerleader, and after every session we only argued and it seemed to be worse."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="section" id="cause">
+  <div class="sec-header">
+    <div class="sec-stripe" style="background:#fb923c"></div>
+    <div class="sec-title">By Cause</div>
+    <div class="sec-total">2924 total mentions across all sub-segments</div>
+  </div>
+  <p class="sec-desc">How men explain why they are where they are — their attributed reason for being single or lonely</p>
+  <div class="inline-subchart">
+    <div class="sleg"><span class="sleg-item"><span class="sleg-dot" style="background:#fb923c"></span>Unable to Build Connection — Friendzoned</span><span class="sleg-item"><span class="sleg-dot" style="background:#f97316"></span>Unable to Build Connection — Nice Guy, No Spark</span><span class="sleg-item"><span class="sleg-dot" style="background:#fbbf24"></span>Unable to Build Connection — No Clue How to Flirt / Can't Read the Room</span><span class="sleg-item"><span class="sleg-dot" style="background:#a78bfa"></span>Not Attractive / Defeated — Poor Looks</span><span class="sleg-item"><span class="sleg-dot" style="background:#8b5cf6"></span>Not Attractive / Defeated — Unknown Cause / Something Wrong With Me</span><span class="sleg-item"><span class="sleg-dot" style="background:#60a5fa"></span>Picky — Won't Settle: Wants Only Her</span><span class="sleg-item"><span class="sleg-dot" style="background:#34d399"></span>Too Busy to Date — Poor Time Management</span><span class="sleg-item"><span class="sleg-dot" style="background:#10b981"></span>Afraid to Try — Negative Perception of Women</span><span class="sleg-item"><span class="sleg-dot" style="background:#f87171"></span>Afraid to Try — Was Brutally Rejected</span><span class="sleg-item"><span class="sleg-dot" style="background:#ef4444"></span>Afraid to Try — Was in a Toxic Relationship</span><span class="sleg-item"><span class="sleg-dot" style="background:#c084fc"></span>Sexually / Romantically Rejected — Inexperienced & Shy</span><span class="sleg-item"><span class="sleg-dot" style="background:#94a3b8"></span>Sexually / Romantically Rejected — Doesn't Have the Right Chemistry</span></div>
+    <svg viewBox="0 0 532 188" width="100%" height="188"><g transform="translate(0,0)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/ForeverAlone</text><rect x="158.0" y="0" width="17" height="18" fill="#fb923c" opacity="0.85"><title>44</title></rect><rect x="175.0" y="0" width="27" height="18" fill="#f97316" opacity="0.85"><title>70</title></rect><rect x="202.0" y="0" width="16" height="18" fill="#fbbf24" opacity="0.85"><title>43</title></rect><rect x="218.0" y="0" width="169" height="18" fill="#a78bfa" opacity="0.85"><title>442</title></rect><rect x="387.0" y="0" width="28" height="18" fill="#8b5cf6" opacity="0.85"><title>72</title></rect><rect x="415.0" y="0" width="3" height="18" fill="#60a5fa" opacity="0.85"><title>7</title></rect><rect x="418.0" y="0" width="3" height="18" fill="#34d399" opacity="0.85"><title>7</title></rect><rect x="421.0" y="0" width="3" height="18" fill="#10b981" opacity="0.85"><title>8</title></rect><rect x="424.0" y="0" width="2" height="18" fill="#f87171" opacity="0.85"><title>6</title></rect><rect x="426.0" y="0" width="7" height="18" fill="#ef4444" opacity="0.85"><title>17</title></rect><rect x="433.0" y="0" width="65" height="18" fill="#c084fc" opacity="0.85"><title>170</title></rect><rect x="498.0" y="0" width="1" height="18" fill="#94a3b8" opacity="0.85"><title>1</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">887</text></g><g transform="translate(0,23)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/dating_advice</text><rect x="158.0" y="0" width="35" height="18" fill="#fb923c" opacity="0.85"><title>59</title></rect><rect x="193.0" y="0" width="38" height="18" fill="#f97316" opacity="0.85"><title>64</title></rect><rect x="231.0" y="0" width="21" height="18" fill="#fbbf24" opacity="0.85"><title>35</title></rect><rect x="252.0" y="0" width="83" height="18" fill="#a78bfa" opacity="0.85"><title>141</title></rect><rect x="335.0" y="0" width="29" height="18" fill="#8b5cf6" opacity="0.85"><title>49</title></rect><rect x="364.0" y="0" width="6" height="18" fill="#60a5fa" opacity="0.85"><title>10</title></rect><rect x="370.0" y="0" width="7" height="18" fill="#34d399" opacity="0.85"><title>12</title></rect><rect x="377.0" y="0" width="8" height="18" fill="#10b981" opacity="0.85"><title>13</title></rect><rect x="385.0" y="0" width="1" height="18" fill="#f87171" opacity="0.85"><title>1</title></rect><rect x="386.0" y="0" width="15" height="18" fill="#ef4444" opacity="0.85"><title>26</title></rect><rect x="401.0" y="0" width="99" height="18" fill="#c084fc" opacity="0.85"><title>169</title></rect><rect x="500.0" y="0" width="1" height="18" fill="#94a3b8" opacity="0.85"><title>1</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">580</text></g><g transform="translate(0,46)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/lonely</text><rect x="158.0" y="0" width="20" height="18" fill="#fb923c" opacity="0.85"><title>21</title></rect><rect x="178.0" y="0" width="69" height="18" fill="#f97316" opacity="0.85"><title>73</title></rect><rect x="247.0" y="0" width="13" height="18" fill="#fbbf24" opacity="0.85"><title>14</title></rect><rect x="260.0" y="0" width="84" height="18" fill="#a78bfa" opacity="0.85"><title>89</title></rect><rect x="344.0" y="0" width="55" height="18" fill="#8b5cf6" opacity="0.85"><title>59</title></rect><rect x="399.0" y="0" width="6" height="18" fill="#60a5fa" opacity="0.85"><title>6</title></rect><rect x="405.0" y="0" width="20" height="18" fill="#34d399" opacity="0.85"><title>21</title></rect><rect x="425.0" y="0" width="4" height="18" fill="#10b981" opacity="0.85"><title>4</title></rect><rect x="429.0" y="0" width="4" height="18" fill="#f87171" opacity="0.85"><title>4</title></rect><rect x="433.0" y="0" width="18" height="18" fill="#ef4444" opacity="0.85"><title>19</title></rect><rect x="451.0" y="0" width="49" height="18" fill="#c084fc" opacity="0.85"><title>52</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">362</text></g><g transform="translate(0,69)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/socialskills</text><rect x="158.0" y="0" width="11" height="18" fill="#fb923c" opacity="0.85"><title>6</title></rect><rect x="169.0" y="0" width="87" height="18" fill="#f97316" opacity="0.85"><title>47</title></rect><rect x="256.0" y="0" width="52" height="18" fill="#fbbf24" opacity="0.85"><title>28</title></rect><rect x="308.0" y="0" width="61" height="18" fill="#a78bfa" opacity="0.85"><title>33</title></rect><rect x="369.0" y="0" width="41" height="18" fill="#8b5cf6" opacity="0.85"><title>22</title></rect><rect x="410.0" y="0" width="4" height="18" fill="#60a5fa" opacity="0.85"><title>2</title></rect><rect x="414.0" y="0" width="13" height="18" fill="#34d399" opacity="0.85"><title>7</title></rect><rect x="427.0" y="0" width="6" height="18" fill="#10b981" opacity="0.85"><title>3</title></rect><rect x="433.0" y="0" width="6" height="18" fill="#f87171" opacity="0.85"><title>3</title></rect><rect x="439.0" y="0" width="7" height="18" fill="#ef4444" opacity="0.85"><title>4</title></rect><rect x="446.0" y="0" width="52" height="18" fill="#c084fc" opacity="0.85"><title>28</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">183</text></g><g transform="translate(0,92)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/virgin</text><rect x="158.0" y="0" width="6" height="18" fill="#fb923c" opacity="0.85"><title>3</title></rect><rect x="164.0" y="0" width="10" height="18" fill="#f97316" opacity="0.85"><title>5</title></rect><rect x="174.0" y="0" width="16" height="18" fill="#fbbf24" opacity="0.85"><title>8</title></rect><rect x="190.0" y="0" width="101" height="18" fill="#a78bfa" opacity="0.85"><title>52</title></rect><rect x="291.0" y="0" width="17" height="18" fill="#8b5cf6" opacity="0.85"><title>9</title></rect><rect x="308.0" y="0" width="4" height="18" fill="#34d399" opacity="0.85"><title>2</title></rect><rect x="312.0" y="0" width="4" height="18" fill="#ef4444" opacity="0.85"><title>2</title></rect><rect x="316.0" y="0" width="183" height="18" fill="#c084fc" opacity="0.85"><title>94</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">175</text></g><g transform="translate(0,115)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/FA30plus</text><rect x="158.0" y="0" width="42" height="18" fill="#fb923c" opacity="0.85"><title>13</title></rect><rect x="200.0" y="0" width="29" height="18" fill="#f97316" opacity="0.85"><title>9</title></rect><rect x="229.0" y="0" width="6" height="18" fill="#fbbf24" opacity="0.85"><title>2</title></rect><rect x="235.0" y="0" width="178" height="18" fill="#a78bfa" opacity="0.85"><title>55</title></rect><rect x="413.0" y="0" width="29" height="18" fill="#8b5cf6" opacity="0.85"><title>9</title></rect><rect x="442.0" y="0" width="6" height="18" fill="#ef4444" opacity="0.85"><title>2</title></rect><rect x="448.0" y="0" width="49" height="18" fill="#c084fc" opacity="0.85"><title>15</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">105</text></g><g transform="translate(0,138)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/AskMen</text><rect x="158.0" y="0" width="66" height="18" fill="#fb923c" opacity="0.85"><title>19</title></rect><rect x="224.0" y="0" width="31" height="18" fill="#f97316" opacity="0.85"><title>9</title></rect><rect x="255.0" y="0" width="7" height="18" fill="#fbbf24" opacity="0.85"><title>2</title></rect><rect x="262.0" y="0" width="108" height="18" fill="#a78bfa" opacity="0.85"><title>31</title></rect><rect x="370.0" y="0" width="49" height="18" fill="#8b5cf6" opacity="0.85"><title>14</title></rect><rect x="419.0" y="0" width="10" height="18" fill="#34d399" opacity="0.85"><title>3</title></rect><rect x="429.0" y="0" width="10" height="18" fill="#10b981" opacity="0.85"><title>3</title></rect><rect x="439.0" y="0" width="31" height="18" fill="#ef4444" opacity="0.85"><title>9</title></rect><rect x="470.0" y="0" width="28" height="18" fill="#c084fc" opacity="0.85"><title>8</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">98</text></g><g transform="translate(0,161)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/IncelsWithoutHate</text><rect x="158.0" y="0" width="17" height="18" fill="#fb923c" opacity="0.85"><title>4</title></rect><rect x="175.0" y="0" width="4" height="18" fill="#f97316" opacity="0.85"><title>1</title></rect><rect x="179.0" y="0" width="8" height="18" fill="#fbbf24" opacity="0.85"><title>2</title></rect><rect x="187.0" y="0" width="278" height="18" fill="#a78bfa" opacity="0.85"><title>67</title></rect><rect x="465.0" y="0" width="8" height="18" fill="#8b5cf6" opacity="0.85"><title>2</title></rect><rect x="473.0" y="0" width="4" height="18" fill="#f87171" opacity="0.85"><title>1</title></rect><rect x="477.0" y="0" width="4" height="18" fill="#ef4444" opacity="0.85"><title>1</title></rect><rect x="481.0" y="0" width="17" height="18" fill="#c084fc" opacity="0.85"><title>4</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">82</text></g></svg>
+  </div>
+  <div class="seg-card" id="cause__friendzoned">
+    <div class="seg-top">
+      <div class="seg-name">Unable to Build Connection — Friendzoned</div>
+      <div class="seg-n">209<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">She puts him in the 'friend' category and he cannot escape it or create romantic tension.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:11%;background:#fb923c88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">160 Reddit posts</span>
+      <span class="src-comment">46 comments</span>
+      <span class="src-youtube_comment">3 YouTube comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"However by being passive, women often lose interest or I get friend zoned."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"Do you find yourself square in the friend zone with women again and again?"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"tired of missing out on a lot of things because of my social anxiety, tired of being single all the fucking time I just want someone to be afraid to lose me, I want a genuine type of love but every time I meet someone and start developing feelings for them I get friend-zoned."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="cause__nice_guy_no_spark">
+    <div class="seg-top">
+      <div class="seg-name">Unable to Build Connection — Nice Guy, No Spark</div>
+      <div class="seg-n">377<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">He is kind and decent but creates no attraction. Good character but no magnetic pull.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:20%;background:#fb923c88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">314 Reddit posts</span>
+      <span class="src-comment">38 comments</span>
+      <span class="src-book_review">19 book reviews</span>
+      <span class="src-youtube_comment">6 YouTube comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"I’m 22M and I’ve had 3 relationships till now, but none of them ever really felt like “the one.” What messes with my head is that all of them ended for strangely similar reasons."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"Am I too boring, too nice, is it my height really, but Im not that short so whats the deal?"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"My logical side wants me to realize she was just too nice to me, a type of kindness i have not experienced in a very long time, and i need to lower my expectations very fucking fast
+
+But i am so happy about i am not going to give a shit about logic, even if she only wants to be a friend, she is very fucking wellcome an…"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="cause__clueless_flirting">
+    <div class="seg-top">
+      <div class="seg-name">Unable to Build Connection — No Clue How to Flirt / Can't Read the Room</div>
+      <div class="seg-n">149<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Misses signals, doesn't know how to flirt, socially oblivious about romantic cues.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:8%;background:#fb923c88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">144 Reddit posts</span>
+      <span class="src-comment">4 comments</span>
+      <span class="src-youtube_comment">1 YouTube comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"I have no idea how to flirt or be sexy or romantic."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"But I will be seeing this beautiful girl again tomorrow, and I have no idea how to approach this."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I missed my chance in high school as I never really put myself out there and was mostly quiet, never went to no parties."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="cause__poor_looks">
+    <div class="seg-top">
+      <div class="seg-name">Not Attractive / Defeated — Poor Looks</div>
+      <div class="seg-n">1032<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Attributes his failure to his physical appearance: face, height, weight.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:54%;background:#fb923c88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">928 Reddit posts</span>
+      <span class="src-comment">99 comments</span>
+      <span class="src-book_review">3 book reviews</span>
+      <span class="src-youtube_comment">2 YouTube comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"Hello, all my life I've been ugly, I've been called ugly, I've been mocked and laughed at."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"Monday morning I got together my best pictures (I hated taking pictures I think I'm ugly so naturally I don't want to take pictures.) wrote out a bio that described me, who I was, What I enjoy doing, and all that fun stuff."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I ugly cried in the bathroom floor every day for weeks, talked about the realtionship (and cried) to my friends for months going over and over the same things, cried myself to sleep every night, thought about them so much that I feared they were gonna feel it"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="cause__bad_character_unknown">
+    <div class="seg-top">
+      <div class="seg-name">Not Attractive / Defeated — Unknown Cause / Something Wrong With Me</div>
+      <div class="seg-n">280<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Knows something is off but can't identify it. 'I've done everything right and it still doesn't work.'</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:15%;background:#fb923c88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">265 Reddit posts</span>
+      <span class="src-comment">11 comments</span>
+      <span class="src-book_review">3 book reviews</span>
+      <span class="src-youtube_comment">1 YouTube comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"I still wanted to save myself for the right person, dreamed of starting a family, but I had a bad habit of putting women on pedestals."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I feel like people just tolerate me and there's something off about me that makes me unable to form connections like normal people."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"The constant probing from him is very off putting and is actually making me feel like there IS something wrong with me."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="cause__fixated_one_woman">
+    <div class="seg-top">
+      <div class="seg-name">Picky — Won't Settle: Wants Only Her</div>
+      <div class="seg-n">36<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Can't want anyone else. Has been in love with one specific woman — a crush, an ex, or someone out of reach — for months or years. Other women don't register.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:2%;background:#fb923c88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">29 Reddit posts</span>
+      <span class="src-comment">4 comments</span>
+      <span class="src-quora">3 Quora answers</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"Not in, I need to stalk her, she's the only one for me situation, but more like 'I can't trust if the next relationship would work for me', or ' I can't think of dating or being with anyone anymore and handle another heart break' type situation."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I was depressed and then I fell in one sided love that made me feel worthless."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I am actively trying to get these thoughts out of my mind because I'm being unfair to her, but I can't stop thinking."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="cause__too_busy">
+    <div class="seg-top">
+      <div class="seg-name">Too Busy to Date — Poor Time Management</div>
+      <div class="seg-n">63<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Career or lifestyle takes priority; not investing time in social or romantic life.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:3%;background:#fb923c88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">60 Reddit posts</span>
+      <span class="src-comment">3 comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"I honestly have very little dating experience, my 20's have largely been occupied by focusing on education and furthering my career."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I'm a career loner who's literally never been in a relationship."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"Now, years have passed and my career is going well but I have no social life."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="cause__afraid_women">
+    <div class="seg-top">
+      <div class="seg-name">Afraid to Try — Negative Perception of Women</div>
+      <div class="seg-n">39<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Cynicism or bitterness toward women / dating; gave up due to negative worldview.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:2%;background:#fb923c88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">37 Reddit posts</span>
+      <span class="src-comment">2 comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"But also I never felt that a woman could be interested in me romantically or physically so I never expressed interest, I always figured that if I knew their answer would be 'no' (and how could it be anything else) why bother asking and making someone who's done nothing wrong uncomfortable."
+        <div class="q-src">— comments</div>
+      </div>
+      <div class="quote-item">"I promised myself to just talk to at least 3 girls I did not know before. I would consider that a victory and a step in the right direction. I did not set the goal of trying to flirt. Just tell them something nice. Still couldn't do it. I'll be real, I cried when I went to bed. I feel so let down by myself. 27M here. N…"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"Last year, I asked a girl out in person and she didn't even say no, she just left the room... as I stood there totally humiliated with my head in my hands. Now I just feel humiliated that I even attempted it, and really bad that I mistook her kindness for interest."
+        <div class="q-src">— comments</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="cause__brutal_rejection">
+    <div class="seg-top">
+      <div class="seg-name">Afraid to Try — Was Brutally Rejected</div>
+      <div class="seg-n">22<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">A specific humiliating or devastating rejection left lasting damage on his confidence.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:2%;background:#fb923c88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">21 Reddit posts</span>
+      <span class="src-comment">1 comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"It was humiliating when she laughed at me and said “you?"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"The handful of times I tried to ask a girl out I got at best a 'no' and usually got laughed at. To the point where guys would make fun of me for even entertaining the possibility of getting a date."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"Hello, all my life I've been ugly, I've been called ugly, I've been mocked and laughed at."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="cause__toxic_past">
+    <div class="seg-top">
+      <div class="seg-name">Afraid to Try — Was in a Toxic Relationship</div>
+      <div class="seg-n">142<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Cheating, emotional abuse, manipulation, or betrayal. Trust broken; walls built.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:7%;background:#fb923c88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">120 Reddit posts</span>
+      <span class="src-comment">16 comments</span>
+      <span class="src-book_review">4 book reviews</span>
+      <span class="src-quora">2 Quora answers</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"She has borderline personality disorder and after years of being cheated on and emotionally abused I finally accepted that a life with her would be worse than a life alone."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"She gaslighted me, lied to me, I think even cheated on me (no official proof, but there were a couple of times when we took a week's &quot;break&quot; where I came back to find suspicious things), and definitely broke me."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I’m 59M and divorced after a 20 year marriage. She cheated. I spent 20 years loving a person who did not seem to have the ability to love back. Now that I am past all the headaches and heartaches of the divorce process, it would be nice to have someone actually love me back."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="cause__inexperienced_shy">
+    <div class="seg-top">
+      <div class="seg-name">Sexually / Romantically Rejected — Inexperienced & Shy</div>
+      <div class="seg-n">571<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Virgin, never dated, never kissed — missing foundational experience others take for granted.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:30%;background:#fb923c88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">509 Reddit posts</span>
+      <span class="src-comment">62 comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"I've never had a girlfriend, I've never had sex, I've never had my first kiss, I've never gone on a date, and I've never even held a girls hand."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"24 m
+
+Never had any friends, never been in a relationship ever, never even had my first kiss, nor have i ever even held hands with a girl
+
+Spent all my time staying inside, playing video games, too scared to talk to anyone since i assumed everyone would find me annyoing or just make fun of all my ho"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I am a 23 M, virgin, and up until recently have never had a girlfriend."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="cause__no_chemistry_sexual">
+    <div class="seg-top">
+      <div class="seg-name">Sexually / Romantically Rejected — Doesn't Have the Right Chemistry</div>
+      <div class="seg-n">4<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Gets told 'no spark' or 'no chemistry' despite doing things right. The signal doesn't land.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:2%;background:#fb923c88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">3 Reddit posts</span>
+      <span class="src-comment">1 comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"I’ve been the guy writing those ‘no spark’ messages myself. I usually do that after a first date if there is something glaringly wrong. What is getting to me is just the not knowing what I could change, because no one will tell me what is wrong."
+        <div class="q-src">— comments</div>
+      </div>
+      <div class="quote-item">"It gets difficult when the message I keep getting from women is that there is no spark from her end."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"In the end I had a bunch of affairs and one night stands which just left me with this weird feeling of emptiness: No physical connection with these women ever felt like what I had with Cory and Andrea, so I just felt bad."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="section" id="stage">
+  <div class="sec-header">
+    <div class="sec-stripe" style="background:#34d399"></div>
+    <div class="sec-title">By Stage of Loneliness</div>
+    <div class="sec-total">2201 total mentions across all sub-segments</div>
+  </div>
+  <p class="sec-desc">Where the man is in his journey — which shapes tone, receptivity, and what messaging works</p>
+  <div class="inline-subchart">
+    <div class="sleg"><span class="sleg-item"><span class="sleg-dot" style="background:#a78bfa"></span>Inexperienced Starter</span><span class="sleg-item"><span class="sleg-dot" style="background:#f87171"></span>Disillusioned or Burned</span><span class="sleg-item"><span class="sleg-dot" style="background:#60a5fa"></span>Rebuilder</span><span class="sleg-item"><span class="sleg-dot" style="background:#2dd4bf"></span>Chronically Lonely</span></div>
+    <svg viewBox="0 0 532 188" width="100%" height="188"><g transform="translate(0,0)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/dating_advice</text><rect x="158.0" y="0" width="294" height="18" fill="#a78bfa" opacity="0.85"><title>487</title></rect><rect x="452.0" y="0" width="16" height="18" fill="#f87171" opacity="0.85"><title>26</title></rect><rect x="468.0" y="0" width="15" height="18" fill="#60a5fa" opacity="0.85"><title>25</title></rect><rect x="483.0" y="0" width="15" height="18" fill="#2dd4bf" opacity="0.85"><title>25</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">563</text></g><g transform="translate(0,23)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/ForeverAlone</text><rect x="158.0" y="0" width="232" height="18" fill="#a78bfa" opacity="0.85"><title>313</title></rect><rect x="390.0" y="0" width="47" height="18" fill="#f87171" opacity="0.85"><title>63</title></rect><rect x="437.0" y="0" width="5" height="18" fill="#60a5fa" opacity="0.85"><title>7</title></rect><rect x="442.0" y="0" width="56" height="18" fill="#2dd4bf" opacity="0.85"><title>76</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">459</text></g><g transform="translate(0,46)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/lonely</text><rect x="158.0" y="0" width="165" height="18" fill="#a78bfa" opacity="0.85"><title>121</title></rect><rect x="323.0" y="0" width="65" height="18" fill="#f87171" opacity="0.85"><title>48</title></rect><rect x="388.0" y="0" width="31" height="18" fill="#60a5fa" opacity="0.85"><title>23</title></rect><rect x="419.0" y="0" width="79" height="18" fill="#2dd4bf" opacity="0.85"><title>58</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">250</text></g><g transform="translate(0,69)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/virgin</text><rect x="158.0" y="0" width="319" height="18" fill="#a78bfa" opacity="0.85"><title>153</title></rect><rect x="477.0" y="0" width="6" height="18" fill="#f87171" opacity="0.85"><title>3</title></rect><rect x="483.0" y="0" width="15" height="18" fill="#2dd4bf" opacity="0.85"><title>7</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">163</text></g><g transform="translate(0,92)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/datingoverthirty</text><rect x="158.0" y="0" width="236" height="18" fill="#a78bfa" opacity="0.85"><title>79</title></rect><rect x="394.0" y="0" width="27" height="18" fill="#f87171" opacity="0.85"><title>9</title></rect><rect x="421.0" y="0" width="42" height="18" fill="#60a5fa" opacity="0.85"><title>14</title></rect><rect x="463.0" y="0" width="36" height="18" fill="#2dd4bf" opacity="0.85"><title>12</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">114</text></g><g transform="translate(0,115)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/socialskills</text><rect x="158.0" y="0" width="256" height="18" fill="#a78bfa" opacity="0.85"><title>79</title></rect><rect x="414.0" y="0" width="23" height="18" fill="#f87171" opacity="0.85"><title>7</title></rect><rect x="437.0" y="0" width="19" height="18" fill="#60a5fa" opacity="0.85"><title>6</title></rect><rect x="456.0" y="0" width="42" height="18" fill="#2dd4bf" opacity="0.85"><title>13</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">105</text></g><g transform="translate(0,138)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/AskMen</text><rect x="158.0" y="0" width="233" height="18" fill="#a78bfa" opacity="0.85"><title>46</title></rect><rect x="391.0" y="0" width="41" height="18" fill="#f87171" opacity="0.85"><title>8</title></rect><rect x="432.0" y="0" width="20" height="18" fill="#60a5fa" opacity="0.85"><title>4</title></rect><rect x="452.0" y="0" width="46" height="18" fill="#2dd4bf" opacity="0.85"><title>9</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">67</text></g><g transform="translate(0,161)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/datingoverforty</text><rect x="158.0" y="0" width="182" height="18" fill="#a78bfa" opacity="0.85"><title>30</title></rect><rect x="340.0" y="0" width="30" height="18" fill="#f87171" opacity="0.85"><title>5</title></rect><rect x="370.0" y="0" width="115" height="18" fill="#60a5fa" opacity="0.85"><title>19</title></rect><rect x="485.0" y="0" width="12" height="18" fill="#2dd4bf" opacity="0.85"><title>2</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">56</text></g></svg>
+  </div>
+  <div class="seg-card" id="stage__inexperienced_starter">
+    <div class="seg-top">
+      <div class="seg-name">Inexperienced Starter</div>
+      <div class="seg-n">1567<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Never dated or has almost no relationship experience. First time navigating this terrain.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:82%;background:#34d39988"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">1369 Reddit posts</span>
+      <span class="src-comment">170 comments</span>
+      <span class="src-book_review">23 book reviews</span>
+      <span class="src-quora">1 Quora answers</span>
+      <span class="src-youtube_comment">4 YouTube comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"As an adult, I have never had any friends. I have also never been in a relationship or dated anyone in my entire life. I struggle with being socially awkward. I am also not good looking. I have spent thousands of dollars on cosmetic procedures to try and improve."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I've never had a girlfriend, I've never had sex, I've never had my first kiss, I've never gone on a date, and I've never even held a girls hand."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"24 m
+
+Never had any friends, never been in a relationship ever, never even had my first kiss, nor have i ever even held hands with a girl
+
+Spent all my time staying inside, playing video games, too scared to talk to anyone since i assumed everyone would find me annyoing or just make fun of all my ho"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="stage__disillusioned_burned">
+    <div class="seg-top">
+      <div class="seg-name">Disillusioned or Burned</div>
+      <div class="seg-n">210<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Has tried and given up. Tired of rejection. Not sure it's worth trying anymore.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:11%;background:#34d39988"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">193 Reddit posts</span>
+      <span class="src-comment">16 comments</span>
+      <span class="src-book_review">1 book reviews</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"I went through a breakup about 9 months ago that honestly could’ve destroyed me. She moved on fast, I felt disrespected, and for a while I genuinely felt like I was alone in it. Even the people close to me didn’t really know how to tell me what was going on, so I was just left sitting there trying to piece it together …"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I could say that I pressure myself to start dating again, maybe it’s still too early and that I’m not ready, but then again when alone at home I feel the need to have a woman’s presence near me and I jump at every opportunity to go out with friends and maybe meet someone new."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"It was my first relationship after the divorce. It was a great experience but also incredibly emotionally taxing due to my anxiety and unresolved trauma from the divorce and infidelity. It was way too early to date for me, being only 5 months out from the divorce being finalized."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="stage__rebuilder">
+    <div class="seg-top">
+      <div class="seg-name">Rebuilder</div>
+      <div class="seg-n">156<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Coming back after a divorce, breakup, or long hiatus. Getting back out there with caution.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:8%;background:#34d39988"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">131 Reddit posts</span>
+      <span class="src-comment">21 comments</span>
+      <span class="src-book_review">3 book reviews</span>
+      <span class="src-youtube_comment">1 YouTube comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"I (57M) was divorced in the fall of 2020 after a 24-year marriage. Shortly thereafter I dated a woman I met online on and off for a couple months. It became clear, though, she was ready to get married while I was nowhere near ready even to date. So I went back and got to work on myself."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I'm 55m. Got divorced at 43 years old, widowed 3 years ago. Dated 4 women since then. First one was just not able to maturely communicate. Any time there was a whiff of conflict, she shut down and/or walked out. That lasted a few more months than it should have."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"The first 3 or 4 years after her death were honestly a blank. I feel like I am an imposter, that I'm living a life that doesn't belong to me. It feels like I've hijacked someone else's life and now I'm on autopilot, cruising through life. Whenever I have happy moments, I burst into tears thinking she should be here to …"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="stage__chronically_lonely">
+    <div class="seg-top">
+      <div class="seg-name">Chronically Lonely</div>
+      <div class="seg-n">268<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Has been alone for years or decades. This is his baseline, not a temporary state.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:14%;background:#34d39988"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">242 Reddit posts</span>
+      <span class="src-comment">15 comments</span>
+      <span class="src-book_review">10 book reviews</span>
+      <span class="src-quora">1 Quora answers</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"I (32M) have been single most of my life. I had a girlfriend in high school (ages ago, hardly remember it) and dated someone for about a year, six years ago. I moved around a lot in my 20s and didn't/couldn't find the means or time to establish something meaningful. I had met wonderful people but al"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"After 3 years single I was ready to finally move on and have some luck for once."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"As someone that’s been mostly single in my 34 years, it still amazes me how many/most people find it so easy to get in relationships or get ‘the spark’ gradually or suddenly reconnect and marry an old friend. Am I really all that different?"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="section" id="goal">
+  <div class="sec-header">
+    <div class="sec-stripe" style="background:#60a5fa"></div>
+    <div class="sec-title">By Aspiration & Goal</div>
+    <div class="sec-total">2815 total mentions across all sub-segments</div>
+  </div>
+  <p class="sec-desc">What men explicitly say they are trying to achieve — the stated outcome they are seeking</p>
+  <div class="inline-subchart">
+    <div class="sleg"><span class="sleg-item"><span class="sleg-dot" style="background:#60a5fa"></span>Find a First Date</span><span class="sleg-item"><span class="sleg-dot" style="background:#f87171"></span>Get Sexual Experience</span><span class="sleg-item"><span class="sleg-dot" style="background:#34d399"></span>Become More Attractive / Level Up</span><span class="sleg-item"><span class="sleg-dot" style="background:#fbbf24"></span>Get a Girlfriend / Find a Relationship</span><span class="sleg-item"><span class="sleg-dot" style="background:#a78bfa"></span>Get the Specific Woman He Likes</span></div>
+    <svg viewBox="0 0 532 188" width="100%" height="188"><g transform="translate(0,0)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/dating_advice</text><rect x="158.0" y="0" width="28" height="18" fill="#60a5fa" opacity="0.85"><title>65</title></rect><rect x="186.0" y="0" width="43" height="18" fill="#f87171" opacity="0.85"><title>99</title></rect><rect x="229.0" y="0" width="24" height="18" fill="#34d399" opacity="0.85"><title>55</title></rect><rect x="253.0" y="0" width="231" height="18" fill="#fbbf24" opacity="0.85"><title>530</title></rect><rect x="484.0" y="0" width="13" height="18" fill="#a78bfa" opacity="0.85"><title>30</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">779</text></g><g transform="translate(0,23)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/ForeverAlone</text><rect x="158.0" y="0" width="18" height="18" fill="#60a5fa" opacity="0.85"><title>33</title></rect><rect x="176.0" y="0" width="37" height="18" fill="#f87171" opacity="0.85"><title>70</title></rect><rect x="213.0" y="0" width="22" height="18" fill="#34d399" opacity="0.85"><title>41</title></rect><rect x="235.0" y="0" width="258" height="18" fill="#fbbf24" opacity="0.85"><title>486</title></rect><rect x="493.0" y="0" width="5" height="18" fill="#a78bfa" opacity="0.85"><title>10</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">640</text></g><g transform="translate(0,46)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/lonely</text><rect x="158.0" y="0" width="14" height="18" fill="#60a5fa" opacity="0.85"><title>12</title></rect><rect x="172.0" y="0" width="13" height="18" fill="#f87171" opacity="0.85"><title>11</title></rect><rect x="185.0" y="0" width="30" height="18" fill="#34d399" opacity="0.85"><title>26</title></rect><rect x="215.0" y="0" width="273" height="18" fill="#fbbf24" opacity="0.85"><title>233</title></rect><rect x="488.0" y="0" width="9" height="18" fill="#a78bfa" opacity="0.85"><title>8</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">290</text></g><g transform="translate(0,69)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/virgin</text><rect x="158.0" y="0" width="12" height="18" fill="#60a5fa" opacity="0.85"><title>6</title></rect><rect x="170.0" y="0" width="163" height="18" fill="#f87171" opacity="0.85"><title>82</title></rect><rect x="333.0" y="0" width="12" height="18" fill="#34d399" opacity="0.85"><title>6</title></rect><rect x="345.0" y="0" width="149" height="18" fill="#fbbf24" opacity="0.85"><title>75</title></rect><rect x="494.0" y="0" width="4" height="18" fill="#a78bfa" opacity="0.85"><title>2</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">171</text></g><g transform="translate(0,92)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">Books/Reviews</text><rect x="158.0" y="0" width="10" height="18" fill="#f87171" opacity="0.85"><title>4</title></rect><rect x="168.0" y="0" width="26" height="18" fill="#34d399" opacity="0.85"><title>10</title></rect><rect x="194.0" y="0" width="303" height="18" fill="#fbbf24" opacity="0.85"><title>116</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">130</text></g><g transform="translate(0,115)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/AskMen</text><rect x="158.0" y="0" width="17" height="18" fill="#60a5fa" opacity="0.85"><title>6</title></rect><rect x="175.0" y="0" width="75" height="18" fill="#f87171" opacity="0.85"><title>27</title></rect><rect x="250.0" y="0" width="17" height="18" fill="#34d399" opacity="0.85"><title>6</title></rect><rect x="267.0" y="0" width="207" height="18" fill="#fbbf24" opacity="0.85"><title>75</title></rect><rect x="474.0" y="0" width="25" height="18" fill="#a78bfa" opacity="0.85"><title>9</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">123</text></g><g transform="translate(0,138)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/socialskills</text><rect x="158.0" y="0" width="34" height="18" fill="#60a5fa" opacity="0.85"><title>10</title></rect><rect x="192.0" y="0" width="24" height="18" fill="#f87171" opacity="0.85"><title>7</title></rect><rect x="216.0" y="0" width="94" height="18" fill="#34d399" opacity="0.85"><title>28</title></rect><rect x="310.0" y="0" width="182" height="18" fill="#fbbf24" opacity="0.85"><title>54</title></rect><rect x="492.0" y="0" width="7" height="18" fill="#a78bfa" opacity="0.85"><title>2</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">101</text></g><g transform="translate(0,161)"><text x="148" y="13" text-anchor="end" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">r/datingoverthirty</text><rect x="158.0" y="0" width="17" height="18" fill="#60a5fa" opacity="0.85"><title>5</title></rect><rect x="175.0" y="0" width="65" height="18" fill="#f87171" opacity="0.85"><title>19</title></rect><rect x="240.0" y="0" width="24" height="18" fill="#34d399" opacity="0.85"><title>7</title></rect><rect x="264.0" y="0" width="224" height="18" fill="#fbbf24" opacity="0.85"><title>66</title></rect><rect x="488.0" y="0" width="10" height="18" fill="#a78bfa" opacity="0.85"><title>3</title></rect><text x="494" y="13" fill="#64748b" font-size="10" font-family="Segoe UI,sans-serif">100</text></g></svg>
+  </div>
+  <div class="seg-card" id="goal__first_date">
+    <div class="seg-top">
+      <div class="seg-name">Find a First Date</div>
+      <div class="seg-n">155<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">The immediate goal is simply to go on a date — first contact with the dating experience.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:8%;background:#60a5fa88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">140 Reddit posts</span>
+      <span class="src-comment">15 comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"So, I'm 25 years old and have never been on a date."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"My problem at the time was that I had no dates. At least, that's what I thought. But actually that was the symptom of my problem. The root cause of the problem was that I had no social skills, no confidence, no flirting skills. I wasn't able to go up to a girl and say hello."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I got so nervous, I wasn't used to attention and it took me all weekend and two six packs of hard cider to ask her out which she said yes right away."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="goal__get_sex">
+    <div class="seg-top">
+      <div class="seg-name">Get Sexual Experience</div>
+      <div class="seg-n">427<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">The explicit goal is physical intimacy — losing virginity, having a sex life, hookups.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:22%;background:#60a5fa88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">358 Reddit posts</span>
+      <span class="src-comment">63 comments</span>
+      <span class="src-book_review">4 book reviews</span>
+      <span class="src-youtube_comment">2 YouTube comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"I have a lot of fetishes, and that helps me not go crazy over a lack of a sex life."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I have only had sex 1 time in my entire 27 years and this has always affected me. I'm very lonely and I have some 'good guys' attributes which I don't like, because I feel like girls once they get to know me can get to feel bored about me."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"At 25, I was frustrated as hell by my inability to find a date - watching my friends get laid and snag girlfriends while I spent my 20s alone."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="goal__higher_value">
+    <div class="seg-top">
+      <div class="seg-name">Become More Attractive / Level Up</div>
+      <div class="seg-n">240<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Self-improvement oriented: improve looks, confidence, social skills to increase attractiveness.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:13%;background:#60a5fa88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">211 Reddit posts</span>
+      <span class="src-comment">17 comments</span>
+      <span class="src-book_review">10 book reviews</span>
+      <span class="src-youtube_comment">2 YouTube comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"I got into self improvement when I was 15."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I’ve also been trying to work on myself—losing weight, getting into a better mindset, that kind of thing—so part of this is just pushing myself to get out there more and build some confidence."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I am not actively dating at the moment as I decided to work on my mental health and it's getting better yet from my previous experiences the moment you say you have family in mind or have a desire to have a child some"
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="goal__get_girlfriend">
+    <div class="seg-top">
+      <div class="seg-name">Get a Girlfriend / Find a Relationship</div>
+      <div class="seg-n">1902<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">The most common goal: a real, committed relationship with someone who chooses him.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:100%;background:#60a5fa88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">1559 Reddit posts</span>
+      <span class="src-comment">223 comments</span>
+      <span class="src-book_review">116 book reviews</span>
+      <span class="src-quora">1 Quora answers</span>
+      <span class="src-youtube_comment">3 YouTube comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"I've set a goal to find someone to settle down with in the next few years (i know it will take time), but holy moly the options out there aren't great and I'm not sure if I am possibly regretting not getting settled down as early as possible."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I have also never been in a relationship or dated anyone in my entire life."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"She knows I've never been in a relationship but she wasn't 100% sure about me being a virgin."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="seg-card" id="goal__get_specific_woman">
+    <div class="seg-top">
+      <div class="seg-name">Get the Specific Woman He Likes</div>
+      <div class="seg-n">91<small>mentions</small></div>
+    </div>
+    <p class="seg-desc">Fixated on making a particular person like him back. Narrower and more emotionally charged.</p>
+    <div class="bar-bg"><div class="bar-fill" style="width:5%;background:#60a5fa88"></div></div>
+    <div class="sources">
+      <span class="src-reddit_post">80 Reddit posts</span>
+      <span class="src-comment">11 comments</span>
+    </div>
+    <div class="quotes-label">Representative Quotes</div>
+    <div class="quote-list">
+      <div class="quote-item">"I want her to be comfortable and honestly maybe this is all in my head and it’s nbd."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"I can’t teach you how attract a specific girl using techniques, but I CAN teach you how to be an attractive man who naturally draws women in."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+      <div class="quote-item">"After I was able to come down I could finally apologize, feel the guilt of hurting the woman I love, and hope to change-until the classic abusive cycle would happen again the next time."
+        <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</body>
+</html>
