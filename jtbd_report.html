@@ -1,0 +1,2898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lonely Men — Jobs to Be Done by Subsegment</title>
+<style>
+:root {
+  --bg: #0f172a; --surface: #1e293b; --surface2: #263148;
+  --border: #334155; --text: #e2e8f0; --muted: #94a3b8; --accent: #6366f1;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text);
+       font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; line-height: 1.5; }
+
+.header { background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 60%);
+           border-bottom: 1px solid var(--border); padding: 32px 40px 24px; }
+.header h1 { font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.header p  { color: var(--muted); font-size: 13px; max-width: 680px; line-height: 1.7; }
+.meta { display: flex; gap: 28px; margin-top: 18px; flex-wrap: wrap; }
+.meta-stat .n { font-size: 26px; font-weight: 700; color: var(--accent); }
+.meta-stat .l { font-size: 11px; text-transform: uppercase; letter-spacing:.08em; color: var(--muted); margin-top:2px; }
+
+/* Layout */
+.layout { display: flex; min-height: 100vh; }
+.sidebar { width: 230px; flex-shrink: 0; background: var(--surface);
+            border-right: 1px solid var(--border); position: sticky; top: 0;
+            height: 100vh; overflow-y: auto; padding: 20px 0; }
+.sidebar a { display: block; padding: 6px 18px; color: var(--muted); text-decoration: none;
+              font-size: 12px; border-left: 3px solid transparent; transition: all .15s; }
+.sidebar a:hover { color: var(--text); background: rgba(255,255,255,.03); }
+.sidebar a.active { color: var(--text); border-left-color: var(--accent); background: rgba(99,102,241,.08); }
+.sidebar .sec-label { padding: 14px 18px 4px; font-size: 10px; text-transform: uppercase;
+                       letter-spacing: .1em; color: #475569; font-weight: 700; }
+
+.content { flex: 1; padding: 32px 40px 80px; max-width: 900px; }
+
+/* Dimension header */
+.dim-header { display: flex; align-items: center; gap: 12px; margin: 48px 0 20px;
+               padding-bottom: 14px; border-bottom: 2px solid var(--border); }
+.dim-header:first-child { margin-top: 0; }
+.dim-stripe { width: 5px; height: 32px; border-radius: 3px; flex-shrink: 0; }
+.dim-title  { font-size: 19px; font-weight: 700; }
+.dim-sub    { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* Segment card */
+.seg-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+             padding: 20px 22px; margin-bottom: 16px; }
+.seg-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 6px; }
+.seg-name { font-size: 15px; font-weight: 700; flex: 1; }
+.seg-count { font-size: 20px; font-weight: 800; color: var(--accent);
+              line-height: 1; min-width: 48px; text-align: right; }
+.seg-count small { display: block; font-size: 10px; font-weight: 400;
+                    color: var(--muted); text-align: right; }
+.seg-desc { font-size: 12px; color: var(--muted); font-style: italic;
+             margin-bottom: 16px; line-height: 1.6; }
+.seg-match { font-size: 11px; color: #475569; margin-bottom: 14px; }
+
+/* JTBD list */
+.jtbd-label { font-size: 10px; text-transform: uppercase; letter-spacing: .1em;
+               color: #64748b; font-weight: 700; margin-bottom: 10px; }
+.jtbd-list  { display: flex; flex-direction: column; gap: 9px; }
+.jtbd-row   { display: grid; grid-template-columns: 1fr 150px 44px; align-items: center; gap: 10px; }
+.jtbd-rank  { font-size: 11px; color: #475569; font-weight: 700; text-align: center;
+               background: var(--surface2); border-radius: 4px; padding: 2px 5px; }
+.jtbd-row-inner { display: grid; grid-template-columns: 1fr 150px 44px; align-items: center; gap: 10px; width: 100%; }
+.jtbd-text  { font-size: 12px; color: #cbd5e1; }
+.jtbd-bar-wrap { background: var(--border); border-radius: 3px; height: 6px; overflow: hidden; }
+.jtbd-bar   { height: 6px; border-radius: 3px; transition: width .3s; }
+.jtbd-n     { font-size: 12px; font-weight: 700; color: var(--muted); text-align: right; }
+.jtbd-n-top { color: var(--text); }
+.jtbd-empty { font-size: 12px; color: #475569; font-style: italic; }
+
+/* Top JTBD highlight */
+.jtbd-row-top .jtbd-text { color: #e2e8f0; font-weight: 600; }
+.jtbd-row-top .jtbd-n { color: var(--text); }
+
+/* ── Summary section ── */
+.summary-section  { margin-bottom: 60px; scroll-margin-top: 24px; }
+.summary-title    { font-size: 22px; font-weight: 800; margin-bottom: 4px; color: #fff; }
+.summary-sub      { font-size: 13px; color: var(--muted); margin-bottom: 32px; line-height: 1.7; max-width: 680px; }
+
+.sum-dim-block    { background: var(--surface); border: 1px solid var(--border);
+                     border-radius: 12px; padding: 20px 22px; margin-bottom: 16px; }
+.sum-dim-header   { display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+                     padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.sum-dim-stripe   { width: 4px; height: 26px; border-radius: 2px; flex-shrink: 0; }
+.sum-dim-title    { font-size: 14px; font-weight: 700; }
+.sum-dim-sub      { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+/* Top lists: two columns, no bars */
+.sum-dim-cols     { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 18px; }
+.sum-half         { display: flex; flex-direction: column; }
+.sum-half-label   { font-size: 10px; font-weight: 700; text-transform: uppercase;
+                     letter-spacing: .1em; color: #475569; margin-bottom: 10px; }
+.sum-item         { display: flex; justify-content: space-between; align-items: baseline;
+                     gap: 10px; padding: 6px 0; border-bottom: 1px solid #1e293b; }
+.sum-item:last-child { border-bottom: none; }
+.sum-item-text    { font-size: 11px; color: #94a3b8; line-height: 1.4; flex: 1; }
+.sum-item-top .sum-item-text { color: #e2e8f0; font-weight: 600; }
+.sum-item-n       { font-size: 11px; font-weight: 800; white-space: nowrap; flex-shrink: 0; }
+.sum-item-tag     { font-size: 9px; color: #475569; display: block; margin-top: 1px; }
+
+/* Per-subsegment list inside summary */
+.sum-sub-table    { border-top: 1px solid var(--border); padding-top: 14px; }
+.sum-sub-head     { display: grid; grid-template-columns: 160px 1fr 1fr; gap: 10px;
+                     padding-bottom: 8px; }
+.sum-sub-head span { font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
+                      color: #475569; font-weight: 700; }
+.sum-sub-row      { display: grid; grid-template-columns: 160px 1fr 1fr; gap: 10px;
+                     padding: 8px 0; border-top: 1px solid #1e293b; align-items: start; }
+.sum-sub-seg      { font-size: 11px; font-weight: 600; line-height: 1.4; padding-top: 1px; }
+.sum-sub-entry    { display: flex; flex-direction: column; gap: 2px; }
+.sum-sub-text     { font-size: 11px; color: #94a3b8; line-height: 1.4; }
+.sum-sub-n        { font-size: 10px; font-weight: 700; }
+
+/* Blocker list */
+.blk-label  { font-size: 10px; text-transform: uppercase; letter-spacing: .1em;
+               color: #b45309; font-weight: 700; margin-top: 20px; margin-bottom: 10px;
+               padding-top: 14px; border-top: 1px solid #292524; display: flex;
+               align-items: center; gap: 6px; }
+.blk-label::before { content: "⚠"; font-size: 11px; }
+.blk-list   { display: flex; flex-direction: column; gap: 9px; }
+.blk-row    { display: grid; grid-template-columns: 1fr 150px 44px; align-items: center; gap: 10px; }
+.blk-text   { font-size: 12px; color: #fcd34d; }
+.blk-bar-wrap { background: #292524; border-radius: 3px; height: 6px; overflow: hidden; }
+.blk-bar    { height: 6px; border-radius: 3px; }
+.blk-n      { font-size: 12px; font-weight: 700; color: #78716c; text-align: right; }
+.blk-row-top .blk-text { color: #fef3c7; font-weight: 600; }
+.blk-row-top .blk-n    { color: #fcd34d; }
+.blk-empty  { font-size: 12px; color: #57534e; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Lonely Men — Jobs to Be Done by Subsegment</h1>
+  <p>For each of the 28 subsegments across 5 dimensions, this report lists the most frequently needed outcomes — derived from 20,981 Reddit posts, comments, and reviews. Ranked by number of matching records. Use this to understand what each man in each subsegment is actually trying to accomplish.</p>
+  <div class="meta">
+    <div class="meta-stat"><div class="n">20,981</div><div class="l">Records Analysed</div></div>
+    <div class="meta-stat"><div class="n">5</div><div class="l">Dimensions</div></div>
+    <div class="meta-stat"><div class="n">28</div><div class="l">Subsegments</div></div>
+    <div class="meta-stat"><div class="n">204</div><div class="l">Total JTBDs</div></div>
+    <div class="meta-stat"><div class="n">196</div><div class="l">Total Blockers</div></div>
+  </div>
+</div>
+
+<div class="layout">
+<nav class="sidebar">
+  <div class="sec-label">Overview</div>
+  <a href="#summary" style="font-weight:600;color:#a5b4fc">Executive Summary</a>
+  <div class="sec-label">By Need</div>
+  <a href="#need__get_noticed_desired">Get Noticed & Desired <span style="float:right;color:#475569">160</span></a>
+  <a href="#need__get_chosen_loved">Get Chosen & Loved <span style="float:right;color:#475569">833</span></a>
+  <div class="sec-label">By Fear</div>
+  <a href="#fear__stay_lonely">Stay Lonely Forever <span style="float:right;color:#475569">609</span></a>
+  <a href="#fear__shame_judgment">Get Shamed or Judged <span style="float:right;color:#475569">188</span></a>
+  <a href="#fear__rejection">Be Rejected <span style="float:right;color:#475569">130</span></a>
+  <a href="#fear__run_out_of_time">Run Out of Time <span style="float:right;color:#475569">57</span></a>
+  <a href="#fear__get_hurt">Get Hurt in a Relationship <span style="float:right;color:#475569">64</span></a>
+  <div class="sec-label">By Cause</div>
+  <a href="#cause__friendzoned">Friendzoned <span style="float:right;color:#475569">209</span></a>
+  <a href="#cause__nice_guy_no_spark">Nice Guy, No Spark <span style="float:right;color:#475569">377</span></a>
+  <a href="#cause__clueless_flirting">Clueless Flirting / Can't Read… <span style="float:right;color:#475569">149</span></a>
+  <a href="#cause__poor_looks">Poor Looks <span style="float:right;color:#475569">1032</span></a>
+  <a href="#cause__bad_character_unknown">Unknown Cause <span style="float:right;color:#475569">280</span></a>
+  <a href="#cause__fixated_one_woman">Wants Only Her <span style="float:right;color:#475569">36</span></a>
+  <a href="#cause__too_busy">Too Busy to Date <span style="float:right;color:#475569">63</span></a>
+  <a href="#cause__afraid_women">Negative Perception of Women <span style="float:right;color:#475569">39</span></a>
+  <a href="#cause__brutal_rejection">Was Brutally Rejected <span style="float:right;color:#475569">22</span></a>
+  <a href="#cause__toxic_past">Was in a Toxic Relationship <span style="float:right;color:#475569">142</span></a>
+  <a href="#cause__inexperienced_shy">Inexperienced & Shy <span style="float:right;color:#475569">571</span></a>
+  <a href="#cause__no_chemistry_sexual">No Chemistry / No Spark <span style="float:right;color:#475569">4</span></a>
+  <div class="sec-label">By Stage</div>
+  <a href="#stage__inexperienced_starter">Inexperienced Starter <span style="float:right;color:#475569">1567</span></a>
+  <a href="#stage__disillusioned_burned">Disillusioned / Burned <span style="float:right;color:#475569">210</span></a>
+  <a href="#stage__rebuilder">Rebuilder <span style="float:right;color:#475569">156</span></a>
+  <a href="#stage__chronically_lonely">Chronically Lonely <span style="float:right;color:#475569">268</span></a>
+  <div class="sec-label">By Goal</div>
+  <a href="#goal__first_date">Find a First Date <span style="float:right;color:#475569">155</span></a>
+  <a href="#goal__get_sex">Get Sexual Experience <span style="float:right;color:#475569">427</span></a>
+  <a href="#goal__higher_value">Become More Attractive / Level… <span style="float:right;color:#475569">240</span></a>
+  <a href="#goal__get_girlfriend">Get a Girlfriend / Relationshi… <span style="float:right;color:#475569">1902</span></a>
+  <a href="#goal__get_specific_woman">Get the Specific Woman He Like… <span style="float:right;color:#475569">91</span></a>
+</nav>
+<div class="content">
+<div class="summary-section" id="summary">
+  <div class="summary-title">Executive Summary</div>
+  <p class="summary-sub">Top JTBDs and blockers per segment — based on 20,981 Reddit posts, comments, and reviews across 28 subsegments. Use this to quickly understand what each group is trying to do and what stops them.</p>
+  <div class="sum-dim-block">
+    <div class="sum-dim-header"><div class="sum-dim-stripe" style="background:#a78bfa"></div><div><div class="sum-dim-title" style="color:#a78bfa">By Need</div><div class="sum-dim-sub">What men ultimately want — stated or implied</div></div></div>
+    <div class="sum-dim-cols">
+      <div class="sum-half"><div class="sum-half-label">🎯 Top JTBDs</div>
+        <div class="sum-item sum-item-top"><span class="sum-item-text">Feel wanted and chosen for who I am<span class="sum-item-tag">Get Chosen & Loved</span></span><span class="sum-item-n" style="color:#a78bfa">133</span></div>
+        <div class="sum-item"><span class="sum-item-text">Experience being loved by a romantic partner<span class="sum-item-tag">Get Chosen & Loved</span></span><span class="sum-item-n" style="color:#a78bfa">126</span></div>
+        <div class="sum-item"><span class="sum-item-text">Get matches and interest on dating apps<span class="sum-item-tag">Get Noticed & Desired</span></span><span class="sum-item-n" style="color:#a78bfa">119</span></div>
+        <div class="sum-item"><span class="sum-item-text">End the loneliness by building real intimacy<span class="sum-item-tag">Get Chosen & Loved</span></span><span class="sum-item-n" style="color:#a78bfa">46</span></div>
+        <div class="sum-item"><span class="sum-item-text">Fix dating profile to convert views into dates<span class="sum-item-tag">Get Noticed & Desired</span></span><span class="sum-item-n" style="color:#a78bfa">41</span></div>
+        <div class="sum-item"><span class="sum-item-text">Become visible to women in everyday life<span class="sum-item-tag">Get Noticed & Desired</span></span><span class="sum-item-n" style="color:#a78bfa">37</span></div>
+        <div class="sum-item"><span class="sum-item-text">Find a companion to share life with<span class="sum-item-tag">Get Chosen & Loved</span></span><span class="sum-item-n" style="color:#a78bfa">30</span></div>
+      </div>
+      <div class="sum-half"><div class="sum-half-label">🚧 Top Blockers</div>
+        <div class="sum-item sum-item-top"><span class="sum-item-text" style="color:#fef3c7">Has never experienced reciprocal love so doesn't know how<span class="sum-item-tag">Get Chosen & Loved</span></span><span class="sum-item-n" style="color:#f59e0b">128</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Dating apps yield zero matches despite sustained effort<span class="sum-item-tag">Get Noticed & Desired</span></span><span class="sum-item-n" style="color:#f59e0b">105</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Feel too needy or desperate and it shows<span class="sum-item-tag">Get Chosen & Loved</span></span><span class="sum-item-n" style="color:#f59e0b">30</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">No feedback on why they're being ignored or rejected<span class="sum-item-tag">Get Noticed & Desired</span></span><span class="sum-item-n" style="color:#f59e0b">23</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Gets stuck as the option women keep around but don't choose<span class="sum-item-tag">Get Chosen & Loved</span></span><span class="sum-item-n" style="color:#f59e0b">15</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Appearance feels like a hard ceiling they can't break<span class="sum-item-tag">Get Noticed & Desired</span></span><span class="sum-item-n" style="color:#f59e0b">15</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Emotional unavailability (his own walls) blocks connection<span class="sum-item-tag">Get Chosen & Loved</span></span><span class="sum-item-n" style="color:#f59e0b">10</span></div>
+      </div>
+    </div>
+    <div class="sum-sub-table">
+      <div class="sum-sub-head"><span>Subsegment</span><span>🎯 #1 JTBD</span><span>🚧 #1 Blocker</span></div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#a78bfa">Get Noticed & Desired</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Get matches and interest on dating apps</span><span class="sum-sub-n" style="color:#a78bfa">119 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Dating apps yield zero matches despite sustained effort</span><span class="sum-sub-n" style="color:#f59e0b">105 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#a78bfa">Get Chosen & Loved</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Feel wanted and chosen for who I am</span><span class="sum-sub-n" style="color:#a78bfa">133 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Has never experienced reciprocal love so doesn't know how</span><span class="sum-sub-n" style="color:#f59e0b">128 mentions</span></span>
+      </div>
+    </div>
+  </div>
+  <div class="sum-dim-block">
+    <div class="sum-dim-header"><div class="sum-dim-stripe" style="background:#f87171"></div><div><div class="sum-dim-title" style="color:#f87171">By Fear</div><div class="sum-dim-sub">The underlying fears that drive avoidance, paralysis, and resignation</div></div></div>
+    <div class="sum-dim-cols">
+      <div class="sum-half"><div class="sum-half-label">🎯 Top JTBDs</div>
+        <div class="sum-item sum-item-top"><span class="sum-item-text">Stop catastrophizing about dying alone<span class="sum-item-tag">Stay Lonely Forever</span></span><span class="sum-item-n" style="color:#f87171">158</span></div>
+        <div class="sum-item"><span class="sum-item-text">Accept uncertainty while still taking action<span class="sum-item-tag">Stay Lonely Forever</span></span><span class="sum-item-n" style="color:#f87171">96</span></div>
+        <div class="sum-item"><span class="sum-item-text">Reclaim confidence despite past humiliations<span class="sum-item-tag">Get Shamed or Judged</span></span><span class="sum-item-n" style="color:#f87171">83</span></div>
+        <div class="sum-item"><span class="sum-item-text">Stop feeling ashamed of being a virgin at my age<span class="sum-item-tag">Get Shamed or Judged</span></span><span class="sum-item-n" style="color:#f87171">70</span></div>
+        <div class="sum-item"><span class="sum-item-text">Build hope without feeding denial<span class="sum-item-tag">Stay Lonely Forever</span></span><span class="sum-item-n" style="color:#f87171">53</span></div>
+        <div class="sum-item"><span class="sum-item-text">Build courage to approach despite fear of rejection<span class="sum-item-tag">Be Rejected</span></span><span class="sum-item-n" style="color:#f87171">51</span></div>
+        <div class="sum-item"><span class="sum-item-text">Connect with men who understand this experience<span class="sum-item-tag">Stay Lonely Forever</span></span><span class="sum-item-n" style="color:#f87171">40</span></div>
+      </div>
+      <div class="sum-half"><div class="sum-half-label">🚧 Top Blockers</div>
+        <div class="sum-item sum-item-top"><span class="sum-item-text" style="color:#fef3c7">Online and in-person spaces mock men like him<span class="sum-item-tag">Get Shamed or Judged</span></span><span class="sum-item-n" style="color:#f59e0b">90</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Depression drains the motivation to try anything<span class="sum-item-tag">Stay Lonely Forever</span></span><span class="sum-item-n" style="color:#f59e0b">39</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">No male peers to normalise the situation or offer guidance<span class="sum-item-tag">Get Shamed or Judged</span></span><span class="sum-item-n" style="color:#f59e0b">29</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Sees only evidence that he's destined to be alone<span class="sum-item-tag">Stay Lonely Forever</span></span><span class="sum-item-n" style="color:#f59e0b">22</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Isolation means no social path to meet anyone<span class="sum-item-tag">Stay Lonely Forever</span></span><span class="sum-item-n" style="color:#f59e0b">19</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Rumination and catastrophizing prevent taking any action<span class="sum-item-tag">Stay Lonely Forever</span></span><span class="sum-item-n" style="color:#f59e0b">15</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Trust was broken so completely that new relationships feel dangerous<span class="sum-item-tag">Get Hurt in a Relationship</span></span><span class="sum-item-n" style="color:#f59e0b">12</span></div>
+      </div>
+    </div>
+    <div class="sum-sub-table">
+      <div class="sum-sub-head"><span>Subsegment</span><span>🎯 #1 JTBD</span><span>🚧 #1 Blocker</span></div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#f87171">Stay Lonely Forever</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Stop catastrophizing about dying alone</span><span class="sum-sub-n" style="color:#f87171">158 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Depression drains the motivation to try anything</span><span class="sum-sub-n" style="color:#f59e0b">39 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#f87171">Get Shamed or Judged</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Reclaim confidence despite past humiliations</span><span class="sum-sub-n" style="color:#f87171">83 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Online and in-person spaces mock men like him</span><span class="sum-sub-n" style="color:#f59e0b">90 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#f87171">Be Rejected</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Build courage to approach despite fear of rejection</span><span class="sum-sub-n" style="color:#f87171">51 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Approach anxiety creates a physical freeze response</span><span class="sum-sub-n" style="color:#f59e0b">6 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#f87171">Run Out of Time</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Stop comparing my timeline to others' milestones</span><span class="sum-sub-n" style="color:#f87171">12 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Biological urgency creates constant low-level dread</span><span class="sum-sub-n" style="color:#f59e0b">12 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#f87171">Get Hurt in a Relationship</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Learn to trust again after being betrayed</span><span class="sum-sub-n" style="color:#f87171">17 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Trust was broken so completely that new relationships feel dangerous</span><span class="sum-sub-n" style="color:#f59e0b">12 mentions</span></span>
+      </div>
+    </div>
+  </div>
+  <div class="sum-dim-block">
+    <div class="sum-dim-header"><div class="sum-dim-stripe" style="background:#fb923c"></div><div><div class="sum-dim-title" style="color:#fb923c">By Cause</div><div class="sum-dim-sub">How men explain why they are where they are</div></div></div>
+    <div class="sum-dim-cols">
+      <div class="sum-half"><div class="sum-half-label">🎯 Top JTBDs</div>
+        <div class="sum-item sum-item-top"><span class="sum-item-text">Stop being seen as safe and predictable by women<span class="sum-item-tag">Nice Guy, No Spark</span></span><span class="sum-item-n" style="color:#fb923c">319</span></div>
+        <div class="sum-item"><span class="sum-item-text">Compete in the dating market as a short or average-looking man<span class="sum-item-tag">Poor Looks</span></span><span class="sum-item-n" style="color:#fb923c">180</span></div>
+        <div class="sum-item"><span class="sum-item-text">Understand which non-physical traits compensate for looks<span class="sum-item-tag">Poor Looks</span></span><span class="sum-item-n" style="color:#fb923c">178</span></div>
+        <div class="sum-item"><span class="sum-item-text">Improve appearance through grooming, fitness, and style<span class="sum-item-tag">Poor Looks</span></span><span class="sum-item-n" style="color:#fb923c">167</span></div>
+        <div class="sum-item"><span class="sum-item-text">Escape the friend zone with a specific woman<span class="sum-item-tag">Friendzoned</span></span><span class="sum-item-n" style="color:#fb923c">144</span></div>
+        <div class="sum-item"><span class="sum-item-text">Stop blaming myself for something I can't diagnose<span class="sum-item-tag">Unknown Cause</span></span><span class="sum-item-n" style="color:#fb923c">56</span></div>
+        <div class="sum-item"><span class="sum-item-text">Rebuild trust in women after cheating or manipulation<span class="sum-item-tag">Was in a Toxic Relationship</span></span><span class="sum-item-n" style="color:#fb923c">39</span></div>
+      </div>
+      <div class="sum-half"><div class="sum-half-label">🚧 Top Blockers</div>
+        <div class="sum-item sum-item-top"><span class="sum-item-text" style="color:#fef3c7">Height is immutable and feels deterministic in dating<span class="sum-item-tag">Poor Looks</span></span><span class="sum-item-n" style="color:#f59e0b">171</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Dating apps filter by looks before personality gets a chance<span class="sum-item-tag">Poor Looks</span></span><span class="sum-item-n" style="color:#f59e0b">35</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Trust is broken at a fundamental level — hard to rebuild<span class="sum-item-tag">Was in a Toxic Relationship</span></span><span class="sum-item-n" style="color:#f59e0b">27</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">No male mentors who ever taught them how flirting works<span class="sum-item-tag">Clueless Flirting / Can't Read…</span></span><span class="sum-item-n" style="color:#f59e0b">24</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Social anxiety prevents reading the room in real time<span class="sum-item-tag">Clueless Flirting / Can't Read…</span></span><span class="sum-item-n" style="color:#f59e0b">12</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Women's stated vs revealed preferences feel contradictory<span class="sum-item-tag">Poor Looks</span></span><span class="sum-item-n" style="color:#f59e0b">9</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Embarrassment compounds with each year of inexperience<span class="sum-item-tag">Inexperienced & Shy</span></span><span class="sum-item-n" style="color:#f59e0b">9</span></div>
+      </div>
+    </div>
+    <div class="sum-sub-table">
+      <div class="sum-sub-head"><span>Subsegment</span><span>🎯 #1 JTBD</span><span>🚧 #1 Blocker</span></div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#fb923c">Friendzoned</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Escape the friend zone with a specific woman</span><span class="sum-sub-n" style="color:#fb923c">144 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Too afraid to express romantic interest early on</span><span class="sum-sub-n" style="color:#f59e0b">4 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#fb923c">Nice Guy, No Spark</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Stop being seen as safe and predictable by women</span><span class="sum-sub-n" style="color:#fb923c">319 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Afraid that adding confidence or edge means becoming a jerk</span><span class="sum-sub-n" style="color:#f59e0b">9 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#fb923c">Clueless Flirting / Can't Read Room</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Develop awareness of the social dynamics in dating</span><span class="sum-sub-n" style="color:#fb923c">20 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">No male mentors who ever taught them how flirting works</span><span class="sum-sub-n" style="color:#f59e0b">24 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#fb923c">Poor Looks</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Compete in the dating market as a short or average-looking man</span><span class="sum-sub-n" style="color:#fb923c">180 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Height is immutable and feels deterministic in dating</span><span class="sum-sub-n" style="color:#f59e0b">171 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#fb923c">Unknown Cause</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Stop blaming myself for something I can't diagnose</span><span class="sum-sub-n" style="color:#fb923c">56 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Women ghost or disappear with no explanation</span><span class="sum-sub-n" style="color:#f59e0b">6 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#fb923c">Wants Only Her</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Accept unrequited love and redirect energy</span><span class="sum-sub-n" style="color:#fb923c">12 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Rumination about her is automatic and hard to stop</span><span class="sum-sub-n" style="color:#f59e0b">3 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#fb923c">Too Busy to Date</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Build a social life outside work to meet people</span><span class="sum-sub-n" style="color:#fb923c">34 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Exhaustion after work kills motivation to engage socially</span><span class="sum-sub-n" style="color:#f59e0b">1 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#fb923c">Negative Perception of Women</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Process what happened that made me afraid of women</span><span class="sum-sub-n" style="color:#fb923c">3 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Trust was broken at a level that feels permanent</span><span class="sum-sub-n" style="color:#f59e0b">0 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#fb923c">Was Brutally Rejected</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Stop the rejection memory from playing on repeat</span><span class="sum-sub-n" style="color:#fb923c">7 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">The public nature of the rejection spread the shame further</span><span class="sum-sub-n" style="color:#f59e0b">1 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#fb923c">Was in a Toxic Relationship</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Rebuild trust in women after cheating or manipulation</span><span class="sum-sub-n" style="color:#fb923c">39 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Trust is broken at a fundamental level — hard to rebuild</span><span class="sum-sub-n" style="color:#f59e0b">27 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#fb923c">Inexperienced & Shy</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Start dating from zero without embarrassment</span><span class="sum-sub-n" style="color:#fb923c">34 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Embarrassment compounds with each year of inexperience</span><span class="sum-sub-n" style="color:#f59e0b">9 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#fb923c">No Chemistry / No Spark</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Figure out why I don't feel attraction to 'suitable' women</span><span class="sum-sub-n" style="color:#fb923c">2 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Standards feel fixed and can't be consciously adjusted</span><span class="sum-sub-n" style="color:#f59e0b">0 mentions</span></span>
+      </div>
+    </div>
+  </div>
+  <div class="sum-dim-block">
+    <div class="sum-dim-header"><div class="sum-dim-stripe" style="background:#34d399"></div><div><div class="sum-dim-title" style="color:#34d399">By Stage</div><div class="sum-dim-sub">Where the man is in his journey</div></div></div>
+    <div class="sum-dim-cols">
+      <div class="sum-half"><div class="sum-half-label">🎯 Top JTBDs</div>
+        <div class="sum-item sum-item-top"><span class="sum-item-text">Get my first date to gain real-world experience<span class="sum-item-tag">Inexperienced Starter</span></span><span class="sum-item-n" style="color:#34d399">313</span></div>
+        <div class="sum-item"><span class="sum-item-text">Break a lifelong pattern of isolation and singlehood<span class="sum-item-tag">Chronically Lonely</span></span><span class="sum-item-n" style="color:#34d399">189</span></div>
+        <div class="sum-item"><span class="sum-item-text">Build community and belonging outside romance<span class="sum-item-tag">Chronically Lonely</span></span><span class="sum-item-n" style="color:#34d399">149</span></div>
+        <div class="sum-item"><span class="sum-item-text">Decide whether to keep trying or accept singlehood<span class="sum-item-tag">Disillusioned / Burned</span></span><span class="sum-item-n" style="color:#34d399">51</span></div>
+        <div class="sum-item"><span class="sum-item-text">Find a patient woman who won't judge my inexperience<span class="sum-item-tag">Inexperienced Starter</span></span><span class="sum-item-n" style="color:#34d399">50</span></div>
+        <div class="sum-item"><span class="sum-item-text">Find someone who understands I come with a history<span class="sum-item-tag">Rebuilder</span></span><span class="sum-item-n" style="color:#34d399">37</span></div>
+        <div class="sum-item"><span class="sum-item-text">Find out if therapy could actually help<span class="sum-item-tag">Chronically Lonely</span></span><span class="sum-item-n" style="color:#34d399">31</span></div>
+      </div>
+      <div class="sum-half"><div class="sum-half-label">🚧 Top Blockers</div>
+        <div class="sum-item sum-item-top"><span class="sum-item-text" style="color:#fef3c7">Inexperience shows in ways he can't fully control or mask<span class="sum-item-tag">Inexperienced Starter</span></span><span class="sum-item-n" style="color:#f59e0b">87</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Depression or mental health is the underlying root cause<span class="sum-item-tag">Chronically Lonely</span></span><span class="sum-item-n" style="color:#f59e0b">41</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">No social infrastructure to meet people through<span class="sum-item-tag">Chronically Lonely</span></span><span class="sum-item-n" style="color:#f59e0b">20</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Dating apps feel dehumanizing and confusing after years away<span class="sum-item-tag">Rebuilder</span></span><span class="sum-item-n" style="color:#f59e0b">6</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Past failures feel permanent and define expectations of future attempts<span class="sum-item-tag">Chronically Lonely</span></span><span class="sum-item-n" style="color:#f59e0b">5</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">First experiences are often unforgiving of visible inexperience<span class="sum-item-tag">Inexperienced Starter</span></span><span class="sum-item-n" style="color:#f59e0b">4</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Motivation to try is at its absolute lowest point<span class="sum-item-tag">Disillusioned / Burned</span></span><span class="sum-item-n" style="color:#f59e0b">3</span></div>
+      </div>
+    </div>
+    <div class="sum-sub-table">
+      <div class="sum-sub-head"><span>Subsegment</span><span>🎯 #1 JTBD</span><span>🚧 #1 Blocker</span></div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#34d399">Inexperienced Starter</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Get my first date to gain real-world experience</span><span class="sum-sub-n" style="color:#34d399">313 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Inexperience shows in ways he can't fully control or mask</span><span class="sum-sub-n" style="color:#f59e0b">87 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#34d399">Disillusioned / Burned</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Decide whether to keep trying or accept singlehood</span><span class="sum-sub-n" style="color:#34d399">51 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Motivation to try is at its absolute lowest point</span><span class="sum-sub-n" style="color:#f59e0b">3 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#34d399">Rebuilder</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Find someone who understands I come with a history</span><span class="sum-sub-n" style="color:#34d399">37 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Dating apps feel dehumanizing and confusing after years away</span><span class="sum-sub-n" style="color:#f59e0b">6 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#34d399">Chronically Lonely</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Break a lifelong pattern of isolation and singlehood</span><span class="sum-sub-n" style="color:#34d399">189 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Depression or mental health is the underlying root cause</span><span class="sum-sub-n" style="color:#f59e0b">41 mentions</span></span>
+      </div>
+    </div>
+  </div>
+  <div class="sum-dim-block">
+    <div class="sum-dim-header"><div class="sum-dim-stripe" style="background:#60a5fa"></div><div><div class="sum-dim-title" style="color:#60a5fa">By Goal</div><div class="sum-dim-sub">What men explicitly say they are trying to achieve</div></div></div>
+    <div class="sum-dim-cols">
+      <div class="sum-half"><div class="sum-half-label">🎯 Top JTBDs</div>
+        <div class="sum-item sum-item-top"><span class="sum-item-text">Find a woman open to casual intimacy<span class="sum-item-tag">Get Sexual Experience</span></span><span class="sum-item-n" style="color:#60a5fa">147</span></div>
+        <div class="sum-item"><span class="sum-item-text">Build the skills to sustain a relationship once I'm in one<span class="sum-item-tag">Get a Girlfriend / Relationshi…</span></span><span class="sum-item-n" style="color:#60a5fa">85</span></div>
+        <div class="sum-item"><span class="sum-item-text">Lose virginity in a meaningful non-shameful way<span class="sum-item-tag">Get Sexual Experience</span></span><span class="sum-item-n" style="color:#60a5fa">74</span></div>
+        <div class="sum-item"><span class="sum-item-text">Fix financial stability so it doesn't limit me<span class="sum-item-tag">Become More Attractive / Level…</span></span><span class="sum-item-n" style="color:#60a5fa">73</span></div>
+        <div class="sum-item"><span class="sum-item-text">Stop getting stuck in situationships<span class="sum-item-tag">Get a Girlfriend / Relationshi…</span></span><span class="sum-item-n" style="color:#60a5fa">58</span></div>
+        <div class="sum-item"><span class="sum-item-text">Develop skills and interests that make me interesting<span class="sum-item-tag">Become More Attractive / Level…</span></span><span class="sum-item-n" style="color:#60a5fa">58</span></div>
+        <div class="sum-item"><span class="sum-item-text">Ask a woman out without overthinking it<span class="sum-item-tag">Find a First Date</span></span><span class="sum-item-n" style="color:#60a5fa">55</span></div>
+      </div>
+      <div class="sum-half"><div class="sum-half-label">🚧 Top Blockers</div>
+        <div class="sum-item sum-item-top"><span class="sum-item-text" style="color:#fef3c7">Gets stuck in situationships that never progress to commitment<span class="sum-item-tag">Get a Girlfriend / Relationshi…</span></span><span class="sum-item-n" style="color:#f59e0b">21</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Confidence improvement feels inauthentic to perform before it's felt<span class="sum-item-tag">Become More Attractive / Level…</span></span><span class="sum-item-n" style="color:#f59e0b">5</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Performance anxiety prevents action even when opportunities arise<span class="sum-item-tag">Get Sexual Experience</span></span><span class="sum-item-n" style="color:#f59e0b">2</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Overthink until the window closes and the opportunity passes<span class="sum-item-tag">Find a First Date</span></span><span class="sum-item-n" style="color:#f59e0b">2</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">No matches on apps despite being active and putting in effort<span class="sum-item-tag">Find a First Date</span></span><span class="sum-item-n" style="color:#f59e0b">2</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">She's already dating or interested in someone else<span class="sum-item-tag">Get the Specific Woman He Like…</span></span><span class="sum-item-n" style="color:#f59e0b">1</span></div>
+        <div class="sum-item"><span class="sum-item-text" style="color:#fcd34d">Don't know which improvements will actually move the needle<span class="sum-item-tag">Become More Attractive / Level…</span></span><span class="sum-item-n" style="color:#f59e0b">1</span></div>
+      </div>
+    </div>
+    <div class="sum-sub-table">
+      <div class="sum-sub-head"><span>Subsegment</span><span>🎯 #1 JTBD</span><span>🚧 #1 Blocker</span></div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#60a5fa">Find a First Date</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Ask a woman out without overthinking it</span><span class="sum-sub-n" style="color:#60a5fa">55 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Overthink until the window closes and the opportunity passes</span><span class="sum-sub-n" style="color:#f59e0b">2 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#60a5fa">Get Sexual Experience</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Find a woman open to casual intimacy</span><span class="sum-sub-n" style="color:#60a5fa">147 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Performance anxiety prevents action even when opportunities arise</span><span class="sum-sub-n" style="color:#f59e0b">2 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#60a5fa">Become More Attractive / Level Up</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Fix financial stability so it doesn't limit me</span><span class="sum-sub-n" style="color:#60a5fa">73 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Confidence improvement feels inauthentic to perform before it's felt</span><span class="sum-sub-n" style="color:#f59e0b">5 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#60a5fa">Get a Girlfriend / Relationship</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Build the skills to sustain a relationship once I'm in one</span><span class="sum-sub-n" style="color:#60a5fa">85 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">Gets stuck in situationships that never progress to commitment</span><span class="sum-sub-n" style="color:#f59e0b">21 mentions</span></span>
+      </div>
+      <div class="sum-sub-row">
+        <span class="sum-sub-seg" style="color:#60a5fa">Get the Specific Woman He Likes</span>
+        <span class="sum-sub-entry"><span class="sum-sub-text">Express feelings without destroying the dynamic</span><span class="sum-sub-n" style="color:#60a5fa">9 mentions</span></span>
+        <span class="sum-sub-entry"><span class="sum-sub-text" style="color:#fcd34d">She's already dating or interested in someone else</span><span class="sum-sub-n" style="color:#f59e0b">1 mentions</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="dim-header" id="need">
+  <div class="dim-stripe" style="background:#a78bfa"></div>
+  <div>
+    <div class="dim-title">By Need</div>
+    <div class="dim-sub">What men ultimately want — stated or implied</div>
+  </div>
+</div>
+<div class="seg-card" id="need__get_noticed_desired">
+  <div class="seg-head">
+    <div class="seg-name">Get Noticed & Desired</div>
+    <div class="seg-count">160<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Wants women to notice, feel attracted to, or pay attention to him.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">157 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Get matches and interest on dating apps</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#a78bfabb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">119</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Fix dating profile to convert views into dates</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:34%;background:#a78bfabb"></div></div>
+      <span class="jtbd-n">41</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Become visible to women in everyday life</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:31%;background:#a78bfabb"></div></div>
+      <span class="jtbd-n">37</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Develop a magnetic social presence and confidence</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#a78bfabb"></div></div>
+      <span class="jtbd-n">14</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Improve appearance through grooming and fitness</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:11%;background:#a78bfabb"></div></div>
+      <span class="jtbd-n">13</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Figure out why I'm consistently overlooked</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:3%;background:#a78bfabb"></div></div>
+      <span class="jtbd-n">3</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Understand what makes a man visually attractive</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#a78bfabb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#8 &nbsp;Make women respond to messages and approaches</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#a78bfabb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Dating apps yield zero matches despite sustained effort</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">105</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;No feedback on why they're being ignored or rejected</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:22%;background:#b45309bb"></div></div>
+      <span class="blk-n">23</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Appearance feels like a hard ceiling they can't break</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:14%;background:#b45309bb"></div></div>
+      <span class="blk-n">15</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Feel fundamentally unattractive with no path to fix it</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:6%;background:#b45309bb"></div></div>
+      <span class="blk-n">6</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Tried all the advice and nothing has changed</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:5%;background:#b45309bb"></div></div>
+      <span class="blk-n">5</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;No social context to meet women outside of apps</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Approach anxiety stops them before they even try</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="need__get_chosen_loved">
+  <div class="seg-head">
+    <div class="seg-name">Get Chosen & Loved</div>
+    <div class="seg-count">833<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Wants a particular person to want him — more emotionally specific and often more painful.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">833 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Feel wanted and chosen for who I am</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#a78bfabb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">133</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Experience being loved by a romantic partner</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:95%;background:#a78bfabb"></div></div>
+      <span class="jtbd-n">126</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;End the loneliness by building real intimacy</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:35%;background:#a78bfabb"></div></div>
+      <span class="jtbd-n">46</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Find a companion to share life with</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:23%;background:#a78bfabb"></div></div>
+      <span class="jtbd-n">30</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Turn liking someone into a mutual relationship</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:19%;background:#a78bfabb"></div></div>
+      <span class="jtbd-n">25</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Build deep emotional connection with someone</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:18%;background:#a78bfabb"></div></div>
+      <span class="jtbd-n">24</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Find someone who genuinely chooses and wants me</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:17%;background:#a78bfabb"></div></div>
+      <span class="jtbd-n">22</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#8 &nbsp;Stop feeling fundamentally unlovable</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:11%;background:#a78bfabb"></div></div>
+      <span class="jtbd-n">14</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Has never experienced reciprocal love so doesn't know how</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">128</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Feel too needy or desperate and it shows</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:23%;background:#b45309bb"></div></div>
+      <span class="blk-n">30</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Gets stuck as the option women keep around but don't choose</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:12%;background:#b45309bb"></div></div>
+      <span class="blk-n">15</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Emotional unavailability (his own walls) blocks connection</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:8%;background:#b45309bb"></div></div>
+      <span class="blk-n">10</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Believes no one could truly love him for who he is</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:7%;background:#b45309bb"></div></div>
+      <span class="blk-n">9</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Women engage but never choose to commit or stay</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">3</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Can't get past surface-level connection into real intimacy</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+  </div>
+</div>
+
+<div class="dim-header" id="fear">
+  <div class="dim-stripe" style="background:#f87171"></div>
+  <div>
+    <div class="dim-title">By Fear</div>
+    <div class="dim-sub">The underlying fears that drive avoidance, paralysis, and resignation</div>
+  </div>
+</div>
+<div class="seg-card" id="fear__stay_lonely">
+  <div class="seg-head">
+    <div class="seg-name">Stay Lonely Forever</div>
+    <div class="seg-count">609<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">The existential fear that nothing will change.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">609 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Stop catastrophizing about dying alone</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#f87171bb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">158</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Accept uncertainty while still taking action</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:61%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">96</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Build hope without feeding denial</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:34%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">53</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Connect with men who understand this experience</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:25%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">40</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Break the pattern of chronic singlehood</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:11%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">18</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Find proof that lonely men can still find love</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:8%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">12</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Build a meaningful life that doesn't feel empty</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:7%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">11</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#8 &nbsp;Find reassurance it's not too late</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:3%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">4</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Depression drains the motivation to try anything</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">39</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Sees only evidence that he's destined to be alone</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:56%;background:#b45309bb"></div></div>
+      <span class="blk-n">22</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Isolation means no social path to meet anyone</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:49%;background:#b45309bb"></div></div>
+      <span class="blk-n">19</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Rumination and catastrophizing prevent taking any action</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:38%;background:#b45309bb"></div></div>
+      <span class="blk-n">15</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Every failed attempt confirms the belief it will never change</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:21%;background:#b45309bb"></div></div>
+      <span class="blk-n">8</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Age makes the gap between him and 'normal' feel permanent</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:13%;background:#b45309bb"></div></div>
+      <span class="blk-n">5</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;No community of men who understand this experience</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:5%;background:#b45309bb"></div></div>
+      <span class="blk-n">2</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="fear__shame_judgment">
+  <div class="seg-head">
+    <div class="seg-name">Get Shamed or Judged</div>
+    <div class="seg-count">188<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Fear of being mocked or judged for inexperience.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">182 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Reclaim confidence despite past humiliations</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#f87171bb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">83</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Stop feeling ashamed of being a virgin at my age</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:84%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">70</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Understand why I feel so behind compared to peers</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:29%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">24</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Tell someone about my situation without judgment</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:5%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">4</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Find men in similar situations so I'm not alone</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:5%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">4</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Navigate dating without inexperience being exposed</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Feel less embarrassed asking basic dating questions</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Online and in-person spaces mock men like him</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">90</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;No male peers to normalise the situation or offer guidance</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:32%;background:#b45309bb"></div></div>
+      <span class="blk-n">29</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Shame compounds every year the situation continues</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:10%;background:#b45309bb"></div></div>
+      <span class="blk-n">9</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Can't talk to anyone — the shame prevents seeking help</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:7%;background:#b45309bb"></div></div>
+      <span class="blk-n">6</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Inexperience has become part of his identity — hard to shed</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">2</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Fear of exposing inexperience on actual dates stops him</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Dating itself requires eventually exposing the situation</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="fear__rejection">
+  <div class="seg-head">
+    <div class="seg-name">Be Rejected</div>
+    <div class="seg-count">130<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Paralysing approach anxiety or avoidance of dating.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">130 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Build courage to approach despite fear of rejection</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#f87171bb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">51</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Ask someone out without catastrophizing the outcome</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:29%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">15</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Handle rejection without it crushing my confidence</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">6</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Develop a rejection-resilient mindset</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">6</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Stop letting fear prevent me from ever trying</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:6%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">3</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Understand what rejection actually means</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Get back on the horse after a painful rejection</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Approach anxiety creates a physical freeze response</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">6</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Past rejections replay before every new attempt</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:33%;background:#b45309bb"></div></div>
+      <span class="blk-n">2</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Generic advice like 'just approach' feels impossible to act on</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:17%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Avoidance loop — no practice means the fear grows</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:17%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Self-worth collapses with each rejection</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Catastrophizes the outcome before any attempt</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Can't separate rejection of their approach from rejection of self</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="fear__run_out_of_time">
+  <div class="seg-head">
+    <div class="seg-name">Run Out of Time</div>
+    <div class="seg-count">57<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Age-based despair: the window is closing, it's 'too late'.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">57 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Stop comparing my timeline to others' milestones</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#f87171bb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">12</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Understand if biology sets real dating deadlines</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:50%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">6</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Make up for lost time without rushing or settling</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:33%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">4</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Start dating in my 30s/40s after years of delay</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:25%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">3</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Find reassurance there's no real age cutoff for love</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:25%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">3</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Take action now instead of waiting for 'right moment'</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Build a meaningful relationship despite a late start</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Biological urgency creates constant low-level dread</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">12</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Constant comparison with peers who are married or in relationships</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:33%;background:#b45309bb"></div></div>
+      <span class="blk-n">4</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Panic makes him rush decisions or settle for wrong people</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:25%;background:#b45309bb"></div></div>
+      <span class="blk-n">3</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Society signals that older single men are failed or broken</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:8%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Previous years feel 'wasted' and impossible to recover</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:8%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Feels less attractive or competitive as he ages</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Fear of dying alone becomes an obsessive loop</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="fear__get_hurt">
+  <div class="seg-head">
+    <div class="seg-name">Get Hurt in a Relationship</div>
+    <div class="seg-count">64<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Fear of vulnerability after previous damage.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">64 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Learn to trust again after being betrayed</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#f87171bb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">17</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Heal from emotional damage of a past relationship</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:65%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">11</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Become vulnerable without scaring a partner away</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:59%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">10</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Set boundaries that protect me in dating</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:24%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">4</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Open up emotionally without risking trauma</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:18%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">3</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Know red flags early to avoid repeating past pain</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">2</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Have a relationship without losing myself again</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#f87171bb"></div></div>
+      <span class="jtbd-n">2</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Trust was broken so completely that new relationships feel dangerous</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">12</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Emotional walls are so thick genuine connection can't form</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:42%;background:#b45309bb"></div></div>
+      <span class="blk-n">5</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Hypervigilance reads normal behaviour as warning signs</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:17%;background:#b45309bb"></div></div>
+      <span class="blk-n">2</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;New partners are punished for what a past partner did</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:8%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Doesn't know how to process past pain — it festers</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:8%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Vulnerability feels like it will be weaponised against him</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Avoids all intimacy to avoid any risk of being hurt again</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+
+<div class="dim-header" id="cause">
+  <div class="dim-stripe" style="background:#fb923c"></div>
+  <div>
+    <div class="dim-title">By Cause</div>
+    <div class="dim-sub">How men explain why they are where they are</div>
+  </div>
+</div>
+<div class="seg-card" id="cause__friendzoned">
+  <div class="seg-head">
+    <div class="seg-name">Friendzoned</div>
+    <div class="seg-count">209<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">She puts him in the 'friend' category.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">209 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Escape the friend zone with a specific woman</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">144</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Create romantic tension with women from the start</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:13%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">19</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Avoid landing in the friend zone with new women</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:6%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">8</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Understand why women consistently see me as a friend</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:4%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">6</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Know when to cut losses and move on</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:4%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">6</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Stop being the emotional support guy who gets nothing</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">2</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Express romantic interest without ruining friendship</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Too afraid to express romantic interest early on</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">4</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Women he likes only want him for emotional support</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:50%;background:#b45309bb"></div></div>
+      <span class="blk-n">2</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Waited too long to show interest — she already categorised him</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:50%;background:#b45309bb"></div></div>
+      <span class="blk-n">2</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Once labelled 'friend' can't find a way to shift the frame</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:50%;background:#b45309bb"></div></div>
+      <span class="blk-n">2</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Investment grows before romantic signals are established</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Expressing interest would risk losing the friendship entirely</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Confuses being a good friend with being attractive</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="cause__nice_guy_no_spark">
+  <div class="seg-head">
+    <div class="seg-name">Nice Guy, No Spark</div>
+    <div class="seg-count">377<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Kind and decent but creates no attraction.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">377 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Stop being seen as safe and predictable by women</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">319</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Develop attractive confidence while staying authentic</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">37</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Create attraction and chemistry as a genuinely nice man</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:10%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">33</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Learn to flirt and create tension without being fake</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:7%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">21</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Become more exciting without becoming a jerk</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:4%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">14</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Understand why kindness alone doesn't create desire</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">5</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Learn the difference between nice and pushover</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">5</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Afraid that adding confidence or edge means becoming a jerk</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">9</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Being too available kills any tension or mystery</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:44%;background:#b45309bb"></div></div>
+      <span class="blk-n">4</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Women explicitly tell him he's 'great but…'</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:22%;background:#b45309bb"></div></div>
+      <span class="blk-n">2</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Nice traits work against him in casual or early-stage dating</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Generic dating advice doesn't apply to genuinely kind men</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Doesn't understand that comfort ≠ attraction</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Doesn't know what to do differently without changing who he is</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="cause__clueless_flirting">
+  <div class="seg-head">
+    <div class="seg-name">Clueless Flirting / Can't Read Room</div>
+    <div class="seg-count">149<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Misses signals, doesn't know how to flirt.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">149 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Develop awareness of the social dynamics in dating</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">20</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Stop overthinking every interaction with women</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:50%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">10</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Understand flirting as a learnable skill</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:40%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">8</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Practice starting natural conversations with women</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:30%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">6</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Know when to make a move vs hold back</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:15%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">3</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Tell if a woman is being friendly vs romantically interested</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:5%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Learn to read signals that a woman is interested</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;No male mentors who ever taught them how flirting works</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">24</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Social anxiety prevents reading the room in real time</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:50%;background:#b45309bb"></div></div>
+      <span class="blk-n">12</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Autistic or neurodivergent traits make signals genuinely hard to read</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:29%;background:#b45309bb"></div></div>
+      <span class="blk-n">7</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Overthinks every interaction until the moment passes</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;No low-stakes practice environments to develop the skill</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Can't distinguish friendly behaviour from romantic interest</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Afraid to misread signals and create an awkward situation</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="cause__poor_looks">
+  <div class="seg-head">
+    <div class="seg-name">Poor Looks</div>
+    <div class="seg-count">1,032<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Attributes failure to physical appearance.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">1,032 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Compete in the dating market as a short or average-looking man</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">180</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Understand which non-physical traits compensate for looks</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:99%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">178</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Improve appearance through grooming, fitness, and style</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:93%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">167</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Stop letting appearance anxiety prevent me from dating</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:17%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">31</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Maximize attractiveness within my genetic constraints</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">22</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Develop confidence despite not meeting conventional standards</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">4</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Find out if looks are truly the main thing holding me back</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#8 &nbsp;Find women who value personality over appearance</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Height is immutable and feels deterministic in dating</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">171</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Dating apps filter by looks before personality gets a chance</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:20%;background:#b45309bb"></div></div>
+      <span class="blk-n">35</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Women's stated vs revealed preferences feel contradictory</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:5%;background:#b45309bb"></div></div>
+      <span class="blk-n">9</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Self-improvement results don't translate into dating results</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:3%;background:#b45309bb"></div></div>
+      <span class="blk-n">5</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Evidence (from apps, real life) confirms looks are decisive</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:3%;background:#b45309bb"></div></div>
+      <span class="blk-n">5</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Body dysmorphia makes objective self-assessment impossible</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:3%;background:#b45309bb"></div></div>
+      <span class="blk-n">5</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Below-average looks feel like a ceiling that money or charm can't raise</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="cause__bad_character_unknown">
+  <div class="seg-head">
+    <div class="seg-name">Unknown Cause</div>
+    <div class="seg-count">280<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Knows something is off but can't identify it.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">280 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Stop blaming myself for something I can't diagnose</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">56</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Identify the specific pattern causing repeated failure</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:14%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">8</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Test different approaches to find what works for me</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:9%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">5</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Understand why doing everything 'right' still fails</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:7%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">4</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Get honest feedback about what's holding me back</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:4%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">2</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Find a mentor or coach who can spot what I can't</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:4%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">2</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Get an outside perspective on my behavior</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Women ghost or disappear with no explanation</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">6</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Can't identify which of multiple possible issues is the real problem</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:33%;background:#b45309bb"></div></div>
+      <span class="blk-n">2</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Trying to fix everything at once results in nothing changing</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Online advice is generic and doesn't help diagnose his specific case</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Friends are too polite to give honest critical feedback</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Conflicting advice from different sources deepens confusion</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Blind spots prevent him from seeing the pattern others see</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="cause__fixated_one_woman">
+  <div class="seg-head">
+    <div class="seg-name">Wants Only Her</div>
+    <div class="seg-count">36<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Can't want anyone else — fixated on one woman.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">33 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Accept unrequited love and redirect energy</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">12</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Move on from a woman who doesn't reciprocate</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:58%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">7</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Stop obsessing and open myself to other women</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:25%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">3</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Heal the attachment so I can date freely again</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:8%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Understand why I can't feel anything for others</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Make the specific woman I love actually want me</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Find out if she could ever feel the same way</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Rumination about her is automatic and hard to stop</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">3</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;He doesn't know if walking away early is a mistake</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:67%;background:#b45309bb"></div></div>
+      <span class="blk-n">2</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Any small sign of warmth from her reignites the obsession</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:33%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;She's nearby (work/social) so he can't create distance</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Moving on feels like betrayal or giving up on something real</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Idealised version of her beats any real alternative</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Feelings intensify with proximity — no escape valve</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="cause__too_busy">
+  <div class="seg-head">
+    <div class="seg-name">Too Busy to Date</div>
+    <div class="seg-count">63<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Career or lifestyle takes all priority.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">59 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Build a social life outside work to meet people</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">34</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Make use of dating apps to be efficient</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">4</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Know when to sacrifice career time for love</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">4</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Shift mindset from career-first to relationship-ready</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:6%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">2</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Make dating a genuine priority instead of afterthought</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:6%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">2</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Balance career ambition with romantic goals</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:3%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Find dating strategies that fit a busy schedule</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Exhaustion after work kills motivation to engage socially</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Dating feels like another obligation on an already full plate</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Career or financial situation still feels too unstable to prioritise love</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Work leaves no realistic time window to meet or date</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Social circle is entirely work-based — no organic meeting paths</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Lifestyle doesn't create the conditions where relationships naturally develop</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Dating apps require time investment they can't sustain</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="cause__afraid_women">
+  <div class="seg-head">
+    <div class="seg-name">Negative Perception of Women</div>
+    <div class="seg-count">39<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Cynicism or bitterness; gave up due to worldview.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">39 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Process what happened that made me afraid of women</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">3</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Separate bad experiences from unfair generalizations</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:67%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">2</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Let go of bitterness without dismissing my pain</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:33%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Understand the line between protecting myself and isolation</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Try again without letting past define every woman</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Rebuild trust in women after being hurt</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Find safe low-stakes ways to test the waters again</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Trust was broken at a level that feels permanent</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Protective cynicism feels safer than being wrong again</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Echo chambers online reinforce and deepen negative views</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Can't separate individual women from the group that hurt them</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Bitterness is visible even when they try to hide it</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Avoiding women means no counter-evidence can accumulate</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Any female behaviour gets read through a negative lens</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="cause__brutal_rejection">
+  <div class="seg-head">
+    <div class="seg-name">Was Brutally Rejected</div>
+    <div class="seg-count">22<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">A specific humiliating rejection left lasting damage.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">22 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Stop the rejection memory from playing on repeat</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">7</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Rebuild confidence after being laughed at or mocked</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:43%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">3</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Find the courage to risk rejection again</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:29%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">2</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Recover from a public or humiliating rejection</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:14%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Understand why that particular rejection hit so hard</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Reframe rejection as data rather than proof of failure</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Develop resilience through gradual exposure</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;The public nature of the rejection spread the shame further</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;The rejection memory replays involuntarily before every attempt</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;The intensity of that rejection doesn't match others' experiences</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Shame from the event compounds on each new attempt</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Fear that all future rejections will be as devastating</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Can't reframe it as 'about her' because it felt so personal</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Avoidance loop — stopped approaching so no healing experiences</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="cause__toxic_past">
+  <div class="seg-head">
+    <div class="seg-name">Was in a Toxic Relationship</div>
+    <div class="seg-count">142<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Cheating, abuse, manipulation — trust broken.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">142 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Rebuild trust in women after cheating or manipulation</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">39</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Heal from the emotional damage of a toxic relationship</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:46%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">18</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Know the red flags earlier to avoid another toxic person</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:31%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">12</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Stop punishing new partners for what an ex did</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:3%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Date again without bringing baggage into it</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:3%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Understand my patterns that let me into a toxic dynamic</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Build a self-concept beyond what happened to me</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Trust is broken at a fundamental level — hard to rebuild</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">27</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;New partners are unconsciously tested and pushed away</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:4%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Still grieving a relationship that wasn't what he thought</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Self-blame for staying in the toxic relationship too long</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Intimacy itself has become associated with pain and loss</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Hypervigilance reads normal behaviours as danger signs</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Fear that he attracts or is attracted to toxic personalities</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="cause__inexperienced_shy">
+  <div class="seg-head">
+    <div class="seg-name">Inexperienced & Shy</div>
+    <div class="seg-count">571<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Virgin, never dated — missing foundational experience.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">549 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Start dating from zero without embarrassment</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">34</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Overcome social anxiety to talk to women at all</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:79%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">27</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Learn basic dating skills I never developed</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:53%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">18</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Get my first date to gain real experience</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:53%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">18</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Practice conversations without high stakes pressure</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:24%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">8</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Build confidence through small wins gradually</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:6%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">2</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Find a patient partner who won't judge inexperience</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#8 &nbsp;Become comfortable in my own skin before dating</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Embarrassment compounds with each year of inexperience</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">9</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Inexperience has become part of his identity — hard to shed</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:67%;background:#b45309bb"></div></div>
+      <span class="blk-n">6</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Social anxiety creates a physical freeze that's hard to manage</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:33%;background:#b45309bb"></div></div>
+      <span class="blk-n">3</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Every interaction feels high-stakes without a practice buffer</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Doesn't know what 'normal' dating behaviour looks like</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Dating requires confidence he hasn't yet developed</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Avoidance prevents exposure needed to reduce anxiety</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="cause__no_chemistry_sexual">
+  <div class="seg-head">
+    <div class="seg-name">No Chemistry / No Spark</div>
+    <div class="seg-count">4<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Gets told 'no spark' despite doing things right.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">4 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Figure out why I don't feel attraction to 'suitable' women</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">2</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Calibrate standards to match my actual situation</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:50%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Understand if the problem is psychological or physical</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Understand if chemistry develops over time</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Stop forcing attraction that simply isn't there</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Find women I'm both compatible with and attracted to</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Be honest with women when chemistry isn't present</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923cbb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Standards feel fixed and can't be consciously adjusted</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Settling feels dishonest and unfair to both parties</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Doesn't know whether to push through or walk away</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Confusion between standards and pickiness makes him doubt himself</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Compatible women don't trigger any attraction at all</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Chemistry feels like it should just happen automatically</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Attracted to unavailable or incompatible women instead</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+
+<div class="dim-header" id="stage">
+  <div class="dim-stripe" style="background:#34d399"></div>
+  <div>
+    <div class="dim-title">By Stage</div>
+    <div class="dim-sub">Where the man is in his journey</div>
+  </div>
+</div>
+<div class="seg-card" id="stage__inexperienced_starter">
+  <div class="seg-head">
+    <div class="seg-name">Inexperienced Starter</div>
+    <div class="seg-count">1,567<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Never dated or almost no relationship experience.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">1,567 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Get my first date to gain real-world experience</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#34d399bb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">313</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Find a patient woman who won't judge my inexperience</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:16%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">50</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Stop feeling behind and start at my own pace</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:7%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">22</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Learn the basics of dating everyone else seems to know</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">3</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Build social and romantic skills completely from scratch</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">3</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Understand how relationships typically progress</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">2</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Not let inexperience define my worth as a partner</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#8 &nbsp;Get honest guidance rather than generic advice</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Inexperience shows in ways he can't fully control or mask</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">87</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;First experiences are often unforgiving of visible inexperience</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:5%;background:#b45309bb"></div></div>
+      <span class="blk-n">4</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Fear of getting it wrong permanently freezes him</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;No peer he trusts enough to ask for basic guidance</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Generic advice is written for people who already have some experience</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Everyone assumes basic knowledge he never had a chance to develop</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Doesn't know what he doesn't know — blind to the gaps</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="stage__disillusioned_burned">
+  <div class="seg-head">
+    <div class="seg-name">Disillusioned / Burned</div>
+    <div class="seg-count">210<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Has tried and given up. Not sure it's worth it.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">210 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Decide whether to keep trying or accept singlehood</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#34d399bb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">51</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Process accumulated pain without becoming bitter</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:24%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">12</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Find motivation to keep trying after years of rejection</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:22%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">11</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Connect with men who understand this exhaustion</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:16%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">8</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Understand what I'd do differently if I tried again</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Rebuild hope without deluding myself</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Find one genuine reason to believe love is possible</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Motivation to try is at its absolute lowest point</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">3</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Accumulated pain makes emotional neutrality on dates impossible</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:67%;background:#b45309bb"></div></div>
+      <span class="blk-n">2</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Success stories feel like they apply to other types of men</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:33%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Re-entering feels like setting himself up for another cycle of pain</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:33%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Years of effort with no return destroyed belief it's possible</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Dating requires optimism he no longer has</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Bitterness shows even when they try to suppress it</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="stage__rebuilder">
+  <div class="seg-head">
+    <div class="seg-name">Rebuilder</div>
+    <div class="seg-count">156<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Coming back after divorce or long hiatus.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">156 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Find someone who understands I come with a history</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#34d399bb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">37</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Get back into dating after a long relationship ended</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:70%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">26</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Navigate apps and new dating expectations</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:41%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">15</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Understand how dating has changed since I was last single</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:3%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Know when I'm emotionally ready vs just lonely</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:3%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Heal properly before rushing into something new</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:3%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Rebuild confidence after long relationship eroded it</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#8 &nbsp;Avoid the same relationship mistakes this time</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Dating apps feel dehumanizing and confusing after years away</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">6</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Kids or responsibilities complicate timing and availability</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:50%;background:#b45309bb"></div></div>
+      <span class="blk-n">3</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Ex is still in his head despite wanting to move on</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:17%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Partners are put off by his divorced or long-relationship history</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Long relationship created dependency patterns to unlearn</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Emotionally not ready but feels social pressure to move on</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Dating has changed dramatically since he was last single</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="stage__chronically_lonely">
+  <div class="seg-head">
+    <div class="seg-name">Chronically Lonely</div>
+    <div class="seg-count">268<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Has been alone for years or decades.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">268 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Break a lifelong pattern of isolation and singlehood</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#34d399bb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">189</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Build community and belonging outside romance</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:79%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">149</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Find out if therapy could actually help</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:16%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">31</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Find meaning and fulfillment even while single</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:6%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">11</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Understand if social anxiety is the root of my isolation</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:4%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">7</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Stop feeling something is fundamentally wrong with me</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">2</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Accept my situation while still working to change it</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399bb"></div></div>
+      <span class="jtbd-n">2</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Depression or mental health is the underlying root cause</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">41</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;No social infrastructure to meet people through</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:49%;background:#b45309bb"></div></div>
+      <span class="blk-n">20</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Past failures feel permanent and define expectations of future attempts</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:12%;background:#b45309bb"></div></div>
+      <span class="blk-n">5</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Age and starting from zero feels more humiliating the older he gets</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:7%;background:#b45309bb"></div></div>
+      <span class="blk-n">3</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Social skills have atrophied from years of minimal use</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Lifestyle has been optimised around being alone — hard to reverse</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Identity has formed around being alone — change feels threatening</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+
+<div class="dim-header" id="goal">
+  <div class="dim-stripe" style="background:#60a5fa"></div>
+  <div>
+    <div class="dim-title">By Goal</div>
+    <div class="dim-sub">What men explicitly say they are trying to achieve</div>
+  </div>
+</div>
+<div class="seg-card" id="goal__first_date">
+  <div class="seg-head">
+    <div class="seg-name">Find a First Date</div>
+    <div class="seg-count">155<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Simply go on a date — first contact with dating.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">155 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Ask a woman out without overthinking it</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">55</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Find real-life contexts to meet women organically</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:25%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">14</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Plan a first date that isn't awkward or high-pressure</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:18%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">10</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Know what to say to progress from hi to a date</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:7%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">4</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Build confidence to put myself out there and ask</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:5%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">3</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Stop self-sabotaging after a woman shows interest</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Get a match that converts to a real in-person date</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Overthink until the window closes and the opportunity passes</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">2</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;No matches on apps despite being active and putting in effort</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">2</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Social circle too small to generate any leads</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;No women in daily life to realistically ask</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Don't know how to ask without it feeling forced or weird</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Can't read whether interest is real or he's imagining it</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Approach anxiety prevents any actual attempt</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="goal__get_sex">
+  <div class="seg-head">
+    <div class="seg-name">Get Sexual Experience</div>
+    <div class="seg-count">427<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Explicit goal: physical intimacy, losing virginity.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">427 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Find a woman open to casual intimacy</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">147</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Lose virginity in a meaningful non-shameful way</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:50%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">74</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Stop the shame spiral around sexual inexperience</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:8%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">12</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Find the right context where casual encounters are realistic</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:5%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">8</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Understand why I'm not getting physical intimacy</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:3%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">5</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Learn to escalate physical intimacy naturally</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">3</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Build sexual confidence and overcome anxiety</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Performance anxiety prevents action even when opportunities arise</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">2</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Women aren't interested in casual sex with average men specifically</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Standards vs actual opportunity creates a painful gap</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Shame around inexperience makes him act less attractive</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;No realistic social context where casual encounters happen</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Don't know how to escalate physically without it being awkward</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Dating apps are heavily skewed against men seeking casual encounters</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="goal__higher_value">
+  <div class="seg-head">
+    <div class="seg-name">Become More Attractive / Level Up</div>
+    <div class="seg-count">240<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Self-improvement to increase attractiveness.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">240 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Fix financial stability so it doesn't limit me</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">73</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Develop skills and interests that make me interesting</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:79%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">58</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Improve physical health through consistent fitness</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:74%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">54</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Build social circle that reflects better version of me</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:18%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">13</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Become proud of myself before seeking a relationship</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:16%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">12</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Understand which self-improvement efforts matter most</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:11%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">8</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Build genuine unshakeable inner confidence</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Confidence improvement feels inauthentic to perform before it's felt</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">5</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Don't know which improvements will actually move the needle</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:20%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;The goalposts keep moving and there's no arrival point</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Success in one area immediately exposes gaps in another</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Self-improvement doesn't translate to better dating results</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Feeling like a fraud — improved but still hasn't 'gotten results'</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Comparison with naturally confident men feels permanently unfair</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="goal__get_girlfriend">
+  <div class="seg-head">
+    <div class="seg-name">Get a Girlfriend / Relationship</div>
+    <div class="seg-count">1,902<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Most common goal: a real committed relationship.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">1,902 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Build the skills to sustain a relationship once I'm in one</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">85</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Stop getting stuck in situationships</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:68%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">58</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Turn good dates into a committed relationship</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:44%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">37</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Meet women with real relationship potential offline</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:34%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">29</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Get a second date from a promising first date</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:33%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">28</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Find a woman who wants the same kind of relationship</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:6%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">5</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Communicate interest without coming on too strong</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:5%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">4</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#8 &nbsp;Understand what women actually look for in a partner</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;Gets stuck in situationships that never progress to commitment</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">21</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;Women lose interest after a few dates with no explanation</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;Lifestyle doesn't naturally accommodate a relationship</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;Keeps attracting women who want something different from him</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;Exclusive conversations feel premature or push women away</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Doesn't know what he's doing wrong in the middle stages</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Dating app matches rarely want anything serious</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+<div class="seg-card" id="goal__get_specific_woman">
+  <div class="seg-head">
+    <div class="seg-name">Get the Specific Woman He Likes</div>
+    <div class="seg-count">91<small>mentions</small></div>
+  </div>
+  <p class="seg-desc">Fixated on making a particular person like him.</p>
+  <p class="seg-match" style="color:#475569;font-size:11px">91 records matched this subsegment pattern</p>
+  <div class="jtbd-label">Jobs to Be Done — ranked by mentions</div>
+  <div class="jtbd-list">
+    <div class="jtbd-row jtbd-row-top">
+      <span class="jtbd-text">#1 &nbsp;Express feelings without destroying the dynamic</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n  jtbd-n-top">9</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#2 &nbsp;Stop putting her on a pedestal and see her clearly</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:22%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">2</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#3 &nbsp;Make a specific woman see me as a romantic possibility</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:22%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">2</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#4 &nbsp;Stand out from other men pursuing her</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:11%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">1</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#5 &nbsp;Win her back after she initially showed no interest</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#6 &nbsp;Know if she's interested or just being friendly</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+    <div class="jtbd-row">
+      <span class="jtbd-text">#7 &nbsp;Decide whether to pursue or accept it won't happen</span>
+      <div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5fabb"></div></div>
+      <span class="jtbd-n">0</span>
+    </div>
+  </div>
+  <div class="blk-label">Top Blockers — what stops progress</div>
+  <div class="blk-list">
+    <div class="blk-row blk-row-top">
+      <span class="blk-text">#1 &nbsp;She's already dating or interested in someone else</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:100%;background:#b45309bb"></div></div>
+      <span class="blk-n">1</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#2 &nbsp;She's shown no clear romantic interest despite time invested</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#3 &nbsp;His feelings are so intense they affect how he acts around her</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#4 &nbsp;He's idealised her to the point of losing all perspective</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#5 &nbsp;He can't tell if small signs of warmth are romantic or platonic</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#6 &nbsp;Expressing feelings risks ending the friendship permanently</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+    <div class="blk-row">
+      <span class="blk-text">#7 &nbsp;Been in the friend zone long enough that a shift feels impossible</span>
+      <div class="blk-bar-wrap"><div class="blk-bar" style="width:2%;background:#b45309bb"></div></div>
+      <span class="blk-n">0</span>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+</body>
+</html>
