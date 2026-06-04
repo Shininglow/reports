@@ -136,6 +136,47 @@ body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', syste
 .sleg { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
 .sleg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
 .sleg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* JTBD list */
+.jtbd-label { font-size: 11px; text-transform: uppercase; letter-spacing:.07em; color: var(--muted); margin-top: 16px; margin-bottom: 8px; border-top: 1px solid var(--border); padding-top: 12px; }
+.jtbd-list { display: flex; flex-direction: column; gap: 7px; }
+.jtbd-row { display: grid; grid-template-columns: 1fr 110px 36px; align-items: center; gap: 8px; }
+.jtbd-text { font-size: 12px; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jtbd-bar-wrap { background: var(--border); border-radius: 3px; height: 5px; overflow: hidden; }
+.jtbd-bar { height: 5px; border-radius: 3px; }
+.jtbd-n { font-size: 11px; font-weight: 600; color: var(--muted); text-align: right; white-space: nowrap; }
+
+/* Language insights */
+.lang-section { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 14px; }
+.lang-row { display: grid; grid-template-columns: 100px 1fr; gap: 10px; margin-bottom: 10px; align-items: start; }
+.lang-row-label { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: #475569; padding-top: 3px; }
+.lang-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+.lang-pill { font-size: 11px; padding: 2px 8px; border-radius: 10px; border: 1px solid; }
+.lang-pill-n { font-size: 10px; font-weight: 700; opacity: .7; margin-left: 3px; }
+.lang-phrases { display: flex; flex-direction: column; gap: 4px; }
+.lang-phrase { font-size: 11px; color: #94a3b8; font-style: italic; }
+.lang-phrase-n { font-size: 10px; color: #475569; font-weight: 700; margin-left: 4px; }
+.lang-bigrams { display: flex; flex-wrap: wrap; gap: 4px; }
+.lang-bigram { font-size: 10px; color: #64748b; background: #0f172a; border: 1px solid #1e293b; border-radius: 6px; padding: 2px 7px; }
+
+/* Taxonomy chart */
+.taxonomy-section { margin-bottom: 40px; }
+.taxonomy-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.taxonomy-desc { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+.taxonomy-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.tax-col { display: flex; flex-direction: column; min-width: 0; }
+.tax-dim-header { border-radius: 8px 8px 0 0; border: 1px solid; border-bottom: 3px solid; padding: 12px 14px; }
+.tax-dim-label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+.tax-dim-sub { display: block; font-size: 10px; color: var(--muted); line-height: 1.45; }
+.tax-subs { border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px; flex: 1; overflow: hidden; }
+.tax-sub { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; padding: 8px 12px; border-top: 1px solid var(--border); text-decoration: none; transition: background .15s; }
+.tax-sub:hover { background: var(--surface2); }
+.tax-sub-name { font-size: 11px; line-height: 1.4; color: #cbd5e1; }
+.tax-sub-n { font-size: 11px; font-weight: 700; color: #475569; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
+.tax-group-hdr { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #94a3b8; padding: 8px 12px 4px; background: rgba(255,255,255,.03); border-top: 1px solid var(--border); }
+.tax-group-hdr:first-child { border-top: none; }
+.tax-sub-grouped { padding-left: 18px; border-top: 1px solid rgba(255,255,255,.04); }
+.tax-sub-grouped:hover { background: var(--surface2); }
 </style>
 </head>
 <body>
@@ -143,7 +184,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', syste
   <h1>Lonely Men — Segment Frequency Analysis</h1>
   <p>Each segment is drawn from Reddit posts, comments, Quora answers, YouTube comments, and book reviews. Counts reflect corpus frequency of organic mentions matching each segment's language patterns.</p>
   <div class="meta">
-    <div class="meta-stat"><div class="n">96,546</div><div class="l">Records Scanned</div></div>
+    <div class="meta-stat"><div class="n">97,726</div><div class="l">Records Scanned</div></div>
     <div class="meta-stat"><div class="n">43,869</div><div class="l">New Reddit Threads</div></div>
     <div class="meta-stat"><div class="n">5</div><div class="l">Dimensions</div></div>
     <div class="meta-stat"><div class="n">29</div><div class="l">Segments</div></div>
@@ -154,6 +195,7 @@ body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', syste
 <div class="layout">
 <nav class="sidebar">
   <div class="sec-label">Overview</div>
+  <a href="#taxonomy">Segment Taxonomy</a>
   <a href="#intent-dist">Intent Distribution</a>
   <a href="#seg-overview">Segment Overview</a>
   <div class="sec-label">By Need</div>
@@ -192,37 +234,202 @@ body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', syste
 </nav>
 <div class="content">
 
+<div class="taxonomy-section" id="taxonomy">
+  <h2 class="taxonomy-title">Segment Taxonomy — How the 28 Segments Are Organised</h2>
+  <p class="taxonomy-desc">Each segment is analysed from five independent angles. A single man can appear in multiple dimensions simultaneously — e.g. he may be <em>Inexperienced &amp; Shy</em> (By Cause), at the <em>Chronically Lonely</em> stage, and aspire to <em>Get a Girlfriend</em> (By Goal). Click any subsegment to jump to its detailed card.</p>
+  <div class="taxonomy-grid">
+    <div class="tax-col">
+      <div class="tax-dim-header" style="border-color:#a78bfa;background:rgba(255,255,255,.04)">
+        <span class="tax-dim-label" style="color:#a78bfa">By Need</span>
+        <span class="tax-dim-sub">What men ultimately want — stated or implied in the way they describe their situation</span>
+      </div>
+      <div class="tax-subs">
+        <a href="#need__get_noticed_desired" class="tax-sub">
+          <span class="tax-sub-name">Get Noticed & Desired (General)</span>
+          <span class="tax-sub-n">160</span>
+        </a>
+        <a href="#need__get_chosen_loved" class="tax-sub">
+          <span class="tax-sub-name">Get Chosen & Loved (by Someone Specific)</span>
+          <span class="tax-sub-n">833</span>
+        </a>
+      </div>
+    </div>
+    <div class="tax-col">
+      <div class="tax-dim-header" style="border-color:#f87171;background:rgba(255,255,255,.04)">
+        <span class="tax-dim-label" style="color:#f87171">By Fear</span>
+        <span class="tax-dim-sub">The underlying fears that drive avoidance, paralysis, and resignation</span>
+      </div>
+      <div class="tax-subs">
+        <a href="#fear__stay_lonely" class="tax-sub">
+          <span class="tax-sub-name">Stay Lonely Forever</span>
+          <span class="tax-sub-n">609</span>
+        </a>
+        <a href="#fear__shame_judgment" class="tax-sub">
+          <span class="tax-sub-name">Get Shamed or Judged</span>
+          <span class="tax-sub-n">188</span>
+        </a>
+        <a href="#fear__rejection" class="tax-sub">
+          <span class="tax-sub-name">Be Rejected</span>
+          <span class="tax-sub-n">130</span>
+        </a>
+        <a href="#fear__run_out_of_time" class="tax-sub">
+          <span class="tax-sub-name">Run Out of Time</span>
+          <span class="tax-sub-n">57</span>
+        </a>
+        <a href="#fear__get_hurt" class="tax-sub">
+          <span class="tax-sub-name">Get Hurt in a Relationship</span>
+          <span class="tax-sub-n">64</span>
+        </a>
+      </div>
+    </div>
+    <div class="tax-col">
+      <div class="tax-dim-header" style="border-color:#fb923c;background:rgba(255,255,255,.04)">
+        <span class="tax-dim-label" style="color:#fb923c">By Cause</span>
+        <span class="tax-dim-sub">How men explain why they are where they are — their attributed reason for being single or lonely</span>
+      </div>
+      <div class="tax-subs">
+        <div class="tax-group-hdr">Unable to Build Connection</div>
+        <a href="#cause__friendzoned" class="tax-sub tax-sub-grouped">
+          <span class="tax-sub-name">Friendzoned</span>
+          <span class="tax-sub-n">209</span>
+        </a>
+        <a href="#cause__nice_guy_no_spark" class="tax-sub tax-sub-grouped">
+          <span class="tax-sub-name">Nice Guy, No Spark</span>
+          <span class="tax-sub-n">377</span>
+        </a>
+        <a href="#cause__clueless_flirting" class="tax-sub tax-sub-grouped">
+          <span class="tax-sub-name">No Clue How to Flirt / Can't Read the Room</span>
+          <span class="tax-sub-n">149</span>
+        </a>
+        <div class="tax-group-hdr">Not Attractive / Defeated</div>
+        <a href="#cause__poor_looks" class="tax-sub tax-sub-grouped">
+          <span class="tax-sub-name">Poor Looks</span>
+          <span class="tax-sub-n">1,032</span>
+        </a>
+        <a href="#cause__bad_character_unknown" class="tax-sub tax-sub-grouped">
+          <span class="tax-sub-name">Unknown Cause / Something Wrong With Me</span>
+          <span class="tax-sub-n">280</span>
+        </a>
+        <div class="tax-group-hdr">Picky</div>
+        <a href="#cause__fixated_one_woman" class="tax-sub tax-sub-grouped">
+          <span class="tax-sub-name">Won't Settle: Wants Only Her</span>
+          <span class="tax-sub-n">36</span>
+        </a>
+        <div class="tax-group-hdr">Too Busy to Date</div>
+        <a href="#cause__too_busy" class="tax-sub tax-sub-grouped">
+          <span class="tax-sub-name">Poor Time Management</span>
+          <span class="tax-sub-n">63</span>
+        </a>
+        <div class="tax-group-hdr">Afraid to Try</div>
+        <a href="#cause__afraid_women" class="tax-sub tax-sub-grouped">
+          <span class="tax-sub-name">Negative Perception of Women</span>
+          <span class="tax-sub-n">39</span>
+        </a>
+        <a href="#cause__brutal_rejection" class="tax-sub tax-sub-grouped">
+          <span class="tax-sub-name">Was Brutally Rejected</span>
+          <span class="tax-sub-n">22</span>
+        </a>
+        <a href="#cause__toxic_past" class="tax-sub tax-sub-grouped">
+          <span class="tax-sub-name">Was in a Toxic Relationship</span>
+          <span class="tax-sub-n">142</span>
+        </a>
+        <div class="tax-group-hdr">Sexually / Romantically Rejected</div>
+        <a href="#cause__inexperienced_shy" class="tax-sub tax-sub-grouped">
+          <span class="tax-sub-name">Inexperienced & Shy</span>
+          <span class="tax-sub-n">571</span>
+        </a>
+        <a href="#cause__no_chemistry_sexual" class="tax-sub tax-sub-grouped">
+          <span class="tax-sub-name">Doesn't Have the Right Chemistry</span>
+          <span class="tax-sub-n">4</span>
+        </a>
+      </div>
+    </div>
+    <div class="tax-col">
+      <div class="tax-dim-header" style="border-color:#34d399;background:rgba(255,255,255,.04)">
+        <span class="tax-dim-label" style="color:#34d399">By Stage of Loneliness</span>
+        <span class="tax-dim-sub">Where the man is in his journey — which shapes tone, receptivity, and what messaging works</span>
+      </div>
+      <div class="tax-subs">
+        <a href="#stage__inexperienced_starter" class="tax-sub">
+          <span class="tax-sub-name">Inexperienced Starter</span>
+          <span class="tax-sub-n">1,567</span>
+        </a>
+        <a href="#stage__disillusioned_burned" class="tax-sub">
+          <span class="tax-sub-name">Disillusioned or Burned</span>
+          <span class="tax-sub-n">210</span>
+        </a>
+        <a href="#stage__rebuilder" class="tax-sub">
+          <span class="tax-sub-name">Rebuilder</span>
+          <span class="tax-sub-n">156</span>
+        </a>
+        <a href="#stage__chronically_lonely" class="tax-sub">
+          <span class="tax-sub-name">Chronically Lonely</span>
+          <span class="tax-sub-n">268</span>
+        </a>
+      </div>
+    </div>
+    <div class="tax-col">
+      <div class="tax-dim-header" style="border-color:#60a5fa;background:rgba(255,255,255,.04)">
+        <span class="tax-dim-label" style="color:#60a5fa">By Aspiration & Goal</span>
+        <span class="tax-dim-sub">What men explicitly say they are trying to achieve — the stated outcome they are seeking</span>
+      </div>
+      <div class="tax-subs">
+        <a href="#goal__first_date" class="tax-sub">
+          <span class="tax-sub-name">Find a First Date</span>
+          <span class="tax-sub-n">155</span>
+        </a>
+        <a href="#goal__get_sex" class="tax-sub">
+          <span class="tax-sub-name">Get Sexual Experience</span>
+          <span class="tax-sub-n">427</span>
+        </a>
+        <a href="#goal__higher_value" class="tax-sub">
+          <span class="tax-sub-name">Become More Attractive / Level Up</span>
+          <span class="tax-sub-n">240</span>
+        </a>
+        <a href="#goal__get_girlfriend" class="tax-sub">
+          <span class="tax-sub-name">Get a Girlfriend / Find a Relationship</span>
+          <span class="tax-sub-n">1,902</span>
+        </a>
+        <a href="#goal__get_specific_woman" class="tax-sub">
+          <span class="tax-sub-name">Get the Specific Woman He Likes</span>
+          <span class="tax-sub-n">91</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="intent-section" id="intent-dist">
   <h2>Reddit Intent Distribution — What Men Are Actually Looking For</h2>
-  <p class="intent-desc">Classified from 4,759 Reddit posts &amp; comments across 10 communities. Each record filtered for male loneliness relevance, then scored against LTR vs sex-seeking signals.</p>
+  <p class="intent-desc">Classified from 5,009 Reddit posts &amp; comments across 10 communities. Each record filtered for male loneliness relevance, then scored against LTR vs sex-seeking signals.</p>
 
   <div class="intent-grid">
     <div class="donut-wrap">
       <svg viewBox="0 0 260 260" width="220" height="220">
-        <path d="M 130.0 30.0 A 100 100 0 0 1 200.1 58.7 L 170.6 88.6 A 58 58 0 0 0 130.0 72.0 Z" fill="#60a5fa" opacity="0.9"/>
-<path d="M 200.1 58.7 A 100 100 0 0 1 221.6 90.0 L 183.2 106.8 A 58 58 0 0 0 170.6 88.6 Z" fill="#f87171" opacity="0.9"/>
-<path d="M 221.6 90.0 A 100 100 0 1 1 130.0 30.0 L 130.0 72.0 A 58 58 0 1 0 183.2 106.8 Z" fill="#94a3b8" opacity="0.9"/>
-        <text x="130" y="124" text-anchor="middle" fill="#e2e8f0" font-size="28" font-weight="800" font-family="Segoe UI,sans-serif">4,759</text>
+        <path d="M 130.0 30.0 A 100 100 0 0 1 202.7 61.3 L 172.2 90.2 A 58 58 0 0 0 130.0 72.0 Z" fill="#60a5fa" opacity="0.9"/>
+<path d="M 202.7 61.3 A 100 100 0 0 1 222.9 93.1 L 183.9 108.6 A 58 58 0 0 0 172.2 90.2 Z" fill="#f87171" opacity="0.9"/>
+<path d="M 222.9 93.1 A 100 100 0 1 1 130.0 30.0 L 130.0 72.0 A 58 58 0 1 0 183.9 108.6 Z" fill="#94a3b8" opacity="0.9"/>
+        <text x="130" y="124" text-anchor="middle" fill="#e2e8f0" font-size="28" font-weight="800" font-family="Segoe UI,sans-serif">5,009</text>
         <text x="130" y="144" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Segoe UI,sans-serif">records</text>
       </svg>
       <div class="donut-legend">
         <div class="donut-legend-item">
           <div class="dl-dot" style="background:#60a5fa"></div>
           <span class="dl-label">Seeking Long-Term Relationship</span>
-          <span class="dl-n" style="color:#60a5fa">588</span>
-          <span class="dl-pct">12.4%</span>
+          <span class="dl-n" style="color:#60a5fa">649</span>
+          <span class="dl-pct">13.0%</span>
         </div>
         <div class="donut-legend-item">
           <div class="dl-dot" style="background:#f87171"></div>
           <span class="dl-label">Seeking Sex / Physical Intimacy</span>
-          <span class="dl-n" style="color:#f87171">290</span>
-          <span class="dl-pct">6.1%</span>
+          <span class="dl-n" style="color:#f87171">302</span>
+          <span class="dl-pct">6.0%</span>
         </div>
         <div class="donut-legend-item">
           <div class="dl-dot" style="background:#94a3b8"></div>
           <span class="dl-label">Undefined / Unclear Goal</span>
-          <span class="dl-n" style="color:#94a3b8">3,881</span>
-          <span class="dl-pct">81.6%</span>
+          <span class="dl-n" style="color:#94a3b8">4,058</span>
+          <span class="dl-pct">81.0%</span>
         </div>
       </div>
     </div>
@@ -231,25 +438,25 @@ body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', syste
       <div class="intent-stat-cards">
         <div class="intent-stat-card">
           <div class="isl">Seeking LTR</div>
-          <div class="isn" style="color:#60a5fa">588</div>
-          <div class="isp">12.4% of total</div>
+          <div class="isn" style="color:#60a5fa">649</div>
+          <div class="isp">13.0% of total</div>
         </div>
         <div class="intent-stat-card">
           <div class="isl">Seeking Sex</div>
-          <div class="isn" style="color:#f87171">290</div>
-          <div class="isp">6.1% of total</div>
+          <div class="isn" style="color:#f87171">302</div>
+          <div class="isp">6.0% of total</div>
         </div>
         <div class="intent-stat-card">
           <div class="isl">Undefined</div>
-          <div class="isn" style="color:#94a3b8">3,881</div>
-          <div class="isp">81.6% of total</div>
+          <div class="isn" style="color:#94a3b8">4,058</div>
+          <div class="isp">81.0% of total</div>
         </div>
       </div>
       <div class="intent-insight">
-        <strong>Key insight:</strong> 82% of men express pain without stating a clear goal —
+        <strong>Key insight:</strong> 81% of men express pain without stating a clear goal —
         they are not "looking for sex" or "looking for a girlfriend", they are simply suffering.
         Among those who do signal intent, LTR-seekers outnumber sex-seekers
-        <strong>2.0×</strong> — pointing to connection and belonging as the dominant
+        <strong>2.1×</strong> — pointing to connection and belonging as the dominant
         unmet need for this audience.
       </div>
 
@@ -377,6 +584,20 @@ body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', syste
         <td class="isub-ltr">42</td>
         <td class="isub-sex">15</td>
         <td class="isub-unk">243</td>
+      </tr>
+      <tr>
+        <td class="isub-name">r/relationship_advice</td>
+        <td class="isub-total">250</td>
+        <td class="isub-bar-cell">
+          <div class="isub-bar-track">
+            <div class="isub-bar-seg" style="width:24%;background:#60a5fa" title="LTR: 61"></div>
+            <div class="isub-bar-seg" style="width:5%;background:#f87171" title="Sex: 12"></div>
+            <div class="isub-bar-seg" style="width:71%;background:#475569" title="Undefined: 177"></div>
+          </div>
+        </td>
+        <td class="isub-ltr">61</td>
+        <td class="isub-sex">12</td>
+        <td class="isub-unk">177</td>
       </tr>
       <tr>
         <td class="isub-name">r/seduction</td>
@@ -683,6 +904,60 @@ But I cannot stress this enough, even with these things in my favor, when I DIDN
         <div class="q-src">— Reddit posts</div>
       </div>
     </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Get matches and interest on dating apps">Get matches and interest on dating apps</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#a78bfaaa"></div></div><span class="jtbd-n">120</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Fix dating profile to convert views into dates">Fix dating profile to convert views into dates</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:34%;background:#a78bfaaa"></div></div><span class="jtbd-n">41</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Become visible to women in everyday life">Become visible to women in everyday life</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:32%;background:#a78bfaaa"></div></div><span class="jtbd-n">38</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Develop a magnetic social presence and confidence">Develop a magnetic social presence and confidence</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#a78bfaaa"></div></div><span class="jtbd-n">14</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Improve appearance through grooming and fitness">Improve appearance through grooming and fitness</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:11%;background:#a78bfaaa"></div></div><span class="jtbd-n">13</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Figure out why I'm consistently overlooked">Figure out why I'm consistently overlooked</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#a78bfaaa"></div></div><span class="jtbd-n">3</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand what makes a man visually attractive">Understand what makes a man visually attractive</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#a78bfaaa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Make women respond to messages and approaches">Make women respond to messages and approaches</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#a78bfaaa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#a78bfa64;border-color:#a78bfa44;color:#a78bfa">invisible<span class="lang-pill-n">37</span></span>
+          <span class="lang-pill" style="background:#a78bfa43;border-color:#a78bfa44;color:#a78bfa">average<span class="lang-pill-n">25</span></span>
+          <span class="lang-pill" style="background:#a78bfa36;border-color:#a78bfa44;color:#a78bfa">ugly<span class="lang-pill-n">20</span></span>
+          <span class="lang-pill" style="background:#a78bfa20;border-color:#a78bfa44;color:#a78bfa">unattractive<span class="lang-pill-n">12</span></span>
+          <span class="lang-pill" style="background:#a78bfa1e;border-color:#a78bfa44;color:#a78bfa">short<span class="lang-pill-n">10</span></span>
+          <span class="lang-pill" style="background:#a78bfa1e;border-color:#a78bfa44;color:#a78bfa">rejected<span class="lang-pill-n">10</span></span>
+          <span class="lang-pill" style="background:#a78bfa1e;border-color:#a78bfa44;color:#a78bfa">depressed<span class="lang-pill-n">9</span></span>
+          <span class="lang-pill" style="background:#a78bfa1e;border-color:#a78bfa44;color:#a78bfa">unwanted<span class="lang-pill-n">7</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"all i want is someone to chat with"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"want a relationship"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"want a partner"<span class="lang-phrase-n">1×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#a78bfa64;border-color:#a78bfa44;color:#a78bfa">incel<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#a78bfa64;border-color:#a78bfa44;color:#a78bfa">the wall<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>invisible women</strong> 28</span>
+          <span class="lang-bigram"><strong>face short</strong> 5</span>
+          <span class="lang-bigram"><strong>ugly mocked</strong> 4</span>
+          <span class="lang-bigram"><strong>guys women</strong> 4</span>
+          <span class="lang-bigram"><strong>dating apps</strong> 53</span>
+          <span class="lang-bigram"><strong>deserve love</strong> 4</span>
+          <span class="lang-bigram"><strong>feel women</strong> 4</span>
+          <span class="lang-bigram"><strong>feel invisible</strong> 7</span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="seg-card" id="need__get_chosen_loved">
     <div class="seg-top">
@@ -707,6 +982,62 @@ But I cannot stress this enough, even with these things in my favor, when I DIDN
       </div>
       <div class="quote-item">"I too want to be loved, I too want someone to come back home to, but I am too scared now."
         <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Feel wanted and chosen for who I am">Feel wanted and chosen for who I am</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#a78bfaaa"></div></div><span class="jtbd-n">134</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Experience being loved by a romantic partner">Experience being loved by a romantic partner</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:95%;background:#a78bfaaa"></div></div><span class="jtbd-n">127</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="End the loneliness by building real intimacy">End the loneliness by building real intimacy</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:34%;background:#a78bfaaa"></div></div><span class="jtbd-n">46</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find a companion to share life with">Find a companion to share life with</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:22%;background:#a78bfaaa"></div></div><span class="jtbd-n">30</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Turn liking someone into a mutual relationship">Turn liking someone into a mutual relationship</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:19%;background:#a78bfaaa"></div></div><span class="jtbd-n">25</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Build deep emotional connection with someone">Build deep emotional connection with someone</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:18%;background:#a78bfaaa"></div></div><span class="jtbd-n">24</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find someone who genuinely chooses and wants me">Find someone who genuinely chooses and wants me</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:16%;background:#a78bfaaa"></div></div><span class="jtbd-n">22</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop feeling fundamentally unlovable">Stop feeling fundamentally unlovable</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:10%;background:#a78bfaaa"></div></div><span class="jtbd-n">14</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#a78bfa64;border-color:#a78bfa44;color:#a78bfa">nobody<span class="lang-pill-n">15</span></span>
+          <span class="lang-pill" style="background:#a78bfa42;border-color:#a78bfa44;color:#a78bfa">virgin<span class="lang-pill-n">10</span></span>
+          <span class="lang-pill" style="background:#a78bfa42;border-color:#a78bfa44;color:#a78bfa">depressed<span class="lang-pill-n">10</span></span>
+          <span class="lang-pill" style="background:#a78bfa42;border-color:#a78bfa44;color:#a78bfa">rejected<span class="lang-pill-n">10</span></span>
+          <span class="lang-pill" style="background:#a78bfa3c;border-color:#a78bfa44;color:#a78bfa">ugly<span class="lang-pill-n">9</span></span>
+          <span class="lang-pill" style="background:#a78bfa3c;border-color:#a78bfa44;color:#a78bfa">shy<span class="lang-pill-n">9</span></span>
+          <span class="lang-pill" style="background:#a78bfa2e;border-color:#a78bfa44;color:#a78bfa">awkward<span class="lang-pill-n">7</span></span>
+          <span class="lang-pill" style="background:#a78bfa28;border-color:#a78bfa44;color:#a78bfa">anxious<span class="lang-pill-n">6</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"want to be loved and taught about"<span class="lang-phrase-n">6×</span></span>
+          <span class="lang-phrase">"want to be loved"<span class="lang-phrase-n">5×</span></span>
+          <span class="lang-phrase">"want real love"<span class="lang-phrase-n">4×</span></span>
+          <span class="lang-phrase">"i just want to be loved"<span class="lang-phrase-n">3×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#a78bfa64;border-color:#a78bfa44;color:#a78bfa">cope<span class="lang-pill-n">5</span></span>
+          <span class="lang-pill" style="background:#a78bfa28;border-color:#a78bfa44;color:#a78bfa">incel<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#a78bfa28;border-color:#a78bfa44;color:#a78bfa">red flags<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>want loved</strong> 43</span>
+          <span class="lang-bigram"><strong>tired alone</strong> 38</span>
+          <span class="lang-bigram"><strong>loved taught</strong> 6</span>
+          <span class="lang-bigram"><strong>want love</strong> 25</span>
+          <span class="lang-bigram"><strong>alone genuinely</strong> 5</span>
+          <span class="lang-bigram"><strong>sick alone</strong> 7</span>
+          <span class="lang-bigram"><strong>want chosen</strong> 4</span>
+          <span class="lang-bigram"><strong>stuck spot</strong> 4</span>
+        </div>
       </div>
     </div>
   </div>
@@ -746,6 +1077,64 @@ But I cannot stress this enough, even with these things in my favor, when I DIDN
         <div class="q-src">— Reddit posts</div>
       </div>
     </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop catastrophizing about dying alone">Stop catastrophizing about dying alone</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#f87171aa"></div></div><span class="jtbd-n">160</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Accept uncertainty while still taking action">Accept uncertainty while still taking action</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:60%;background:#f87171aa"></div></div><span class="jtbd-n">96</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Build hope without feeding denial">Build hope without feeding denial</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:33%;background:#f87171aa"></div></div><span class="jtbd-n">53</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Connect with men who understand this experience">Connect with men who understand this experience</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:25%;background:#f87171aa"></div></div><span class="jtbd-n">40</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Break the pattern of chronic singlehood">Break the pattern of chronic singlehood</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:11%;background:#f87171aa"></div></div><span class="jtbd-n">18</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find proof that lonely men can still find love">Find proof that lonely men can still find love</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:8%;background:#f87171aa"></div></div><span class="jtbd-n">12</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Build a meaningful life that doesn't feel empty">Build a meaningful life that doesn't feel empty</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:7%;background:#f87171aa"></div></div><span class="jtbd-n">11</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find reassurance it's not too late">Find reassurance it's not too late</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#f87171aa"></div></div><span class="jtbd-n">4</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#f8717164;border-color:#f8717144;color:#f87171">forever alone<span class="lang-pill-n">332</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">nobody<span class="lang-pill-n">56</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">ugly<span class="lang-pill-n">55</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">virgin<span class="lang-pill-n">42</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">average<span class="lang-pill-n">30</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">awkward<span class="lang-pill-n">29</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">short<span class="lang-pill-n">27</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">rejected<span class="lang-pill-n">24</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"i want to fall in love ever again"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"want to feel special and better than"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"want a relationship"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"i wish i had someone to love and be"<span class="lang-phrase-n">1×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#f8717164;border-color:#f8717144;color:#f87171">cope<span class="lang-pill-n">20</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">normie<span class="lang-pill-n">5</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">incel<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">chad<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">simp<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>forever alone</strong> 393</span>
+          <span class="lang-bigram"><strong>die alone</strong> 116</span>
+          <span class="lang-bigram"><strong>alone forever</strong> 83</span>
+          <span class="lang-bigram"><strong>end alone</strong> 37</span>
+          <span class="lang-bigram"><strong>destined alone</strong> 13</span>
+          <span class="lang-bigram"><strong>alone die</strong> 8</span>
+          <span class="lang-bigram"><strong>worried alone</strong> 7</span>
+          <span class="lang-bigram"><strong>forever single</strong> 6</span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="seg-card" id="fear__shame_judgment">
     <div class="seg-top">
@@ -768,6 +1157,52 @@ But I cannot stress this enough, even with these things in my favor, when I DIDN
       </div>
       <div class="quote-item">"Hello, all my life I've been ugly, I've been called ugly, I've been mocked and laughed at."
         <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Reclaim confidence despite past humiliations">Reclaim confidence despite past humiliations</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#f87171aa"></div></div><span class="jtbd-n">83</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop feeling ashamed of being a virgin at my age">Stop feeling ashamed of being a virgin at my age</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:86%;background:#f87171aa"></div></div><span class="jtbd-n">71</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand why I feel so behind compared to peers">Understand why I feel so behind compared to peers</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:29%;background:#f87171aa"></div></div><span class="jtbd-n">24</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Tell someone about my situation without judgment">Tell someone about my situation without judgment</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:5%;background:#f87171aa"></div></div><span class="jtbd-n">4</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find men in similar situations so I'm not alone">Find men in similar situations so I'm not alone</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:5%;background:#f87171aa"></div></div><span class="jtbd-n">4</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Navigate dating without inexperience being exposed">Navigate dating without inexperience being exposed</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#f87171aa"></div></div><span class="jtbd-n">1</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Feel less embarrassed asking basic dating questions">Feel less embarrassed asking basic dating questions</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#f87171aa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#f8717164;border-color:#f8717144;color:#f87171">virgin<span class="lang-pill-n">63</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">loser<span class="lang-pill-n">11</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">ugly<span class="lang-pill-n">11</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">nobody<span class="lang-pill-n">9</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">shy<span class="lang-pill-n">9</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">depressed<span class="lang-pill-n">9</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">short<span class="lang-pill-n">7</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">invisible<span class="lang-pill-n">6</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#f8717164;border-color:#f8717144;color:#f87171">cope<span class="lang-pill-n">5</span></span>
+          <span class="lang-pill" style="background:#f8717150;border-color:#f8717144;color:#f87171">incel<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#f871713c;border-color:#f8717144;color:#f87171">normie<span class="lang-pill-n">3</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>virgin age</strong> 11</span>
+          <span class="lang-bigram"><strong>female roommate</strong> 4</span>
+          <span class="lang-bigram"><strong>virgin first</strong> 4</span>
+          <span class="lang-bigram"><strong>find sex</strong> 4</span>
+          <span class="lang-bigram"><strong>made insecure</strong> 4</span>
+          <span class="lang-bigram"><strong>room alone</strong> 4</span>
+          <span class="lang-bigram"><strong>man virgin</strong> 5</span>
+          <span class="lang-bigram"><strong>kiss sex</strong> 4</span>
+        </div>
       </div>
     </div>
   </div>
@@ -795,6 +1230,61 @@ But I cannot stress this enough, even with these things in my favor, when I DIDN
         <div class="q-src">— Reddit posts</div>
       </div>
     </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Build courage to approach despite fear of rejection">Build courage to approach despite fear of rejection</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#f87171aa"></div></div><span class="jtbd-n">52</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Ask someone out without catastrophizing the outcome">Ask someone out without catastrophizing the outcome</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:29%;background:#f87171aa"></div></div><span class="jtbd-n">15</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Handle rejection without it crushing my confidence">Handle rejection without it crushing my confidence</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#f87171aa"></div></div><span class="jtbd-n">6</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Develop a rejection-resilient mindset">Develop a rejection-resilient mindset</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#f87171aa"></div></div><span class="jtbd-n">6</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop letting fear prevent me from ever trying">Stop letting fear prevent me from ever trying</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:6%;background:#f87171aa"></div></div><span class="jtbd-n">3</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand what rejection actually means">Understand what rejection actually means</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#f87171aa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Get back on the horse after a painful rejection">Get back on the horse after a painful rejection</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#f87171aa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#f8717164;border-color:#f8717144;color:#f87171">awkward<span class="lang-pill-n">14</span></span>
+          <span class="lang-pill" style="background:#f8717164;border-color:#f8717144;color:#f87171">rejected<span class="lang-pill-n">14</span></span>
+          <span class="lang-pill" style="background:#f8717147;border-color:#f8717144;color:#f87171">average<span class="lang-pill-n">10</span></span>
+          <span class="lang-pill" style="background:#f8717147;border-color:#f8717144;color:#f87171">anxious<span class="lang-pill-n">10</span></span>
+          <span class="lang-pill" style="background:#f8717132;border-color:#f8717144;color:#f87171">shy<span class="lang-pill-n">7</span></span>
+          <span class="lang-pill" style="background:#f871712a;border-color:#f8717144;color:#f87171">nobody<span class="lang-pill-n">6</span></span>
+          <span class="lang-pill" style="background:#f871712a;border-color:#f8717144;color:#f87171">ugly<span class="lang-pill-n">6</span></span>
+          <span class="lang-pill" style="background:#f8717123;border-color:#f8717144;color:#f87171">virgin<span class="lang-pill-n">5</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"i want to be chosen for what i"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"i want a relationship"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"i just want a girlfriend and to get"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"crave intimacy and fear rejection"<span class="lang-phrase-n">1×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#f8717164;border-color:#f8717144;color:#f87171">approach anxiety<span class="lang-pill-n">20</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">chad<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">alpha<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>fear rejection</strong> 71</span>
+          <span class="lang-bigram"><strong>rejection fear</strong> 8</span>
+          <span class="lang-bigram"><strong>rejection hurts</strong> 6</span>
+          <span class="lang-bigram"><strong>dating anxiety</strong> 6</span>
+          <span class="lang-bigram"><strong>rejection men</strong> 4</span>
+          <span class="lang-bigram"><strong>creep shaming</strong> 4</span>
+          <span class="lang-bigram"><strong>gets awkward</strong> 4</span>
+          <span class="lang-bigram"><strong>scared talk</strong> 4</span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="seg-card" id="fear__run_out_of_time">
     <div class="seg-top">
@@ -816,6 +1306,38 @@ But I cannot stress this enough, even with these things in my favor, when I DIDN
       </div>
       <div class="quote-item">"But I worry that it's too late for me now."
         <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop comparing my timeline to others' milestones">Stop comparing my timeline to others' milestones</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#f87171aa"></div></div><span class="jtbd-n">12</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand if biology sets real dating deadlines">Understand if biology sets real dating deadlines</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:50%;background:#f87171aa"></div></div><span class="jtbd-n">6</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Make up for lost time without rushing or settling">Make up for lost time without rushing or settling</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:33%;background:#f87171aa"></div></div><span class="jtbd-n">4</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Start dating in my 30s/40s after years of delay">Start dating in my 30s/40s after years of delay</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:25%;background:#f87171aa"></div></div><span class="jtbd-n">3</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find reassurance there's no real age cutoff for love">Find reassurance there's no real age cutoff for love</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:25%;background:#f87171aa"></div></div><span class="jtbd-n">3</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Take action now instead of waiting for 'right moment'">Take action now instead of waiting for 'right moment'</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#f87171aa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Build a meaningful relationship despite a late start">Build a meaningful relationship despite a late start</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#f87171aa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#f8717164;border-color:#f8717144;color:#f87171">never dated<span class="lang-pill-n">7</span></span>
+          <span class="lang-pill" style="background:#f8717155;border-color:#f8717144;color:#f87171">virgin<span class="lang-pill-n">6</span></span>
+          <span class="lang-pill" style="background:#f8717147;border-color:#f8717144;color:#f87171">broken<span class="lang-pill-n">5</span></span>
+          <span class="lang-pill" style="background:#f871712a;border-color:#f8717144;color:#f87171">nobody<span class="lang-pill-n">3</span></span>
+          <span class="lang-pill" style="background:#f871712a;border-color:#f8717144;color:#f87171">hopeless<span class="lang-pill-n">3</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">awkward<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">average<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">anxious<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>romantic relationship</strong> 4</span>
+          <span class="lang-bigram"><strong>find love</strong> 4</span>
+        </div>
       </div>
     </div>
   </div>
@@ -841,6 +1363,52 @@ But I cannot stress this enough, even with these things in my favor, when I DIDN
       </div>
       <div class="quote-item">"We tried to go on marriage counselling, but my wife really built her walls up, said that she’s tired of being a cheerleader, and after every session we only argued and it seemed to be worse."
         <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Learn to trust again after being betrayed">Learn to trust again after being betrayed</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#f87171aa"></div></div><span class="jtbd-n">17</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Heal from emotional damage of a past relationship">Heal from emotional damage of a past relationship</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:65%;background:#f87171aa"></div></div><span class="jtbd-n">11</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Become vulnerable without scaring a partner away">Become vulnerable without scaring a partner away</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:59%;background:#f87171aa"></div></div><span class="jtbd-n">10</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Set boundaries that protect me in dating">Set boundaries that protect me in dating</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:24%;background:#f87171aa"></div></div><span class="jtbd-n">4</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Open up emotionally without risking trauma">Open up emotionally without risking trauma</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:18%;background:#f87171aa"></div></div><span class="jtbd-n">3</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Know red flags early to avoid repeating past pain">Know red flags early to avoid repeating past pain</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#f87171aa"></div></div><span class="jtbd-n">2</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Have a relationship without losing myself again">Have a relationship without losing myself again</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#f87171aa"></div></div><span class="jtbd-n">2</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#f8717164;border-color:#f8717144;color:#f87171">anxious<span class="lang-pill-n">10</span></span>
+          <span class="lang-pill" style="background:#f8717132;border-color:#f8717144;color:#f87171">rejected<span class="lang-pill-n">5</span></span>
+          <span class="lang-pill" style="background:#f8717128;border-color:#f8717144;color:#f87171">boring<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#f8717128;border-color:#f8717144;color:#f87171">ugly<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">invisible<span class="lang-pill-n">3</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">average<span class="lang-pill-n">3</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">shy<span class="lang-pill-n">3</span></span>
+          <span class="lang-pill" style="background:#f871711e;border-color:#f8717144;color:#f87171">introvert<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"want to be loved"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"craving connection while being met"<span class="lang-phrase-n">1×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#f8717164;border-color:#f8717144;color:#f87171">red flags<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>feel alone</strong> 4</span>
+          <span class="lang-bigram"><strong>anxious avoi</strong> 4</span>
+          <span class="lang-bigram"><strong>feel lonely</strong> 4</span>
+        </div>
       </div>
     </div>
   </div>
@@ -880,6 +1448,57 @@ But I cannot stress this enough, even with these things in my favor, when I DIDN
         <div class="q-src">— Reddit posts</div>
       </div>
     </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Escape the friend zone with a specific woman">Escape the friend zone with a specific woman</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923caa"></div></div><span class="jtbd-n">144</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Create romantic tension with women from the start">Create romantic tension with women from the start</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:13%;background:#fb923caa"></div></div><span class="jtbd-n">19</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Avoid landing in the friend zone with new women">Avoid landing in the friend zone with new women</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:6%;background:#fb923caa"></div></div><span class="jtbd-n">9</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand why women consistently see me as a friend">Understand why women consistently see me as a friend</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:4%;background:#fb923caa"></div></div><span class="jtbd-n">6</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Know when to cut losses and move on">Know when to cut losses and move on</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:4%;background:#fb923caa"></div></div><span class="jtbd-n">6</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop being the emotional support guy who gets nothing">Stop being the emotional support guy who gets nothing</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">2</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Express romantic interest without ruining friendship">Express romantic interest without ruining friendship</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">rejected<span class="lang-pill-n">16</span></span>
+          <span class="lang-pill" style="background:#fb923c57;border-color:#fb923c44;color:#fb923c">awkward<span class="lang-pill-n">14</span></span>
+          <span class="lang-pill" style="background:#fb923c3e;border-color:#fb923c44;color:#fb923c">nobody<span class="lang-pill-n">10</span></span>
+          <span class="lang-pill" style="background:#fb923c32;border-color:#fb923c44;color:#fb923c">nice guy<span class="lang-pill-n">8</span></span>
+          <span class="lang-pill" style="background:#fb923c2b;border-color:#fb923c44;color:#fb923c">ugly<span class="lang-pill-n">7</span></span>
+          <span class="lang-pill" style="background:#fb923c2b;border-color:#fb923c44;color:#fb923c">average<span class="lang-pill-n">7</span></span>
+          <span class="lang-pill" style="background:#fb923c2b;border-color:#fb923c44;color:#fb923c">socially awkward<span class="lang-pill-n">7</span></span>
+          <span class="lang-pill" style="background:#fb923c25;border-color:#fb923c44;color:#fb923c">shy<span class="lang-pill-n">6</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"want a relationship at that time"<span class="lang-phrase-n">1×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">friendzone<span class="lang-pill-n">42</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">cope<span class="lang-pill-n">5</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>friendzoned ghosted</strong> 10</span>
+          <span class="lang-bigram"><strong>unless looks</strong> 4</span>
+          <span class="lang-bigram"><strong>girls circle</strong> 4</span>
+          <span class="lang-bigram"><strong>endlessly friendzoned</strong> 4</span>
+          <span class="lang-bigram"><strong>nice weather</strong> 4</span>
+          <span class="lang-bigram"><strong>looks back</strong> 4</span>
+          <span class="lang-bigram"><strong>damn dating</strong> 4</span>
+          <span class="lang-bigram"><strong>assaulted appearance</strong> 4</span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="seg-card" id="cause__nice_guy_no_spark">
     <div class="seg-top">
@@ -908,6 +1527,62 @@ But i am so happy about i am not going to give a shit about logic, even if she o
         <div class="q-src">— Reddit posts</div>
       </div>
     </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop being seen as safe and predictable by women">Stop being seen as safe and predictable by women</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923caa"></div></div><span class="jtbd-n">319</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Develop attractive confidence while staying authentic">Develop attractive confidence while staying authentic</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#fb923caa"></div></div><span class="jtbd-n">38</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Create attraction and chemistry as a genuinely nice man">Create attraction and chemistry as a genuinely nice man</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:11%;background:#fb923caa"></div></div><span class="jtbd-n">34</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Learn to flirt and create tension without being fake">Learn to flirt and create tension without being fake</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:7%;background:#fb923caa"></div></div><span class="jtbd-n">21</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Become more exciting without becoming a jerk">Become more exciting without becoming a jerk</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:4%;background:#fb923caa"></div></div><span class="jtbd-n">14</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand why kindness alone doesn't create desire">Understand why kindness alone doesn't create desire</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">5</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Learn the difference between nice and pushover">Learn the difference between nice and pushover</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">5</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">boring<span class="lang-pill-n">309</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">ugly<span class="lang-pill-n">26</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">awkward<span class="lang-pill-n">24</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">introvert<span class="lang-pill-n">21</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">rejected<span class="lang-pill-n">21</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">nobody<span class="lang-pill-n">20</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">nice guy<span class="lang-pill-n">19</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">shy<span class="lang-pill-n">17</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"want a relationship to share and"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"i wish i could meet someone like me who info"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"i want to be wanted"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"i want to be chosen"<span class="lang-phrase-n">1×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">cope<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#fb923c32;border-color:#fb923c44;color:#fb923c">frame<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#fb923c32;border-color:#fb923c44;color:#fb923c">red flags<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#fb923c32;border-color:#fb923c44;color:#fb923c">hit the gym<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>boring person</strong> 22</span>
+          <span class="lang-bigram"><strong>boring life</strong> 11</span>
+          <span class="lang-bigram"><strong>think boring</strong> 10</span>
+          <span class="lang-bigram"><strong>little boring</strong> 10</span>
+          <span class="lang-bigram"><strong>boring guy</strong> 10</span>
+          <span class="lang-bigram"><strong>pretty boring</strong> 7</span>
+          <span class="lang-bigram"><strong>feel boring</strong> 7</span>
+          <span class="lang-bigram"><strong>feels boring</strong> 6</span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="seg-card" id="cause__clueless_flirting">
     <div class="seg-top">
@@ -931,6 +1606,53 @@ But i am so happy about i am not going to give a shit about logic, even if she o
       </div>
       <div class="quote-item">"I missed my chance in high school as I never really put myself out there and was mostly quiet, never went to no parties."
         <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Develop awareness of the social dynamics in dating">Develop awareness of the social dynamics in dating</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923caa"></div></div><span class="jtbd-n">20</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop overthinking every interaction with women">Stop overthinking every interaction with women</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:50%;background:#fb923caa"></div></div><span class="jtbd-n">10</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand flirting as a learnable skill">Understand flirting as a learnable skill</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:40%;background:#fb923caa"></div></div><span class="jtbd-n">8</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Practice starting natural conversations with women">Practice starting natural conversations with women</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:30%;background:#fb923caa"></div></div><span class="jtbd-n">6</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Know when to make a move vs hold back">Know when to make a move vs hold back</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:15%;background:#fb923caa"></div></div><span class="jtbd-n">3</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Tell if a woman is being friendly vs romantically interested">Tell if a woman is being friendly vs romantically interested</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:5%;background:#fb923caa"></div></div><span class="jtbd-n">1</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Learn to read signals that a woman is interested">Learn to read signals that a woman is interested</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">awkward<span class="lang-pill-n">126</span></span>
+          <span class="lang-pill" style="background:#fb923c5d;border-color:#fb923c44;color:#fb923c">socially awkward<span class="lang-pill-n">118</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">virgin<span class="lang-pill-n">20</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">shy<span class="lang-pill-n">14</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">boring<span class="lang-pill-n">12</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">ugly<span class="lang-pill-n">12</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">short<span class="lang-pill-n">9</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">anxious<span class="lang-pill-n">9</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"i want a girlfriend"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"want to be loved as well"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"just want to be loved as well"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"craving love from a woman"<span class="lang-phrase-n">1×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>socially awkward</strong> 125</span>
+          <span class="lang-bigram"><strong>assaulted appearance</strong> 8</span>
+          <span class="lang-bigram"><strong>appearance single</strong> 8</span>
+          <span class="lang-bigram"><strong>appearance hello</strong> 8</span>
+          <span class="lang-bigram"><strong>appearance family</strong> 8</span>
+          <span class="lang-bigram"><strong>single biggest</strong> 8</span>
+          <span class="lang-bigram"><strong>awkward feel</strong> 12</span>
+          <span class="lang-bigram"><strong>feel appearance</strong> 8</span>
+        </div>
       </div>
     </div>
   </div>
@@ -959,6 +1681,65 @@ But i am so happy about i am not going to give a shit about logic, even if she o
         <div class="q-src">— Reddit posts</div>
       </div>
     </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Compete in the dating market as a short or average-looking man">Compete in the dating market as a short or average-looking man</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923caa"></div></div><span class="jtbd-n">180</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand which non-physical traits compensate for looks">Understand which non-physical traits compensate for looks</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:99%;background:#fb923caa"></div></div><span class="jtbd-n">178</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Improve appearance through grooming, fitness, and style">Improve appearance through grooming, fitness, and style</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:93%;background:#fb923caa"></div></div><span class="jtbd-n">168</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop letting appearance anxiety prevent me from dating">Stop letting appearance anxiety prevent me from dating</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:17%;background:#fb923caa"></div></div><span class="jtbd-n">31</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Maximize attractiveness within my genetic constraints">Maximize attractiveness within my genetic constraints</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#fb923caa"></div></div><span class="jtbd-n">22</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Develop confidence despite not meeting conventional standards">Develop confidence despite not meeting conventional standards</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">4</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find out if looks are truly the main thing holding me back">Find out if looks are truly the main thing holding me back</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">1</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find women who value personality over appearance">Find women who value personality over appearance</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">ugly<span class="lang-pill-n">697</span></span>
+          <span class="lang-pill" style="background:#fb923c20;border-color:#fb923c44;color:#fb923c">unattractive<span class="lang-pill-n">228</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">average<span class="lang-pill-n">122</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">short<span class="lang-pill-n">109</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">virgin<span class="lang-pill-n">101</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">rejected<span class="lang-pill-n">70</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">fat<span class="lang-pill-n">60</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">awkward<span class="lang-pill-n">51</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"want real love"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"i wish i had a girlfriend"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"i really want a girlfriend"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"i just want to be loved the way i"<span class="lang-phrase-n">2×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">incel<span class="lang-pill-n">43</span></span>
+          <span class="lang-pill" style="background:#fb923c2c;border-color:#fb923c44;color:#fb923c">cope<span class="lang-pill-n">19</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">normie<span class="lang-pill-n">13</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">chad<span class="lang-pill-n">8</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">blackpill<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">frame<span class="lang-pill-n">4</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>called ugly</strong> 49</span>
+          <span class="lang-bigram"><strong>ugly people</strong> 32</span>
+          <span class="lang-bigram"><strong>ugly face</strong> 27</span>
+          <span class="lang-bigram"><strong>know ugly</strong> 26</span>
+          <span class="lang-bigram"><strong>think ugly</strong> 25</span>
+          <span class="lang-bigram"><strong>ugly guy</strong> 21</span>
+          <span class="lang-bigram"><strong>feel ugly</strong> 18</span>
+          <span class="lang-bigram"><strong>unattracti women</strong> 16</span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="seg-card" id="cause__bad_character_unknown">
     <div class="seg-top">
@@ -983,6 +1764,61 @@ But i am so happy about i am not going to give a shit about logic, even if she o
       </div>
       <div class="quote-item">"The constant probing from him is very off putting and is actually making me feel like there IS something wrong with me."
         <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop blaming myself for something I can't diagnose">Stop blaming myself for something I can't diagnose</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923caa"></div></div><span class="jtbd-n">56</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Identify the specific pattern causing repeated failure">Identify the specific pattern causing repeated failure</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:14%;background:#fb923caa"></div></div><span class="jtbd-n">8</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Test different approaches to find what works for me">Test different approaches to find what works for me</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:9%;background:#fb923caa"></div></div><span class="jtbd-n">5</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand why doing everything 'right' still fails">Understand why doing everything 'right' still fails</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:7%;background:#fb923caa"></div></div><span class="jtbd-n">4</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Get honest feedback about what's holding me back">Get honest feedback about what's holding me back</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:4%;background:#fb923caa"></div></div><span class="jtbd-n">2</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find a mentor or coach who can spot what I can't">Find a mentor or coach who can spot what I can't</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:4%;background:#fb923caa"></div></div><span class="jtbd-n">2</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Get an outside perspective on my behavior">Get an outside perspective on my behavior</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">depressed<span class="lang-pill-n">10</span></span>
+          <span class="lang-pill" style="background:#fb923c5a;border-color:#fb923c44;color:#fb923c">virgin<span class="lang-pill-n">9</span></span>
+          <span class="lang-pill" style="background:#fb923c5a;border-color:#fb923c44;color:#fb923c">ugly<span class="lang-pill-n">9</span></span>
+          <span class="lang-pill" style="background:#fb923c46;border-color:#fb923c44;color:#fb923c">awkward<span class="lang-pill-n">7</span></span>
+          <span class="lang-pill" style="background:#fb923c46;border-color:#fb923c44;color:#fb923c">rejected<span class="lang-pill-n">7</span></span>
+          <span class="lang-pill" style="background:#fb923c32;border-color:#fb923c44;color:#fb923c">shy<span class="lang-pill-n">5</span></span>
+          <span class="lang-pill" style="background:#fb923c28;border-color:#fb923c44;color:#fb923c">invisible<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#fb923c28;border-color:#fb923c44;color:#fb923c">boring<span class="lang-pill-n">4</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"i wish i could find someone to share my life"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"crave intimacy"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"i want to be chosen for what i"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"i want a relationship but i"<span class="lang-phrase-n">1×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">friendzone<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">cope<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">level up<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>girls liked</strong> 4</span>
+          <span class="lang-bigram"><strong>girl ever</strong> 5</span>
+          <span class="lang-bigram"><strong>getting rejected</strong> 4</span>
+          <span class="lang-bigram"><strong>find girlfriend</strong> 5</span>
+          <span class="lang-bigram"><strong>one girl</strong> 5</span>
+          <span class="lang-bigram"><strong>alone forever</strong> 4</span>
+          <span class="lang-bigram"><strong>feel lonely</strong> 6</span>
+          <span class="lang-bigram"><strong>dating apps</strong> 7</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1010,6 +1846,44 @@ But i am so happy about i am not going to give a shit about logic, even if she o
         <div class="q-src">— Reddit posts</div>
       </div>
     </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Accept unrequited love and redirect energy">Accept unrequited love and redirect energy</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923caa"></div></div><span class="jtbd-n">12</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Move on from a woman who doesn't reciprocate">Move on from a woman who doesn't reciprocate</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:58%;background:#fb923caa"></div></div><span class="jtbd-n">7</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop obsessing and open myself to other women">Stop obsessing and open myself to other women</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:25%;background:#fb923caa"></div></div><span class="jtbd-n">3</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Heal the attachment so I can date freely again">Heal the attachment so I can date freely again</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:8%;background:#fb923caa"></div></div><span class="jtbd-n">1</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand why I can't feel anything for others">Understand why I can't feel anything for others</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Make the specific woman I love actually want me">Make the specific woman I love actually want me</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find out if she could ever feel the same way">Find out if she could ever feel the same way</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">rejected<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#fb923c32;border-color:#fb923c44;color:#fb923c">failure<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#fb923c32;border-color:#fb923c44;color:#fb923c">nobody<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#fb923c32;border-color:#fb923c44;color:#fb923c">awkward<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#fb923c32;border-color:#fb923c44;color:#fb923c">short<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#fb923c32;border-color:#fb923c44;color:#fb923c">anxious<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"want a relationship"<span class="lang-phrase-n">3×</span></span>
+          <span class="lang-phrase">"want to be loved"<span class="lang-phrase-n">1×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>unrequited love</strong> 11</span>
+          <span class="lang-bigram"><strong>woulded love</strong> 5</span>
+          <span class="lang-bigram"><strong>feel lonely</strong> 4</span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="seg-card" id="cause__too_busy">
     <div class="seg-top">
@@ -1032,6 +1906,35 @@ But i am so happy about i am not going to give a shit about logic, even if she o
       </div>
       <div class="quote-item">"Now, years have passed and my career is going well but I have no social life."
         <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Build a social life outside work to meet people">Build a social life outside work to meet people</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923caa"></div></div><span class="jtbd-n">34</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Make use of dating apps to be efficient">Make use of dating apps to be efficient</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#fb923caa"></div></div><span class="jtbd-n">4</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Know when to sacrifice career time for love">Know when to sacrifice career time for love</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:12%;background:#fb923caa"></div></div><span class="jtbd-n">4</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Shift mindset from career-first to relationship-ready">Shift mindset from career-first to relationship-ready</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:6%;background:#fb923caa"></div></div><span class="jtbd-n">2</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Make dating a genuine priority instead of afterthought">Make dating a genuine priority instead of afterthought</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:6%;background:#fb923caa"></div></div><span class="jtbd-n">2</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Balance career ambition with romantic goals">Balance career ambition with romantic goals</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:3%;background:#fb923caa"></div></div><span class="jtbd-n">1</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find dating strategies that fit a busy schedule">Find dating strategies that fit a busy schedule</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">virgin<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#fb923c32;border-color:#fb923c44;color:#fb923c">failure<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#fb923c32;border-color:#fb923c44;color:#fb923c">fat<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#fb923c32;border-color:#fb923c44;color:#fb923c">never dated<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>amacy dating</strong> 4</span>
+          <span class="lang-bigram"><strong>girls naturally</strong> 4</span>
+          <span class="lang-bigram"><strong>dating apps</strong> 6</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1058,6 +1961,25 @@ But i am so happy about i am not going to give a shit about logic, even if she o
         <div class="q-src">— comments</div>
       </div>
     </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Process what happened that made me afraid of women">Process what happened that made me afraid of women</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923caa"></div></div><span class="jtbd-n">3</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Separate bad experiences from unfair generalizations">Separate bad experiences from unfair generalizations</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:67%;background:#fb923caa"></div></div><span class="jtbd-n">2</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Let go of bitterness without dismissing my pain">Let go of bitterness without dismissing my pain</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:33%;background:#fb923caa"></div></div><span class="jtbd-n">1</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand the line between protecting myself and isolation">Understand the line between protecting myself and isolation</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Try again without letting past define every woman">Try again without letting past define every woman</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Rebuild trust in women after being hurt">Rebuild trust in women after being hurt</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find safe low-stakes ways to test the waters again">Find safe low-stakes ways to test the waters again</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">shy<span class="lang-pill-n">3</span></span>
+          <span class="lang-pill" style="background:#fb923c42;border-color:#fb923c44;color:#fb923c">ugly<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="seg-card" id="cause__brutal_rejection">
     <div class="seg-top">
@@ -1080,6 +2002,26 @@ But i am so happy about i am not going to give a shit about logic, even if she o
       </div>
       <div class="quote-item">"Hello, all my life I've been ugly, I've been called ugly, I've been mocked and laughed at."
         <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop the rejection memory from playing on repeat">Stop the rejection memory from playing on repeat</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923caa"></div></div><span class="jtbd-n">7</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Rebuild confidence after being laughed at or mocked">Rebuild confidence after being laughed at or mocked</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:43%;background:#fb923caa"></div></div><span class="jtbd-n">3</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find the courage to risk rejection again">Find the courage to risk rejection again</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:29%;background:#fb923caa"></div></div><span class="jtbd-n">2</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Recover from a public or humiliating rejection">Recover from a public or humiliating rejection</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:14%;background:#fb923caa"></div></div><span class="jtbd-n">1</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand why that particular rejection hit so hard">Understand why that particular rejection hit so hard</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Reframe rejection as data rather than proof of failure">Reframe rejection as data rather than proof of failure</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Develop resilience through gradual exposure">Develop resilience through gradual exposure</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">rejected<span class="lang-pill-n">3</span></span>
+          <span class="lang-pill" style="background:#fb923c42;border-color:#fb923c44;color:#fb923c">loner<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#fb923c42;border-color:#fb923c44;color:#fb923c">invisible<span class="lang-pill-n">2</span></span>
+        </div>
       </div>
     </div>
   </div>
@@ -1106,6 +2048,60 @@ But i am so happy about i am not going to give a shit about logic, even if she o
       </div>
       <div class="quote-item">"I’m 59M and divorced after a 20 year marriage. She cheated. I spent 20 years loving a person who did not seem to have the ability to love back. Now that I am past all the headaches and heartaches of the divorce process, it would be nice to have someone actually love me back."
         <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Rebuild trust in women after cheating or manipulation">Rebuild trust in women after cheating or manipulation</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923caa"></div></div><span class="jtbd-n">40</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Heal from the emotional damage of a toxic relationship">Heal from the emotional damage of a toxic relationship</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:45%;background:#fb923caa"></div></div><span class="jtbd-n">18</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Know the red flags earlier to avoid another toxic person">Know the red flags earlier to avoid another toxic person</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:30%;background:#fb923caa"></div></div><span class="jtbd-n">12</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop punishing new partners for what an ex did">Stop punishing new partners for what an ex did</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">1</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Date again without bringing baggage into it">Date again without bringing baggage into it</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">1</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand my patterns that let me into a toxic dynamic">Understand my patterns that let me into a toxic dynamic</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Build a self-concept beyond what happened to me">Build a self-concept beyond what happened to me</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">anxious<span class="lang-pill-n">10</span></span>
+          <span class="lang-pill" style="background:#fb923c5a;border-color:#fb923c44;color:#fb923c">broken<span class="lang-pill-n">9</span></span>
+          <span class="lang-pill" style="background:#fb923c5a;border-color:#fb923c44;color:#fb923c">short<span class="lang-pill-n">9</span></span>
+          <span class="lang-pill" style="background:#fb923c46;border-color:#fb923c44;color:#fb923c">depressed<span class="lang-pill-n">7</span></span>
+          <span class="lang-pill" style="background:#fb923c3c;border-color:#fb923c44;color:#fb923c">ugly<span class="lang-pill-n">6</span></span>
+          <span class="lang-pill" style="background:#fb923c32;border-color:#fb923c44;color:#fb923c">boring<span class="lang-pill-n">5</span></span>
+          <span class="lang-pill" style="background:#fb923c28;border-color:#fb923c44;color:#fb923c">rejected<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">virgin<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"want to be in a relationship but can"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"really want a relationship"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"i want to be loved and experience any"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"i want a relationship but i don"<span class="lang-phrase-n">1×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">red flags<span class="lang-pill-n">6</span></span>
+          <span class="lang-pill" style="background:#fb923c21;border-color:#fb923c44;color:#fb923c">cope<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>toxic relationship</strong> 31</span>
+          <span class="lang-bigram"><strong>relationship pare</strong> 6</span>
+          <span class="lang-bigram"><strong>girl came</strong> 4</span>
+          <span class="lang-bigram"><strong>abusi relationship</strong> 4</span>
+          <span class="lang-bigram"><strong>new relationship</strong> 4</span>
+          <span class="lang-bigram"><strong>relationship now</strong> 4</span>
+          <span class="lang-bigram"><strong>relationship ended</strong> 5</span>
+          <span class="lang-bigram"><strong>want relationship</strong> 4</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1136,6 +2132,62 @@ Spent all my time staying inside, playing video games, too scared to talk to any
         <div class="q-src">— Reddit posts</div>
       </div>
     </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Start dating from zero without embarrassment">Start dating from zero without embarrassment</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923caa"></div></div><span class="jtbd-n">50</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Overcome social anxiety to talk to women at all">Overcome social anxiety to talk to women at all</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:58%;background:#fb923caa"></div></div><span class="jtbd-n">29</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Get my first date to gain real experience">Get my first date to gain real experience</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:38%;background:#fb923caa"></div></div><span class="jtbd-n">19</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Learn basic dating skills I never developed">Learn basic dating skills I never developed</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:36%;background:#fb923caa"></div></div><span class="jtbd-n">18</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Practice conversations without high stakes pressure">Practice conversations without high stakes pressure</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:18%;background:#fb923caa"></div></div><span class="jtbd-n">9</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Build confidence through small wins gradually">Build confidence through small wins gradually</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:4%;background:#fb923caa"></div></div><span class="jtbd-n">2</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find a patient partner who won't judge inexperience">Find a patient partner who won't judge inexperience</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Become comfortable in my own skin before dating">Become comfortable in my own skin before dating</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">virgin<span class="lang-pill-n">207</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">awkward<span class="lang-pill-n">45</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">shy<span class="lang-pill-n">36</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">average<span class="lang-pill-n">34</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">rejected<span class="lang-pill-n">28</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">ugly<span class="lang-pill-n">21</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">short<span class="lang-pill-n">21</span></span>
+          <span class="lang-pill" style="background:#fb923c1e;border-color:#fb923c44;color:#fb923c">never dated<span class="lang-pill-n">21</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"want someone to care"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"longing for connection is meaningless"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"i really want a girlfriend"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"i crave love"<span class="lang-phrase-n">2×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#fb923c64;border-color:#fb923c44;color:#fb923c">cope<span class="lang-pill-n">7</span></span>
+          <span class="lang-pill" style="background:#fb923c47;border-color:#fb923c44;color:#fb923c">hit the gym<span class="lang-pill-n">5</span></span>
+          <span class="lang-pill" style="background:#fb923c39;border-color:#fb923c44;color:#fb923c">red flags<span class="lang-pill-n">4</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>virgin relationship</strong> 19</span>
+          <span class="lang-bigram"><strong>kissed girl</strong> 36</span>
+          <span class="lang-bigram"><strong>hello relationship</strong> 9</span>
+          <span class="lang-bigram"><strong>weight someti</strong> 7</span>
+          <span class="lang-bigram"><strong>girl plan</strong> 6</span>
+          <span class="lang-bigram"><strong>relationship entire</strong> 11</span>
+          <span class="lang-bigram"><strong>women daily</strong> 4</span>
+          <span class="lang-bigram"><strong>virgin social</strong> 4</span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="seg-card" id="cause__no_chemistry_sexual">
     <div class="seg-top">
@@ -1159,6 +2211,16 @@ Spent all my time staying inside, playing video games, too scared to talk to any
       <div class="quote-item">"In the end I had a bunch of affairs and one night stands which just left me with this weird feeling of emptiness: No physical connection with these women ever felt like what I had with Cory and Andrea, so I just felt bad."
         <div class="q-src">— Reddit posts</div>
       </div>
+    </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Figure out why I don't feel attraction to 'suitable' women">Figure out why I don't feel attraction to 'suitable' women</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#fb923caa"></div></div><span class="jtbd-n">2</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Calibrate standards to match my actual situation">Calibrate standards to match my actual situation</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:50%;background:#fb923caa"></div></div><span class="jtbd-n">1</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand if the problem is psychological or physical">Understand if the problem is psychological or physical</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand if chemistry develops over time">Understand if chemistry develops over time</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop forcing attraction that simply isn't there">Stop forcing attraction that simply isn't there</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find women I'm both compatible with and attracted to">Find women I'm both compatible with and attracted to</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Be honest with women when chemistry isn't present">Be honest with women when chemistry isn't present</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#fb923caa"></div></div><span class="jtbd-n">0</span></div>
     </div>
   </div>
 </div>
@@ -1203,6 +2265,64 @@ Spent all my time staying inside, playing video games, too scared to talk to any
         <div class="q-src">— Reddit posts</div>
       </div>
     </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Get my first date to gain real-world experience">Get my first date to gain real-world experience</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#34d399aa"></div></div><span class="jtbd-n">315</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find a patient woman who won't judge my inexperience">Find a patient woman who won't judge my inexperience</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:17%;background:#34d399aa"></div></div><span class="jtbd-n">53</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop feeling behind and start at my own pace">Stop feeling behind and start at my own pace</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:7%;background:#34d399aa"></div></div><span class="jtbd-n">22</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Learn the basics of dating everyone else seems to know">Learn the basics of dating everyone else seems to know</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399aa"></div></div><span class="jtbd-n">4</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Build social and romantic skills completely from scratch">Build social and romantic skills completely from scratch</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399aa"></div></div><span class="jtbd-n">3</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand how relationships typically progress">Understand how relationships typically progress</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399aa"></div></div><span class="jtbd-n">2</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Not let inexperience define my worth as a partner">Not let inexperience define my worth as a partner</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399aa"></div></div><span class="jtbd-n">1</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Get honest guidance rather than generic advice">Get honest guidance rather than generic advice</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399aa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#34d39964;border-color:#34d39944;color:#34d399">virgin<span class="lang-pill-n">229</span></span>
+          <span class="lang-pill" style="background:#34d3991e;border-color:#34d39944;color:#34d399">awkward<span class="lang-pill-n">49</span></span>
+          <span class="lang-pill" style="background:#34d3991e;border-color:#34d39944;color:#34d399">average<span class="lang-pill-n">37</span></span>
+          <span class="lang-pill" style="background:#34d3991e;border-color:#34d39944;color:#34d399">shy<span class="lang-pill-n">36</span></span>
+          <span class="lang-pill" style="background:#34d3991e;border-color:#34d39944;color:#34d399">rejected<span class="lang-pill-n">34</span></span>
+          <span class="lang-pill" style="background:#34d3991e;border-color:#34d39944;color:#34d399">short<span class="lang-pill-n">29</span></span>
+          <span class="lang-pill" style="background:#34d3991e;border-color:#34d39944;color:#34d399">late bloomer<span class="lang-pill-n">28</span></span>
+          <span class="lang-pill" style="background:#34d3991e;border-color:#34d39944;color:#34d399">ugly<span class="lang-pill-n">25</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"want someone to care"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"want a relationship"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"longing for connection is meaningless"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"i really want a girlfriend"<span class="lang-phrase-n">2×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#34d39964;border-color:#34d39944;color:#34d399">cope<span class="lang-pill-n">9</span></span>
+          <span class="lang-pill" style="background:#34d39937;border-color:#34d39944;color:#34d399">red flags<span class="lang-pill-n">5</span></span>
+          <span class="lang-pill" style="background:#34d39937;border-color:#34d39944;color:#34d399">hit the gym<span class="lang-pill-n">5</span></span>
+          <span class="lang-pill" style="background:#34d3991e;border-color:#34d39944;color:#34d399">incel<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#34d3991e;border-color:#34d39944;color:#34d399">chad<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>virgin relationship</strong> 19</span>
+          <span class="lang-bigram"><strong>kissed girl</strong> 36</span>
+          <span class="lang-bigram"><strong>virgin age</strong> 11</span>
+          <span class="lang-bigram"><strong>hello relationship</strong> 9</span>
+          <span class="lang-bigram"><strong>weight someti</strong> 7</span>
+          <span class="lang-bigram"><strong>girl plan</strong> 6</span>
+          <span class="lang-bigram"><strong>relationship entire</strong> 11</span>
+          <span class="lang-bigram"><strong>women daily</strong> 4</span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="seg-card" id="stage__disillusioned_burned">
     <div class="seg-top">
@@ -1226,6 +2346,61 @@ Spent all my time staying inside, playing video games, too scared to talk to any
       </div>
       <div class="quote-item">"It was my first relationship after the divorce. It was a great experience but also incredibly emotionally taxing due to my anxiety and unresolved trauma from the divorce and infidelity. It was way too early to date for me, being only 5 months out from the divorce being finalized."
         <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Decide whether to keep trying or accept singlehood">Decide whether to keep trying or accept singlehood</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#34d399aa"></div></div><span class="jtbd-n">51</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Process accumulated pain without becoming bitter">Process accumulated pain without becoming bitter</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:24%;background:#34d399aa"></div></div><span class="jtbd-n">12</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find motivation to keep trying after years of rejection">Find motivation to keep trying after years of rejection</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:22%;background:#34d399aa"></div></div><span class="jtbd-n">11</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Connect with men who understand this exhaustion">Connect with men who understand this exhaustion</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:16%;background:#34d399aa"></div></div><span class="jtbd-n">8</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand what I'd do differently if I tried again">Understand what I'd do differently if I tried again</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399aa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Rebuild hope without deluding myself">Rebuild hope without deluding myself</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399aa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find one genuine reason to believe love is possible">Find one genuine reason to believe love is possible</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399aa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#34d39964;border-color:#34d39944;color:#34d399">nobody<span class="lang-pill-n">14</span></span>
+          <span class="lang-pill" style="background:#34d39947;border-color:#34d39944;color:#34d399">depressed<span class="lang-pill-n">10</span></span>
+          <span class="lang-pill" style="background:#34d39940;border-color:#34d39944;color:#34d399">invisible<span class="lang-pill-n">9</span></span>
+          <span class="lang-pill" style="background:#34d39940;border-color:#34d39944;color:#34d399">ugly<span class="lang-pill-n">9</span></span>
+          <span class="lang-pill" style="background:#34d39939;border-color:#34d39944;color:#34d399">virgin<span class="lang-pill-n">8</span></span>
+          <span class="lang-pill" style="background:#34d39939;border-color:#34d39944;color:#34d399">awkward<span class="lang-pill-n">8</span></span>
+          <span class="lang-pill" style="background:#34d3992a;border-color:#34d39944;color:#34d399">failure<span class="lang-pill-n">6</span></span>
+          <span class="lang-pill" style="background:#34d3992a;border-color:#34d39944;color:#34d399">hopeless<span class="lang-pill-n">6</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"want to find love"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"i wish i had someone i could care about"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"want a partner"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"i wish i had incel friends in real life"<span class="lang-phrase-n">1×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#34d39964;border-color:#34d39944;color:#34d399">cope<span class="lang-pill-n">6</span></span>
+          <span class="lang-pill" style="background:#34d39942;border-color:#34d39944;color:#34d399">incel<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#34d39921;border-color:#34d39944;color:#34d399">friendzone<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>married girlfriend</strong> 4</span>
+          <span class="lang-bigram"><strong>almost married</strong> 4</span>
+          <span class="lang-bigram"><strong>quit dating</strong> 4</span>
+          <span class="lang-bigram"><strong>done dating</strong> 6</span>
+          <span class="lang-bigram"><strong>made insecure</strong> 4</span>
+          <span class="lang-bigram"><strong>amaginary girlfriend</strong> 4</span>
+          <span class="lang-bigram"><strong>feel love</strong> 7</span>
+          <span class="lang-bigram"><strong>dating now</strong> 5</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1254,6 +2429,59 @@ Spent all my time staying inside, playing video games, too scared to talk to any
         <div class="q-src">— Reddit posts</div>
       </div>
     </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Find someone who understands I come with a history">Find someone who understands I come with a history</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#34d399aa"></div></div><span class="jtbd-n">38</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Get back into dating after a long relationship ended">Get back into dating after a long relationship ended</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:74%;background:#34d399aa"></div></div><span class="jtbd-n">28</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Navigate apps and new dating expectations">Navigate apps and new dating expectations</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:39%;background:#34d399aa"></div></div><span class="jtbd-n">15</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand how dating has changed since I was last single">Understand how dating has changed since I was last single</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:3%;background:#34d399aa"></div></div><span class="jtbd-n">1</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Know when I'm emotionally ready vs just lonely">Know when I'm emotionally ready vs just lonely</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:3%;background:#34d399aa"></div></div><span class="jtbd-n">1</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Heal properly before rushing into something new">Heal properly before rushing into something new</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:3%;background:#34d399aa"></div></div><span class="jtbd-n">1</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Rebuild confidence after long relationship eroded it">Rebuild confidence after long relationship eroded it</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399aa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Avoid the same relationship mistakes this time">Avoid the same relationship mistakes this time</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399aa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#34d39964;border-color:#34d39944;color:#34d399">broken<span class="lang-pill-n">8</span></span>
+          <span class="lang-pill" style="background:#34d39964;border-color:#34d39944;color:#34d399">anxious<span class="lang-pill-n">8</span></span>
+          <span class="lang-pill" style="background:#34d39957;border-color:#34d39944;color:#34d399">short<span class="lang-pill-n">7</span></span>
+          <span class="lang-pill" style="background:#34d39932;border-color:#34d39944;color:#34d399">depressed<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#34d3991e;border-color:#34d39944;color:#34d399">introvert<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#34d3991e;border-color:#34d39944;color:#34d399">awkward<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#34d3991e;border-color:#34d39944;color:#34d399">ugly<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"i want a girlfriend i don"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"i want a girlfriend"<span class="lang-phrase-n">1×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#34d39964;border-color:#34d39944;color:#34d399">red flags<span class="lang-pill-n">6</span></span>
+          <span class="lang-pill" style="background:#34d39932;border-color:#34d39944;color:#34d399">cope<span class="lang-pill-n">3</span></span>
+          <span class="lang-pill" style="background:#34d39921;border-color:#34d39944;color:#34d399">friendzone<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>felt empty</strong> 4</span>
+          <span class="lang-bigram"><strong>relationship ended</strong> 9</span>
+          <span class="lang-bigram"><strong>lonely know</strong> 4</span>
+          <span class="lang-bigram"><strong>one relationship</strong> 4</span>
+          <span class="lang-bigram"><strong>alone even</strong> 4</span>
+          <span class="lang-bigram"><strong>first relationship</strong> 4</span>
+          <span class="lang-bigram"><strong>alone life</strong> 4</span>
+          <span class="lang-bigram"><strong>online dating</strong> 8</span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="seg-card" id="stage__chronically_lonely">
     <div class="seg-top">
@@ -1278,6 +2506,60 @@ Spent all my time staying inside, playing video games, too scared to talk to any
       </div>
       <div class="quote-item">"As someone that’s been mostly single in my 34 years, it still amazes me how many/most people find it so easy to get in relationships or get ‘the spark’ gradually or suddenly reconnect and marry an old friend. Am I really all that different?"
         <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Break a lifelong pattern of isolation and singlehood">Break a lifelong pattern of isolation and singlehood</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#34d399aa"></div></div><span class="jtbd-n">191</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Build community and belonging outside romance">Build community and belonging outside romance</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:79%;background:#34d399aa"></div></div><span class="jtbd-n">150</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find out if therapy could actually help">Find out if therapy could actually help</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:17%;background:#34d399aa"></div></div><span class="jtbd-n">32</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find meaning and fulfillment even while single">Find meaning and fulfillment even while single</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:6%;background:#34d399aa"></div></div><span class="jtbd-n">11</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand if social anxiety is the root of my isolation">Understand if social anxiety is the root of my isolation</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:4%;background:#34d399aa"></div></div><span class="jtbd-n">7</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop feeling something is fundamentally wrong with me">Stop feeling something is fundamentally wrong with me</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399aa"></div></div><span class="jtbd-n">2</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Accept my situation while still working to change it">Accept my situation while still working to change it</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#34d399aa"></div></div><span class="jtbd-n">2</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#34d39964;border-color:#34d39944;color:#34d399">virgin<span class="lang-pill-n">17</span></span>
+          <span class="lang-pill" style="background:#34d3995e;border-color:#34d39944;color:#34d399">invisible<span class="lang-pill-n">16</span></span>
+          <span class="lang-pill" style="background:#34d39958;border-color:#34d39944;color:#34d399">ugly<span class="lang-pill-n">15</span></span>
+          <span class="lang-pill" style="background:#34d39958;border-color:#34d39944;color:#34d399">forever alone<span class="lang-pill-n">15</span></span>
+          <span class="lang-pill" style="background:#34d39952;border-color:#34d39944;color:#34d399">average<span class="lang-pill-n">14</span></span>
+          <span class="lang-pill" style="background:#34d39952;border-color:#34d39944;color:#34d399">rejected<span class="lang-pill-n">14</span></span>
+          <span class="lang-pill" style="background:#34d39946;border-color:#34d39944;color:#34d399">nobody<span class="lang-pill-n">12</span></span>
+          <span class="lang-pill" style="background:#34d39934;border-color:#34d39944;color:#34d399">short<span class="lang-pill-n">9</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"i wish i could be the one to love her"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"i want a relationship but i"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"i want a girlfriend"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"i crave touch"<span class="lang-phrase-n">1×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#34d39964;border-color:#34d39944;color:#34d399">cope<span class="lang-pill-n">6</span></span>
+          <span class="lang-pill" style="background:#34d39932;border-color:#34d39944;color:#34d399">incel<span class="lang-pill-n">3</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>chronically single</strong> 12</span>
+          <span class="lang-bigram"><strong>chronically alone</strong> 7</span>
+          <span class="lang-bigram"><strong>romantically relationship</strong> 4</span>
+          <span class="lang-bigram"><strong>love brother</strong> 4</span>
+          <span class="lang-bigram"><strong>lonely general</strong> 4</span>
+          <span class="lang-bigram"><strong>friend alone</strong> 4</span>
+          <span class="lang-bigram"><strong>chronically lonely</strong> 4</span>
+          <span class="lang-bigram"><strong>bought nice</strong> 4</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1316,6 +2598,59 @@ Spent all my time staying inside, playing video games, too scared to talk to any
         <div class="q-src">— Reddit posts</div>
       </div>
     </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Ask a woman out without overthinking it">Ask a woman out without overthinking it</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#60a5faaa"></div></div><span class="jtbd-n">55</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find real-life contexts to meet women organically">Find real-life contexts to meet women organically</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:25%;background:#60a5faaa"></div></div><span class="jtbd-n">14</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Plan a first date that isn't awkward or high-pressure">Plan a first date that isn't awkward or high-pressure</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:18%;background:#60a5faaa"></div></div><span class="jtbd-n">10</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Know what to say to progress from hi to a date">Know what to say to progress from hi to a date</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:7%;background:#60a5faaa"></div></div><span class="jtbd-n">4</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Build confidence to put myself out there and ask">Build confidence to put myself out there and ask</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:5%;background:#60a5faaa"></div></div><span class="jtbd-n">3</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop self-sabotaging after a woman shows interest">Stop self-sabotaging after a woman shows interest</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5faaa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Get a match that converts to a real in-person date">Get a match that converts to a real in-person date</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5faaa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#60a5fa64;border-color:#60a5fa44;color:#60a5fa">rejected<span class="lang-pill-n">24</span></span>
+          <span class="lang-pill" style="background:#60a5fa4f;border-color:#60a5fa44;color:#60a5fa">virgin<span class="lang-pill-n">19</span></span>
+          <span class="lang-pill" style="background:#60a5fa3e;border-color:#60a5fa44;color:#60a5fa">short<span class="lang-pill-n">15</span></span>
+          <span class="lang-pill" style="background:#60a5fa25;border-color:#60a5fa44;color:#60a5fa">awkward<span class="lang-pill-n">9</span></span>
+          <span class="lang-pill" style="background:#60a5fa21;border-color:#60a5fa44;color:#60a5fa">ugly<span class="lang-pill-n">8</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">nobody<span class="lang-pill-n">6</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">average<span class="lang-pill-n">6</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">shy<span class="lang-pill-n">6</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"want to feel loved again i"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"want a relationship"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"just want to feel loved again i"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"want a relationship and love i"<span class="lang-phrase-n">1×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#60a5fa64;border-color:#60a5fa44;color:#60a5fa">friendzone<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>short dated</strong> 4</span>
+          <span class="lang-bigram"><strong>rental girlfriend</strong> 4</span>
+          <span class="lang-bigram"><strong>girls pic</strong> 4</span>
+          <span class="lang-bigram"><strong>dating case</strong> 4</span>
+          <span class="lang-bigram"><strong>dated start</strong> 4</span>
+          <span class="lang-bigram"><strong>case rejected</strong> 4</span>
+          <span class="lang-bigram"><strong>date ever</strong> 11</span>
+          <span class="lang-bigram"><strong>virgin though</strong> 4</span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="seg-card" id="goal__get_sex">
     <div class="seg-top">
@@ -1342,6 +2677,64 @@ Spent all my time staying inside, playing video games, too scared to talk to any
         <div class="q-src">— Reddit posts</div>
       </div>
     </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Find a woman open to casual intimacy">Find a woman open to casual intimacy</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#60a5faaa"></div></div><span class="jtbd-n">149</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Lose virginity in a meaningful non-shameful way">Lose virginity in a meaningful non-shameful way</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:50%;background:#60a5faaa"></div></div><span class="jtbd-n">74</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop the shame spiral around sexual inexperience">Stop the shame spiral around sexual inexperience</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:8%;background:#60a5faaa"></div></div><span class="jtbd-n">12</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find the right context where casual encounters are realistic">Find the right context where casual encounters are realistic</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:5%;background:#60a5faaa"></div></div><span class="jtbd-n">8</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand why I'm not getting physical intimacy">Understand why I'm not getting physical intimacy</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:3%;background:#60a5faaa"></div></div><span class="jtbd-n">5</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Learn to escalate physical intimacy naturally">Learn to escalate physical intimacy naturally</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5faaa"></div></div><span class="jtbd-n">3</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Build sexual confidence and overcome anxiety">Build sexual confidence and overcome anxiety</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5faaa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#60a5fa64;border-color:#60a5fa44;color:#60a5fa">virgin<span class="lang-pill-n">86</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">ugly<span class="lang-pill-n">24</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">awkward<span class="lang-pill-n">21</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">rejected<span class="lang-pill-n">18</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">average<span class="lang-pill-n">17</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">incel<span class="lang-pill-n">14</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">nobody<span class="lang-pill-n">13</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">short<span class="lang-pill-n">12</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"want a relationship"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"crave intimacy"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"want to be loved"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"want to be in a relationship at all"<span class="lang-phrase-n">1×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#60a5fa64;border-color:#60a5fa44;color:#60a5fa">incel<span class="lang-pill-n">14</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">cope<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">normie<span class="lang-pill-n">3</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">frame<span class="lang-pill-n">3</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">beta<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">red flags<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>want sex</strong> 46</span>
+          <span class="lang-bigram"><strong>sexually frustrated</strong> 11</span>
+          <span class="lang-bigram"><strong>ted nice</strong> 4</span>
+          <span class="lang-bigram"><strong>sexual failure</strong> 4</span>
+          <span class="lang-bigram"><strong>girlfriend lose</strong> 4</span>
+          <span class="lang-bigram"><strong>sex worker</strong> 8</span>
+          <span class="lang-bigram"><strong>virgin want</strong> 7</span>
+          <span class="lang-bigram"><strong>sex sex</strong> 7</span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="seg-card" id="goal__higher_value">
     <div class="seg-top">
@@ -1366,6 +2759,64 @@ Spent all my time staying inside, playing video games, too scared to talk to any
       </div>
       <div class="quote-item">"I am not actively dating at the moment as I decided to work on my mental health and it's getting better yet from my previous experiences the moment you say you have family in mind or have a desire to have a child some"
         <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Fix financial stability so it doesn't limit me">Fix financial stability so it doesn't limit me</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#60a5faaa"></div></div><span class="jtbd-n">73</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Develop skills and interests that make me interesting">Develop skills and interests that make me interesting</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:81%;background:#60a5faaa"></div></div><span class="jtbd-n">59</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Improve physical health through consistent fitness">Improve physical health through consistent fitness</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:74%;background:#60a5faaa"></div></div><span class="jtbd-n">54</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Build social circle that reflects better version of me">Build social circle that reflects better version of me</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:18%;background:#60a5faaa"></div></div><span class="jtbd-n">13</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Become proud of myself before seeking a relationship">Become proud of myself before seeking a relationship</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:16%;background:#60a5faaa"></div></div><span class="jtbd-n">12</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand which self-improvement efforts matter most">Understand which self-improvement efforts matter most</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:11%;background:#60a5faaa"></div></div><span class="jtbd-n">8</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Build genuine unshakeable inner confidence">Build genuine unshakeable inner confidence</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5faaa"></div></div><span class="jtbd-n">1</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#60a5fa64;border-color:#60a5fa44;color:#60a5fa">ugly<span class="lang-pill-n">20</span></span>
+          <span class="lang-pill" style="background:#60a5fa55;border-color:#60a5fa44;color:#60a5fa">virgin<span class="lang-pill-n">17</span></span>
+          <span class="lang-pill" style="background:#60a5fa4b;border-color:#60a5fa44;color:#60a5fa">short<span class="lang-pill-n">15</span></span>
+          <span class="lang-pill" style="background:#60a5fa4b;border-color:#60a5fa44;color:#60a5fa">average<span class="lang-pill-n">15</span></span>
+          <span class="lang-pill" style="background:#60a5fa46;border-color:#60a5fa44;color:#60a5fa">shy<span class="lang-pill-n">14</span></span>
+          <span class="lang-pill" style="background:#60a5fa41;border-color:#60a5fa44;color:#60a5fa">fat<span class="lang-pill-n">13</span></span>
+          <span class="lang-pill" style="background:#60a5fa3c;border-color:#60a5fa44;color:#60a5fa">awkward<span class="lang-pill-n">12</span></span>
+          <span class="lang-pill" style="background:#60a5fa37;border-color:#60a5fa44;color:#60a5fa">nobody<span class="lang-pill-n">11</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"i just want to be loved"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"i crave love so bad 18m"<span class="lang-phrase-n">2×</span></span>
+          <span class="lang-phrase">"want a relationship with"<span class="lang-phrase-n">1×</span></span>
+          <span class="lang-phrase">"want a relationship but i will"<span class="lang-phrase-n">1×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#60a5fa64;border-color:#60a5fa44;color:#60a5fa">glow up<span class="lang-pill-n">8</span></span>
+          <span class="lang-pill" style="background:#60a5fa3e;border-color:#60a5fa44;color:#60a5fa">cope<span class="lang-pill-n">5</span></span>
+          <span class="lang-pill" style="background:#60a5fa32;border-color:#60a5fa44;color:#60a5fa">incel<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#60a5fa32;border-color:#60a5fa44;color:#60a5fa">level up<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">chad<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">alpha<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>weight someti</strong> 8</span>
+          <span class="lang-bigram"><strong>girl plan</strong> 6</span>
+          <span class="lang-bigram"><strong>bought nice</strong> 4</span>
+          <span class="lang-bigram"><strong>say weight</strong> 7</span>
+          <span class="lang-bigram"><strong>lost weight</strong> 22</span>
+          <span class="lang-bigram"><strong>nice guys</strong> 18</span>
+          <span class="lang-bigram"><strong>weight turns</strong> 6</span>
+          <span class="lang-bigram"><strong>dating lost</strong> 6</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1395,6 +2846,65 @@ Spent all my time staying inside, playing video games, too scared to talk to any
         <div class="q-src">— Reddit posts</div>
       </div>
     </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Build the skills to sustain a relationship once I'm in one">Build the skills to sustain a relationship once I'm in one</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#60a5faaa"></div></div><span class="jtbd-n">87</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop getting stuck in situationships">Stop getting stuck in situationships</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:69%;background:#60a5faaa"></div></div><span class="jtbd-n">60</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Turn good dates into a committed relationship">Turn good dates into a committed relationship</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:43%;background:#60a5faaa"></div></div><span class="jtbd-n">37</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Meet women with real relationship potential offline">Meet women with real relationship potential offline</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:33%;background:#60a5faaa"></div></div><span class="jtbd-n">29</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Get a second date from a promising first date">Get a second date from a promising first date</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:33%;background:#60a5faaa"></div></div><span class="jtbd-n">29</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Find a woman who wants the same kind of relationship">Find a woman who wants the same kind of relationship</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:6%;background:#60a5faaa"></div></div><span class="jtbd-n">5</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Communicate interest without coming on too strong">Communicate interest without coming on too strong</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:5%;background:#60a5faaa"></div></div><span class="jtbd-n">4</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Understand what women actually look for in a partner">Understand what women actually look for in a partner</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5faaa"></div></div><span class="jtbd-n">1</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#60a5fa64;border-color:#60a5fa44;color:#60a5fa">virgin<span class="lang-pill-n">87</span></span>
+          <span class="lang-pill" style="background:#60a5fa49;border-color:#60a5fa44;color:#60a5fa">rejected<span class="lang-pill-n">64</span></span>
+          <span class="lang-pill" style="background:#60a5fa41;border-color:#60a5fa44;color:#60a5fa">awkward<span class="lang-pill-n">57</span></span>
+          <span class="lang-pill" style="background:#60a5fa3e;border-color:#60a5fa44;color:#60a5fa">average<span class="lang-pill-n">54</span></span>
+          <span class="lang-pill" style="background:#60a5fa36;border-color:#60a5fa44;color:#60a5fa">ugly<span class="lang-pill-n">47</span></span>
+          <span class="lang-pill" style="background:#60a5fa31;border-color:#60a5fa44;color:#60a5fa">short<span class="lang-pill-n">43</span></span>
+          <span class="lang-pill" style="background:#60a5fa29;border-color:#60a5fa44;color:#60a5fa">shy<span class="lang-pill-n">36</span></span>
+          <span class="lang-pill" style="background:#60a5fa1f;border-color:#60a5fa44;color:#60a5fa">loser<span class="lang-pill-n">27</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">What they<br>want</span>
+        <div class="lang-phrases">
+          <span class="lang-phrase">"i want a girlfriend"<span class="lang-phrase-n">21×</span></span>
+          <span class="lang-phrase">"want a relationship"<span class="lang-phrase-n">14×</span></span>
+          <span class="lang-phrase">"i want a relationship"<span class="lang-phrase-n">9×</span></span>
+          <span class="lang-phrase">"want a girlfriend"<span class="lang-phrase-n">8×</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#60a5fa64;border-color:#60a5fa44;color:#60a5fa">cope<span class="lang-pill-n">15</span></span>
+          <span class="lang-pill" style="background:#60a5fa21;border-color:#60a5fa44;color:#60a5fa">incel<span class="lang-pill-n">5</span></span>
+          <span class="lang-pill" style="background:#60a5fa21;border-color:#60a5fa44;color:#60a5fa">red flags<span class="lang-pill-n">5</span></span>
+          <span class="lang-pill" style="background:#60a5fa21;border-color:#60a5fa44;color:#60a5fa">hit the gym<span class="lang-pill-n">5</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">friendzone<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#60a5fa1e;border-color:#60a5fa44;color:#60a5fa">chad<span class="lang-pill-n">3</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>find love</strong> 112</span>
+          <span class="lang-bigram"><strong>want girlfriend</strong> 105</span>
+          <span class="lang-bigram"><strong>want relationship</strong> 104</span>
+          <span class="lang-bigram"><strong>find girlfriend</strong> 71</span>
+          <span class="lang-bigram"><strong>find partner</strong> 67</span>
+          <span class="lang-bigram"><strong>looking relationship</strong> 24</span>
+          <span class="lang-bigram"><strong>virgin relationship</strong> 19</span>
+          <span class="lang-bigram"><strong>trying girlfriend</strong> 9</span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="seg-card" id="goal__get_specific_woman">
     <div class="seg-top">
@@ -1417,6 +2927,45 @@ Spent all my time staying inside, playing video games, too scared to talk to any
       </div>
       <div class="quote-item">"After I was able to come down I could finally apologize, feel the guilt of hurting the woman I love, and hope to change-until the classic abusive cycle would happen again the next time."
         <div class="q-src">— Reddit posts</div>
+      </div>
+    </div>
+    <div class="jtbd-label">Jobs to Be Done</div>
+    <div class="jtbd-list">
+      <div class="jtbd-row"><span class="jtbd-text" title="Express feelings without destroying the dynamic">Express feelings without destroying the dynamic</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:100%;background:#60a5faaa"></div></div><span class="jtbd-n">9</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Stop putting her on a pedestal and see her clearly">Stop putting her on a pedestal and see her clearly</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:22%;background:#60a5faaa"></div></div><span class="jtbd-n">2</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Make a specific woman see me as a romantic possibility">Make a specific woman see me as a romantic possibility</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:22%;background:#60a5faaa"></div></div><span class="jtbd-n">2</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Stand out from other men pursuing her">Stand out from other men pursuing her</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:11%;background:#60a5faaa"></div></div><span class="jtbd-n">1</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Win her back after she initially showed no interest">Win her back after she initially showed no interest</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5faaa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Know if she's interested or just being friendly">Know if she's interested or just being friendly</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5faaa"></div></div><span class="jtbd-n">0</span></div>
+      <div class="jtbd-row"><span class="jtbd-text" title="Decide whether to pursue or accept it won't happen">Decide whether to pursue or accept it won't happen</span><div class="jtbd-bar-wrap"><div class="jtbd-bar" style="width:2%;background:#60a5faaa"></div></div><span class="jtbd-n">0</span></div>
+    </div>
+    <div class="lang-section">
+      <div class="lang-row">
+        <span class="lang-row-label">They call<br>themselves</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#60a5fa64;border-color:#60a5fa44;color:#60a5fa">rejected<span class="lang-pill-n">6</span></span>
+          <span class="lang-pill" style="background:#60a5fa42;border-color:#60a5fa44;color:#60a5fa">ugly<span class="lang-pill-n">4</span></span>
+          <span class="lang-pill" style="background:#60a5fa21;border-color:#60a5fa44;color:#60a5fa">incel<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#60a5fa21;border-color:#60a5fa44;color:#60a5fa">loser<span class="lang-pill-n">2</span></span>
+          <span class="lang-pill" style="background:#60a5fa21;border-color:#60a5fa44;color:#60a5fa">depressed<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Community<br>slang</span>
+        <div class="lang-pills">
+          <span class="lang-pill" style="background:#60a5fa64;border-color:#60a5fa44;color:#60a5fa">incel<span class="lang-pill-n">2</span></span>
+        </div>
+      </div>
+      <div class="lang-row">
+        <span class="lang-row-label">Distinctive<br>phrases</span>
+        <div class="lang-bigrams">
+          <span class="lang-bigram"><strong>specific girl</strong> 4</span>
+          <span class="lang-bigram"><strong>girl using</strong> 4</span>
+          <span class="lang-bigram"><strong>girl loved</strong> 4</span>
+          <span class="lang-bigram"><strong>attracti girl</strong> 5</span>
+          <span class="lang-bigram"><strong>girl liked</strong> 7</span>
+          <span class="lang-bigram"><strong>girl sai</strong> 4</span>
+        </div>
       </div>
     </div>
   </div>
