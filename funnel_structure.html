@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Male Funnel — Structure v.2</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f0f13;
+      color: #e0e0e8;
+      padding: 40px 24px 80px;
+      min-width: 900px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 48px;
+      letter-spacing: 0.03em;
+    }
+
+    /* ── Layout helpers ── */
+    .col   { display: flex; flex-direction: column; align-items: center; }
+    .row   { display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 0; }
+    .gap-l { gap: 48px; }
+    .gap-m { gap: 32px; }
+    .gap-s { gap: 16px; }
+
+    /* ── Connector arrows ── */
+    .arrow-down {
+      width: 2px;
+      background: #3a3a4a;
+      height: 28px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .arrow-down::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 7px solid #3a3a4a;
+    }
+
+    .arrow-down.accent { background: #5b5bf5; }
+    .arrow-down.accent::after { border-top-color: #5b5bf5; }
+
+    /* horizontal split line */
+    .split-line {
+      display: flex;
+      align-items: flex-start;
+      width: 100%;
+      position: relative;
+      margin: 0 auto;
+    }
+    .split-line .h-line {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 2px;
+      background: #3a3a4a;
+    }
+    .split-line .v-down {
+      width: 2px;
+      background: #3a3a4a;
+      position: relative;
+    }
+    .split-line .v-down::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 7px solid #3a3a4a;
+    }
+
+    /* ── Blocks ── */
+    .block {
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+      position: relative;
+    }
+
+    .block-shared {
+      background: #1e1e2e;
+      border: 1.5px solid #3a3a55;
+      color: #c8c8e0;
+      min-width: 320px;
+    }
+
+    .block-split {
+      background: #1a1a2a;
+      border: 1.5px solid #4a4a6a;
+      color: #a0a0c0;
+      font-size: 11.5px;
+      min-width: 320px;
+    }
+
+    .block-branch-a {
+      background: #12202e;
+      border: 1.5px solid #2a6a9a;
+      color: #7bc8f0;
+      min-width: 160px;
+    }
+
+    .block-branch-b {
+      background: #1e1220;
+      border: 1.5px solid #7a2a9a;
+      color: #c87bf0;
+      min-width: 160px;
+    }
+
+    .block-sub-a {
+      background: #0e1a24;
+      border: 1.5px solid #2a5a7a;
+      color: #6ab4d8;
+      min-width: 150px;
+    }
+
+    .block-sub-b-si {
+      background: #1a0e24;
+      border: 1.5px solid #6a2a7a;
+      color: #b86ad8;
+      min-width: 140px;
+    }
+
+    .block-sub-b-cl {
+      background: #201018;
+      border: 1.5px solid #8a2a5a;
+      color: #d87ab0;
+      min-width: 140px;
+    }
+
+    .block-screens {
+      background: #111118;
+      border: 1px solid #2a2a3a;
+      color: #8888a8;
+      font-size: 12px;
+      text-align: left;
+      min-width: 150px;
+      padding: 10px 14px;
+    }
+    .block-screens .screen-item {
+      padding: 3px 0;
+      border-bottom: 1px solid #1e1e2e;
+    }
+    .block-screens .screen-item:last-child { border-bottom: none; }
+    .block-screens .screen-label {
+      font-size: 10px;
+      color: #555568;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .block-conversion-a {
+      background: #0e1e10;
+      border: 1.5px solid #2a7a3a;
+      color: #7ad888;
+      min-width: 320px;
+    }
+
+    .block-conversion-b {
+      background: #1e100e;
+      border: 1.5px solid #7a3a2a;
+      color: #d8a07a;
+      min-width: 320px;
+    }
+
+    .block-offer-a {
+      background: #0a1a0c;
+      border: 2px solid #3aaa4a;
+      color: #6ade7a;
+      font-weight: 600;
+      font-size: 14px;
+      min-width: 320px;
+    }
+
+    .block-offer-b {
+      background: #1a0a08;
+      border: 2px solid #aa4a3a;
+      color: #de8a6a;
+      font-weight: 600;
+      font-size: 14px;
+      min-width: 320px;
+    }
+
+    .block-insight-shared {
+      background: #1a1608;
+      border: 1.5px solid #7a6a2a;
+      color: #d8c87a;
+      min-width: 280px;
+    }
+
+    .label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-bottom: 4px;
+    }
+
+    .block-title { font-weight: 600; font-size: 13px; }
+    .block-desc  { font-size: 11.5px; opacity: 0.7; margin-top: 4px; }
+
+    /* routing note inside split blocks */
+    .route-note {
+      font-size: 10.5px;
+      opacity: 0.6;
+      margin-top: 6px;
+      font-style: italic;
+    }
+
+    /* ── Section wrappers ── */
+    .section { margin-bottom: 0; }
+
+    /* three-col sub-branch grid */
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      width: 100%;
+      max-width: 860px;
+    }
+
+    .sub-col { display: flex; flex-direction: column; align-items: center; }
+
+    /* merge lines (3→1) */
+    .merge-bar {
+      width: 100%;
+      max-width: 860px;
+      height: 2px;
+      background: #3a3a4a;
+      position: relative;
+      margin: 0 auto;
+    }
+
+    /* legend */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid #1e1e2e;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #666;
+    }
+    .legend-dot {
+      width: 12px; height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    /* ── Responsive connector helpers ── */
+    .connector-wrap {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      width: 100%;
+      max-width: 860px;
+      position: relative;
+    }
+
+    .fork-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 860px;
+    }
+
+    /* SVG connectors */
+    svg.connector { overflow: visible; display: block; }
+  </style>
+</head>
+<body>
+
+  <h1>Male Funnel — Structure v.2</h1>
+  <p class="subtitle">Two branches · Five sub-segments · Dual offers</p>
+
+  <!-- ═══ SHARED ENTRY ═══ -->
+  <div class="col" style="align-items:center;">
+
+    <div class="block block-shared" style="min-width:340px;">
+      <div class="label">Screen 1</div>
+      <div class="block-title">Age</div>
+      <div class="block-desc">18–25 · 26–34 · 35–44 · 45+</div>
+    </div>
+
+    <div class="arrow-down" style="height:24px;"></div>
+
+    <div class="block block-shared" style="min-width:340px;">
+      <div class="label">Screen 2</div>
+      <div class="block-title">Situation — Main Branch Split</div>
+      <div class="route-note">Options 1+2 → Branch A &nbsp;|&nbsp; Options 3+4 → Branch B</div>
+    </div>
+
+    <div class="arrow-down" style="height:24px;"></div>
+
+    <div class="block block-shared" style="min-width:340px;">
+      <div class="label">Screen 3</div>
+      <div class="block-title">Intent Qualifier</div>
+      <div class="block-desc">Casual / Serious / Long-term / Not sure</div>
+    </div>
+
+    <div class="arrow-down" style="height:24px;"></div>
+
+    <!-- conditional split 3.5 / 3.5b -->
+    <div style="display:flex; gap:32px; align-items:flex-start; justify-content:center;">
+      <div class="col">
+        <div class="block block-split" style="min-width:220px;">
+          <div class="label">Screen 3.5 — Conditional</div>
+          <div class="block-title">What Kind of Woman?</div>
+          <div class="route-note">Serious + long-term only</div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="block block-split" style="min-width:220px;">
+          <div class="label">Screen 3.5b — Conditional</div>
+          <div class="block-title">What Are You After?</div>
+          <div class="route-note">Casual + not sure only</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SVG fork lines into branches -->
+    <svg class="connector" width="860" height="60" viewBox="0 0 860 60">
+      <!-- vertical from centre down to horizontal bar -->
+      <line x1="430" y1="0" x2="430" y2="20" stroke="#3a3a4a" stroke-width="2"/>
+      <!-- horizontal bar -->
+      <line x1="215" y1="20" x2="645" y2="20" stroke="#3a3a4a" stroke-width="2"/>
+      <!-- left branch down -->
+      <line x1="215" y1="20" x2="215" y2="54" stroke="#2a6a9a" stroke-width="2"/>
+      <polygon points="215,60 210,50 220,50" fill="#2a6a9a"/>
+      <!-- right branch down -->
+      <line x1="645" y1="20" x2="645" y2="54" stroke="#7a2a9a" stroke-width="2"/>
+      <polygon points="645,60 640,50 650,50" fill="#7a2a9a"/>
+    </svg>
+
+  </div><!-- /shared entry -->
+
+
+  <!-- ═══ TWO BRANCHES ═══ -->
+  <div class="row gap-l" style="width:100%; max-width:900px; margin:0 auto; align-items:flex-start;">
+
+    <!-- ─── BRANCH A ─── -->
+    <div class="col" style="flex:1; align-items:center;">
+
+      <div class="block block-branch-a" style="width:100%; max-width:400px;">
+        <div class="label">Branch A</div>
+        <div class="block-title">The Invisible Man</div>
+        <div class="block-desc">Can't get noticed, matched, or create initial interest</div>
+      </div>
+
+      <div class="arrow-down accent" style="height:24px;"></div>
+
+      <div class="block block-split" style="width:100%; max-width:400px;">
+        <div class="label">Screen A1 — Sub-branch split</div>
+        <div class="block-title">Where does it feel most stuck?</div>
+        <div class="route-note">Apps / Everywhere → A1 &nbsp;|&nbsp; Real life → A3 &nbsp;|&nbsp; Conversations → A2</div>
+      </div>
+
+      <div class="arrow-down" style="height:20px;"></div>
+
+      <!-- three sub-branches A -->
+      <div class="three-col" style="max-width:430px;">
+
+        <div class="sub-col">
+          <div class="block block-sub-a" style="width:100%;">
+            <div class="label">A1</div>
+            <div class="block-title">App Frustration</div>
+          </div>
+          <div class="arrow-down" style="height:16px;"></div>
+          <div class="block block-screens" style="width:100%;">
+            <div class="screen-label">Screens</div>
+            <div class="screen-item">A1.1 App Diagnostic</div>
+            <div class="screen-item">A1.2 What You Tried</div>
+            <div class="screen-item">A1.3 Insight Reveal</div>
+          </div>
+        </div>
+
+        <div class="sub-col">
+          <div class="block block-sub-a" style="width:100%;">
+            <div class="label">A2</div>
+            <div class="block-title">Communication Gap</div>
+          </div>
+          <div class="arrow-down" style="height:16px;"></div>
+          <div class="block block-screens" style="width:100%;">
+            <div class="screen-label">Screens</div>
+            <div class="screen-item">A2.1 Conv. Diagnostic</div>
+            <div class="screen-item">A2.1b Self-Rating</div>
+            <div class="screen-item">A2.2 What You Tried</div>
+            <div class="screen-item">A2.3 Insight Reveal</div>
+          </div>
+        </div>
+
+        <div class="sub-col">
+          <div class="block block-sub-a" style="width:100%;">
+            <div class="label">A3</div>
+            <div class="block-title">IRL Invisibility</div>
+          </div>
+          <div class="arrow-down" style="height:16px;"></div>
+          <div class="block block-screens" style="width:100%;">
+            <div class="screen-label">Screens</div>
+            <div class="screen-item">A3.1 IRL Diagnostic</div>
+            <div class="screen-item">A3.1b Self-Rating</div>
+            <div class="screen-item">A3.2 What You Tried</div>
+            <div class="screen-item">A3.2b What's Missing</div>
+            <div class="screen-item">A3.3 Insight Reveal</div>
+          </div>
+        </div>
+
+      </div><!-- /three-col A -->
+
+      <!-- merge bar A -->
+      <svg class="connector" width="430" height="36" viewBox="0 0 430 36" style="max-width:430px; width:100%;">
+        <line x1="72"  y1="0" x2="72"  y2="18" stroke="#3a3a4a" stroke-width="1.5"/>
+        <line x1="215" y1="0" x2="215" y2="18" stroke="#3a3a4a" stroke-width="1.5"/>
+        <line x1="358" y1="0" x2="358" y2="18" stroke="#3a3a4a" stroke-width="1.5"/>
+        <line x1="72"  y1="18" x2="358" y2="18" stroke="#3a3a4a" stroke-width="1.5"/>
+        <line x1="215" y1="18" x2="215" y2="30" stroke="#2a7a3a" stroke-width="1.5"/>
+        <polygon points="215,36 210,27 220,27" fill="#2a7a3a"/>
+      </svg>
+
+      <!-- Branch A conversion -->
+      <div class="block block-conversion-a" style="width:100%; max-width:400px;">
+        <div class="label">Branch A — Shared Conversion</div>
+        <div class="block-title" style="margin-bottom:8px;">AX · AX.1 · AX.2 · AX.3</div>
+        <div class="block-screens" style="background:transparent; border:none; min-width:0; color:#5aa865; font-size:11.5px;">
+          <div class="screen-item">AX &nbsp;&nbsp; Value Proposition</div>
+          <div class="screen-item">AX.1 Foundations Check</div>
+          <div class="screen-item">AX.2 Future Self</div>
+          <div class="screen-item">AX.3 Transformation Promise</div>
+        </div>
+      </div>
+
+      <div class="arrow-down" style="height:20px; background:#3aaa4a;" >
+        <style>.arrow-down.green::after{border-top-color:#3aaa4a;}</style>
+      </div>
+      <svg width="2" height="26"><line x1="1" y1="0" x2="1" y2="20" stroke="#3aaa4a" stroke-width="2"/><polygon points="1,26 -4,16 6,16" fill="#3aaa4a"/></svg>
+
+      <div class="block block-offer-a" style="width:100%; max-width:400px;">
+        <div class="label">Screen AX.4 — Offer A</div>
+        <div class="block-title">The Invisible Man → Real Results System</div>
+        <div class="block-desc" style="opacity:0.7; font-size:12px; font-weight:400;">4 Modules · Profile · Conversations · IRL Presence · First Date</div>
+      </div>
+
+    </div><!-- /Branch A col -->
+
+
+    <!-- ─── BRANCH B ─── -->
+    <div class="col" style="flex:1; align-items:center;">
+
+      <div class="block block-branch-b" style="width:100%; max-width:400px;">
+        <div class="label">Branch B</div>
+        <div class="block-title">Nice Guy / Can't Attract</div>
+        <div class="block-desc">Meets women, goes on dates — but can't create romantic attraction</div>
+      </div>
+
+      <div class="arrow-down" style="height:24px; background:#7a2a9a;"></div>
+
+      <div class="block block-split" style="width:100%; max-width:400px;">
+        <div class="label">Screen B1 — Sub-branch split</div>
+        <div class="block-title">Which of these keeps happening?</div>
+        <div class="route-note">Options 2+4 → B_SI_HF &nbsp;|&nbsp; Option 3 → B_SI_FZ &nbsp;|&nbsp; Options 1+5 → B_CL</div>
+      </div>
+
+      <div class="arrow-down" style="height:20px;"></div>
+
+      <!-- three sub-branches B -->
+      <div class="three-col" style="max-width:430px;">
+
+        <div class="sub-col">
+          <div class="block block-sub-b-si" style="width:100%;">
+            <div class="label">B_SI_HF</div>
+            <div class="block-title" style="font-size:12px;">Hiding Feelings</div>
+          </div>
+          <div class="arrow-down" style="height:16px;"></div>
+          <div class="block block-screens" style="width:100%;">
+            <div class="screen-label">Screens</div>
+            <div class="screen-item">HF.1 Pattern Check</div>
+            <div class="screen-item">HF.2 What Stops You</div>
+          </div>
+        </div>
+
+        <div class="sub-col">
+          <div class="block block-sub-b-si" style="width:100%;">
+            <div class="label">B_SI_FZ</div>
+            <div class="block-title" style="font-size:12px;">Friendzone</div>
+          </div>
+          <div class="arrow-down" style="height:16px;"></div>
+          <div class="block block-screens" style="width:100%;">
+            <div class="screen-label">Screens</div>
+            <div class="screen-item">FZ.1 Pattern Check</div>
+            <div class="screen-item">FZ.2 What Keeps You</div>
+          </div>
+        </div>
+
+        <div class="sub-col">
+          <div class="block block-sub-b-cl" style="width:100%;">
+            <div class="label">B_CL</div>
+            <div class="block-title" style="font-size:12px;">Clueless</div>
+          </div>
+          <div class="arrow-down" style="height:16px;"></div>
+          <div class="block block-screens" style="width:100%;">
+            <div class="screen-label">Screens</div>
+            <div class="screen-item">CL.1 The Pattern</div>
+            <div class="screen-item">CL.2 Feedback</div>
+            <div class="screen-item">CL.3 Behaviour Shift</div>
+            <div class="screen-item">CL.4 Insight Reveal</div>
+          </div>
+        </div>
+
+      </div><!-- /three-col B -->
+
+      <!-- B_SI merge to shared insight -->
+      <svg class="connector" width="430" height="50" viewBox="0 0 430 50" style="max-width:430px; width:100%;">
+        <!-- HF and FZ merge to shared B_SI insight -->
+        <line x1="72"  y1="0" x2="72"  y2="18" stroke="#3a3a4a" stroke-width="1.5"/>
+        <line x1="215" y1="0" x2="215" y2="18" stroke="#3a3a4a" stroke-width="1.5"/>
+        <line x1="72"  y1="18" x2="215" y2="18" stroke="#3a3a4a" stroke-width="1.5"/>
+        <line x1="143" y1="18" x2="143" y2="30" stroke="#6a2a7a" stroke-width="1.5"/>
+        <polygon points="143,36 138,27 148,27" fill="#6a2a7a"/>
+        <!-- CL goes straight down -->
+        <line x1="358" y1="0" x2="358" y2="30" stroke="#3a3a4a" stroke-width="1.5"/>
+        <polygon points="358,36 353,27 363,27" fill="#8a2a5a"/>
+      </svg>
+
+      <!-- B_SI shared insight + B_CL insight side by side -->
+      <div style="display:flex; gap:16px; width:100%; max-width:430px; align-items:flex-start; justify-content:center;">
+        <div class="col" style="flex:1;">
+          <div class="block block-insight-shared" style="width:100%;">
+            <div class="label">B_SI.4 — Shared</div>
+            <div class="block-title" style="font-size:12px;">Insight Reveal</div>
+            <div class="block-desc">HF + FZ merge here</div>
+          </div>
+        </div>
+        <div class="col" style="flex:1; margin-top:0;">
+          <!-- CL.4 already shown in screens block above; just a label -->
+          <div class="block block-insight-shared" style="width:100%; border-color:#8a2a5a; color:#d8a07a;">
+            <div class="label">B_CL.4</div>
+            <div class="block-title" style="font-size:12px;">Insight Reveal</div>
+            <div class="block-desc">Clueless track</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- merge both insight paths -->
+      <svg class="connector" width="430" height="40" viewBox="0 0 430 40" style="max-width:430px; width:100%;">
+        <line x1="107" y1="0" x2="107" y2="18" stroke="#3a3a4a" stroke-width="1.5"/>
+        <line x1="323" y1="0" x2="323" y2="18" stroke="#3a3a4a" stroke-width="1.5"/>
+        <line x1="107" y1="18" x2="323" y2="18" stroke="#3a3a4a" stroke-width="1.5"/>
+        <line x1="215" y1="18" x2="215" y2="30" stroke="#7a3a2a" stroke-width="1.5"/>
+        <polygon points="215,36 210,27 220,27" fill="#7a3a2a"/>
+      </svg>
+
+      <!-- Branch B conversion -->
+      <div class="block block-conversion-b" style="width:100%; max-width:400px;">
+        <div class="label">Branch B — Shared Conversion</div>
+        <div class="block-title" style="margin-bottom:8px;">BX · BX.1</div>
+        <div class="block-screens" style="background:transparent; border:none; min-width:0; color:#c89060; font-size:11.5px;">
+          <div class="screen-item">BX &nbsp;&nbsp; Future Self</div>
+          <div class="screen-item">BX.1 Transformation Promise</div>
+        </div>
+      </div>
+
+      <svg width="2" height="26"><line x1="1" y1="0" x2="1" y2="20" stroke="#aa4a3a" stroke-width="2"/><polygon points="1,26 -4,16 6,16" fill="#aa4a3a"/></svg>
+
+      <div class="block block-offer-b" style="width:100%; max-width:400px;">
+        <div class="label">Screen B9 — Offer B</div>
+        <div class="block-title">The Chemistry Code</div>
+        <div class="block-desc" style="opacity:0.7; font-size:12px; font-weight:400;">5 Modules · Why Attraction Fails · Building Attraction · Reading Her · Flirting · Already Friends</div>
+      </div>
+
+    </div><!-- /Branch B col -->
+
+  </div><!-- /row two branches -->
+
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#1e1e2e; border:1.5px solid #3a3a55;"></div> Shared screen</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#12202e; border:1.5px solid #2a6a9a;"></div> Branch A — Invisible Man</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#1e1220; border:1.5px solid #7a2a9a;"></div> Branch B — Nice Guy</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#0e1a24; border:1.5px solid #2a5a7a;"></div> Sub-branch A (A1 / A2 / A3)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#1a0e24; border:1.5px solid #6a2a7a;"></div> Sub-branch B_SI (HF / FZ)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#201018; border:1.5px solid #8a2a5a;"></div> Sub-branch B_CL</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#0e1e10; border:1.5px solid #2a7a3a;"></div> Offer A</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#1a0a08; border:1.5px solid #aa4a3a;"></div> Offer B</div>
+  </div>
+
+</body>
+</html>
